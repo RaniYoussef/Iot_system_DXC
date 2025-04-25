@@ -13,17 +13,20 @@ public class AuthService {
     private UserRepository userRepository;
 
     public void registerUser(UserDto user) {
+        String sanitizedUsername = InputSanitizer.sanitize(user.getUsername());
+        String sanitizedEmail = InputSanitizer.sanitize(user.getEmail());
+        String sanitizedPassword = InputSanitizer.sanitize(user.getPassword());
 
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(sanitizedEmail)) {
             throw new RuntimeException("Email already registered");
         }
 
         String hashedPassword = encoder.encode(user.getPassword());
 
         UserEntity entity = new UserEntity(
-                user.getUsername(),
+                sanitizedUsername,
                 hashedPassword,
-                user.getEmail(),
+                sanitizedEmail,
                 "USER"
         );
 
@@ -31,9 +34,9 @@ public class AuthService {
 
 
         // Save user with hashed password (e.g., print or save to DB for now)
-        System.out.println("Username: " + user.getUsername());
+        System.out.println("Username: " + sanitizedUsername);
         System.out.println("Email: " + user.getEmail());
-        System.out.println("Hashed Password: " + hashedPassword);
+        System.out.println("Hashed Password: " + sanitizedEmail);
     }
 }
 

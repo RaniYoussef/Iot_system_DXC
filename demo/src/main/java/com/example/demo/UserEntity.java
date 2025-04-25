@@ -3,7 +3,7 @@ package com.example.demo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "userssss")
 public class UserEntity {
 
     @Id
@@ -13,18 +13,25 @@ public class UserEntity {
     private String username;
     private String password;
     private String email;
+    private String role; // "USER" or "ADMIN"
 
     // Constructors
     public UserEntity() {}
 
-    public UserEntity(String username, String password, String email) {
+    public UserEntity(String username, String password, String email,String role) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role=role;
+
     }
 
     // Getters & Setters
     public Long getId() { return id; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }

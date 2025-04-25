@@ -24,6 +24,11 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final RateLimitingFilter rateLimitingFilter;
 
+    @Autowired
+    public SecurityConfig(JwtFilter jwtFilter, RateLimitingFilter rateLimitingFilter) {
+        this.jwtFilter = jwtFilter;
+        this.rateLimitingFilter = rateLimitingFilter;
+    }
 
 
     @Bean
@@ -36,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class) // Rate limiting first
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //JWT authentication
                 .build();
 

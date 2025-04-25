@@ -1,0 +1,327 @@
+.sign-in-page {
+    min-height: 100vh;
+    background-color: var(--neutral-50);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .top-section {
+    height: 320px;
+    background-image: url('/assets/IoTBackground.png');
+    background-size: cover;
+    background-position: center;
+    padding: var(--space-4);
+    position: relative;
+    color: white;
+    overflow: visible;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+    
+    .content-wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-4);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+  
+  .logo-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    
+    .company-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+    
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      
+      .iot-text {
+        animation: colorChange 8s infinite;
+        font-weight: 800;
+      }
+      
+      .jumping-e {
+        display: inline-block;
+        animation: jump 2s ease-in-out infinite;
+        transform-origin: bottom;
+      }
+    }
+  }
+  
+  .hero-content {
+    max-width: 480px;
+    animation: fadeInUp 0.8s ease-out;
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      animation: slideInLeft 0.8s ease-out;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      margin-bottom: var(--space-2);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      animation: slideInLeft 0.8s ease-out 0.2s both;
+    }
+    
+    .description {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      margin-bottom: var(--space-4);
+      animation: slideInLeft 0.8s ease-out 0.4s both;
+    }
+  }
+  
+  .form-section {
+    position: relative;
+    margin-top: -100px;
+    margin-bottom: var(--space-6);
+    z-index: 2;
+    padding: 0 var(--space-4);
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: var(--space-6);
+    width: 100%;
+  }
+  
+  .form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: var(--space-4);
+    animation: slideInUp 0.8s ease-out;
+  }
+  
+  .site-footer {
+    margin-top: auto;
+    background: var(--neutral-900);
+    color: white;
+    padding: var(--space-4);
+    
+    .footer-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-8);
+      margin-bottom: var(--space-4);
+  
+      .company-info {
+        max-width: 300px;
+  
+        h4 {
+          font-size: 1.25rem;
+          margin-bottom: var(--space-2);
+          color: white;
+        }
+  
+        p {
+          color: var(--neutral-300);
+          margin-bottom: var(--space-3);
+        }
+  
+        .social-links {
+          display: flex;
+          gap: var(--space-3);
+  
+          a {
+            color: var(--neutral-300);
+            font-size: 1.25rem;
+            transition: color 0.2s ease;
+  
+            &:hover {
+              color: white;
+            }
+          }
+        }
+      }
+  
+      .quick-links {
+        flex: 1;
+        
+        .links-row,
+        .contact-row {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          flex-wrap: wrap;
+          margin-bottom: var(--space-2);
+          
+          a, span {
+            color: var(--neutral-300);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-size: 0.875rem;
+  
+            &:hover {
+              color: white;
+            }
+          }
+          
+          .separator {
+            color: var(--neutral-600);
+          }
+        }
+      }
+    }
+    
+    .footer-bottom {
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--neutral-700);
+      text-align: center;
+      
+      p {
+        color: var(--neutral-400);
+        font-size: 0.75rem;
+      }
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes colorChange {
+    0% { color: #38bdf8; }
+    33% { color: #22d3ee; }
+    66% { color: #2dd4bf; }
+    100% { color: #38bdf8; }
+  }
+  
+  @keyframes jump {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
+  
+  @media (max-width: 1023px) {
+    .footer-content {
+      flex-direction: column;
+      gap: var(--space-4) !important;
+      text-align: center;
+  
+      .company-info {
+        margin: 0 auto;
+        
+        .social-links {
+          justify-content: center;
+        }
+      }
+  
+      .quick-links {
+        width: 100%;
+        
+        .links-row,
+        .contact-row {
+          justify-content: center;
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .top-section {
+      height: auto;
+      min-height: 360px;
+      padding: var(--space-3);
+      
+      .hero-content {
+        h1 {
+          font-size: 1.75rem;
+        }
+        
+        .subtitle {
+          font-size: 1rem;
+        }
+        
+        .description {
+          font-size: 0.813rem;
+        }
+      }
+    }
+    
+    .form-section {
+      margin: -80px var(--space-3) var(--space-3);
+      padding: 0;
+    }
+    
+    .form-card {
+      padding: var(--space-3);
+    }
+  }
+  
+  @media (max-width: 374px) {
+    .top-section {
+      min-height: 320px;
+      
+      .hero-content {
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+    }
+    
+    .form-card {
+      padding: var(--space-2);
+    }
+  }

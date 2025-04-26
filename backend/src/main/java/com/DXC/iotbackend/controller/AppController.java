@@ -11,14 +11,18 @@ import com.DXC.iotbackend.util.InputSanitizer;
 import com.DXC.iotbackend.util.JwtUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -73,7 +77,8 @@ public class AppController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest,
+                                   HttpServletResponse response) {
         String email = InputSanitizer.sanitize(loginRequest.getEmail());
         String password = InputSanitizer.sanitize(loginRequest.getPassword());
 
@@ -84,8 +89,23 @@ public class AppController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
+        // 1. Generate JWT Token
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
-        return ResponseEntity.ok(Map.of("token", token));
+
+        // 2. Create Secure Cookie
+        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true) // prevent JavaScript access
+                .secure(true)   // send cookie only on HTTPS (good practice)
+                .path("/")      // cookie accessible across all endpoints
+                .sameSite("Strict") // CSRF protection
+                .maxAge(Duration.ofHours(1)) // 1 hour expiration
+                .build();
+
+        // 3. Add cookie to response header
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        // 4. Return a simple success message
+        return ResponseEntity.ok("Logged in successfully!");
     }
 
     @GetMapping("/user")
@@ -103,28 +123,21 @@ public class AppController {
 //    }
 
     @PutMapping("/user/password")
-    public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request,
+    public ResponseEntity<String> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
                                                  Authentication authentication) {
-        // 1. Extract authenticated username from JWT token
-        String username = authentication.getName(); // because you set it in the JWT
+        String result = authService.updatePassword(request, authentication);
 
-        // 2. Find user from database
-        Optional<UserEntity> userOptional = userRepository.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            UserEntity user = userOptional.get();
-
-            // 3. Update password
-            String hashedPassword = passwordEncoder.encode(request.getNewPassword());
-            user.setPassword(hashedPassword);
-
-            userRepository.save(user);
-
-            return ResponseEntity.ok("Password updated successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        if (result.equals("Password updated successfully.")) {
+            return ResponseEntity.ok(result);
+        } else if (result.equals("Old password is incorrect.")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+        } else if (result.equals ("New password must be different from the old password." ))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         }
     }
+
 
 
 }

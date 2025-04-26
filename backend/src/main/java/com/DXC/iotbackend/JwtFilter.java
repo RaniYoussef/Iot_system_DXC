@@ -82,3 +82,9 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
+
+
+//Invoke-WebRequest -Uri "http://localhost:8080/api/user" `
+//        -Headers @{ Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmYmRmZHNzIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NDU2NDMyODIsImV4cCI6MTc0NTY0Njg4Mn0.HT77eeUogaV5YHvLBd8j57EZlyqv8M-TobPI2F4XdM3_AyGpo4ICqlZaOiFXwVqcU5HPGAx_Xv0DrxjK2bTvYg" } `
+//        -Method GET -UseBasicParsing

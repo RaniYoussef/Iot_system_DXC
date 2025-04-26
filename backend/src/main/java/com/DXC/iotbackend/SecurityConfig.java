@@ -53,8 +53,6 @@ public class SecurityConfig {
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class) // Rate limiting first
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //JWT authentication
                 .build();
-
-
     }
 
     @Bean

@@ -1,6 +1,9 @@
 package com.DXC.iotbackend;
 
 
+import com.DXC.iotbackend.JwtFilter;
+import com.DXC.iotbackend.RateLimitingFilter;
+import com.DXC.iotbackend.UserDetailsImpl;
 import com.DXC.iotbackend.model.UserEntity;
 import com.DXC.iotbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +44,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/register").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/api/login", "/api/register").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().denyAll() // default deny
                         //.anyRequest().authenticated()
                 )
@@ -53,7 +56,6 @@ public class SecurityConfig {
 
 
     }
-
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
@@ -81,5 +83,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-}
 
+}

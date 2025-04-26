@@ -10,6 +10,9 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "token_issued_at")
+    private Long tokenIssuedAt; // store as epoch milliseconds
+
     private String username;
     private String password;
     private String email;
@@ -30,10 +33,20 @@ public class UserEntity {
         this.firstName = firstName;
         this.lastName = lastName;
 
+
     }
 
     // Getters & Setters
     public Long getId() { return id; }
+
+
+    public Long getTokenIssuedAt() {
+        return tokenIssuedAt;
+    }
+
+    public void setTokenIssuedAt(Long tokenIssuedAt) {
+        this.tokenIssuedAt = tokenIssuedAt;
+    }
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }

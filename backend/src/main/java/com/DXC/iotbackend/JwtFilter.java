@@ -1,14 +1,16 @@
 package com.DXC.iotbackend;
 
+import com.DXC.iotbackend.model.UserEntity;
+import com.DXC.iotbackend.repository.UserRepository;
 import com.DXC.iotbackend.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,9 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -26,65 +27,85 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("🔎 Incoming Headers:");
-//        Collections.list(request.getHeaderNames()).forEach(h ->
-//                System.out.println("→ " + h + ": " + request.getHeader(h))
-//        );
 
-
+        String token = null;
         String authHeader = request.getHeader("Authorization");
-        System.out.println(" Authorization header: " + authHeader);
-        System.out.println(" JwtFilter triggered for URI: " + request.getRequestURI());
 
+        // 1. Try Authorization Header first
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            System.out.println("🔑 JWT token: " + token);
+            token = authHeader.substring(7);
+        }
 
+        // 2. If no header, try Cookie
+        if (token == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("jwt".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 3. If we have a token, validate it
+        if (token != null) {
             try {
                 String username = jwtUtil.extractUsername(token);
-                String Role = jwtUtil.extractRole(token);
-                System.out.println(" Username from token: " + username);
-                System.out.println(" Roles from token: " + Role);
+
+//                // fetch user
+//                UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+//
+//                // extract JWT issue time
+//                Date tokenIssuedAt = jwtUtil.extractIssuedAt(token);
+//
+//                // Compare
+//                if (user.getTokenIssuedAt() != null && tokenIssuedAt.getTime() < user.getTokenIssuedAt()) {
+//                    System.out.println("Token is too old. User changed password after token was issued.");
+//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                    response.getWriter().write("Session expired. Please login again.");
+//                    return;
+//                }
+
+
+                String role = jwtUtil.extractRole(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + Role));
-
-
-                    UserDetailsImpl userDetails = new UserDetailsImpl(username, Role);
-
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-
+                            new UsernamePasswordAuthenticationToken(
+                                    new UserDetailsImpl(username, role),
+                                    null,
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                            );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                    System.out.println(" Authenticated user: " + username);
+                    System.out.println("✅ Authenticated user from token: " + username);
                 }
 
             } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token expired");
-                System.out.println(" Token expired");
                 return;
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid token");
-                System.out.println(" Invalid token: " + e.getMessage());
                 return;
             }
         }
 
+        // 4. Continue the filter chain
         filterChain.doFilter(request, response);
     }
 }
 
 
-
-//Invoke-WebRequest -Uri "http://localhost:8080/api/user" `
-//        -Headers @{ Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmYmRmZHNzIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NDU2NDMyODIsImV4cCI6MTc0NTY0Njg4Mn0.HT77eeUogaV5YHvLBd8j57EZlyqv8M-TobPI2F4XdM3_AyGpo4ICqlZaOiFXwVqcU5HPGAx_Xv0DrxjK2bTvYg" } `
-//        -Method GET -UseBasicParsing

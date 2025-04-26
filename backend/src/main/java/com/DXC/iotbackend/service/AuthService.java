@@ -47,6 +47,7 @@ public class AuthService {
                 sanitizedLastName
         );
 
+        //entity.setTokenIssuedAt(System.currentTimeMillis());
         userRepository.save(entity);
 
 
@@ -69,9 +70,12 @@ public class AuthService {
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
 
-            // Optional: Verify old password (if you want double security)
+            // Verify old password for double security
             if (!encoder.matches(request.getOldPassword(), user.getPassword())) {
                 return "Old password is incorrect.";
+            }
+            if (encoder.matches(request.getNewPassword(), user.getPassword())) {
+                return "New password must be different from the old password.";
             }
 
             String hashedPassword = encoder.encode(request.getNewPassword());

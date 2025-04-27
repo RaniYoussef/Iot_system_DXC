@@ -7,11 +7,13 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import { AuthService } from '../../services/auth.service'; // Import AuthService
+import { HttpClientModule } from '@angular/common/http'; // Needed for HTTP requests
 
 @Component({
   selector: 'app-sign-in-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './sign-in-form.component.html',
   styleUrls: ['./sign-in-form.component.scss']
 })
@@ -22,7 +24,7 @@ export class SignInFormComponent {
   showForgotPasswordForm = false;
   resetMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -50,14 +52,22 @@ export class SignInFormComponent {
     this.forgotPasswordForm.reset();
   }
 
-  // Submit sign-in form
+  // Submit sign-in form with backend call
   onSubmit(): void {
     if (this.signInForm.valid) {
       this.isSubmitting = true;
-      setTimeout(() => {
-        console.log('Sign in with:', this.signInForm.value);
-        this.isSubmitting = false;
-      }, 1000);
+      const formData = this.signInForm.value;
+      this.authService.signIn(formData).subscribe(
+        response => {
+          console.log('Sign in successful:', response);
+          this.isSubmitting = false;
+          // Redirect or token storage can be added here
+        },
+        error => {
+          console.error('Sign in failed:', error);
+          this.isSubmitting = false;
+        }
+      );
     } else {
       this.signInForm.markAllAsTouched();
     }
@@ -82,6 +92,6 @@ export class SignInFormComponent {
   // Optional: Google auth stub
   signInWithGoogle(): void {
     console.log('Google sign-in clicked');
-    // Integrate real provider if needed
+    // You can integrate Firebase or OAuth here
   }
 }

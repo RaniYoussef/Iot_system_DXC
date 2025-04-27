@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { User } from '../../interfaces/user.interface';
+import { AuthService } from '../../services/auth.service'; // Import AuthService
+import { HttpClientModule } from '@angular/common/http'; // Needed for HTTP requests
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule]
 })
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
@@ -16,8 +17,9 @@ export class SignupComponent implements OnInit {
   passwordMeetsLength = false;
   passwordHasLowerAndUpper = false;
   passwordHasNumberAndSymbol = false;
-  
-  constructor(private fb: FormBuilder) {}
+  isSubmitting = false; // Track form submission
+
+  constructor(private fb: FormBuilder, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -65,9 +67,30 @@ export class SignupComponent implements OnInit {
 
   onSubmit(): void {
     if (this.signupForm.valid) {
-      const user: User = this.signupForm.value;
-      console.log('User submitted:', user);
-      // Call backend service here
+      this.isSubmitting = true;
+
+      const formValues = this.signupForm.value;
+
+      const payload = {
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        email: formValues.email,
+        password: formValues.password
+      };      
+      this.authService.signUp(payload).subscribe(
+        response => {
+          console.log('Sign-up successful:', response);
+          alert('Sign-up successful! Please sign in.'); // Added alert
+          this.isSubmitting = false;
+          window.location.href = '/sign-in'; // Redirect to sign-in
+        },
+        error => {
+          console.error('Sign-up failed:', error);
+          alert('Sign-up failed! Please try again.'); // Added alert
+          this.isSubmitting = false;
+        }
+      );
+
     } else {
       this.markFormGroupTouched(this.signupForm);
     }

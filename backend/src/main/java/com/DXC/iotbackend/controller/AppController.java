@@ -5,6 +5,7 @@ import com.DXC.iotbackend.UserDto;
 import com.DXC.iotbackend.model.UserEntity;
 import com.DXC.iotbackend.payload.LoginRequest;
 import com.DXC.iotbackend.payload.UpdatePasswordRequest;
+import com.DXC.iotbackend.payload.UserProfileResponse;
 import com.DXC.iotbackend.repository.UserRepository;
 import com.DXC.iotbackend.service.AuthService;
 import com.DXC.iotbackend.util.InputSanitizer;
@@ -24,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -59,21 +58,10 @@ public class AppController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody JsonNode jsonNode) {
-        Set<String> fields = Set.of("username", "firstName", "lastName", "email", "password");
-        if (!validateJsonFields(jsonNode, fields)) {
-            return ResponseEntity.badRequest().body("Invalid or unexpected fields in request");
-        }
-
-        UserDto sanitizedUser = objectMapper.convertValue(jsonNode, UserDto.class);
-        sanitizedUser.setUsername(InputSanitizer.sanitize(sanitizedUser.getUsername()));
-        sanitizedUser.setFirstName(InputSanitizer.sanitize(sanitizedUser.getFirstName()));
-        sanitizedUser.setLastName(InputSanitizer.sanitize(sanitizedUser.getLastName()));
-        sanitizedUser.setEmail(InputSanitizer.sanitize(sanitizedUser.getEmail()));
-        sanitizedUser.setPassword(InputSanitizer.sanitize(sanitizedUser.getPassword()));
-
-        authService.registerUser(sanitizedUser);
+    public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
+        authService.registerUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+
     }
 
     @PostMapping("/login")
@@ -110,7 +98,21 @@ public class AppController {
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserProfile(Authentication auth) {
-        return ResponseEntity.ok("Welcome, " + auth.getName());
+//        userRepository.findByUsername(auth.getName());
+//        return ResponseEntity.ok("Welcome, " + auth.getName());
+
+        return userRepository.findByUsername(auth.getName())
+                .map(user -> {
+                    UserProfileResponse profile = new UserProfileResponse(
+                            user.getUsername(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getEmail()
+                    );
+                    return ResponseEntity.ok(profile);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+
     }
 
 //    @PutMapping("/user/password")

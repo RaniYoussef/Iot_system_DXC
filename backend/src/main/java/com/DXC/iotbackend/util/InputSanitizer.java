@@ -22,8 +22,8 @@ public class InputSanitizer {
         // Remove emojis (by excluding surrogate pairs and certain Unicode blocks)
         sanitized = sanitized.replaceAll("[\\p{So}\\p{C}]", "");
 
-        // Whitelist approach: allow only alphanumerics and safe punctuation
-        sanitized = sanitized.replaceAll("[^a-zA-Z0-9@._\\-\\s]", "");
+//        // Whitelist approach: allow only alphanumerics and safe punctuation
+//        sanitized = sanitized.replaceAll("[^a-zA-Z0-9@._\\-\\s]", "");
 
         return sanitized;
     }

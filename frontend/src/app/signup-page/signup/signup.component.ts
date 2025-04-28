@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service'; // Import AuthService
-import { HttpClientModule } from '@angular/common/http'; // Needed for HTTP requests
+import { RouterModule } from '@angular/router'; // ✅ Added for routerLink support
+import { AuthService } from '../../services/auth.service'; 
+import { HttpClientModule } from '@angular/common/http'; 
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule]
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    HttpClientModule, 
+    RouterModule // ✅ Required for routerLink to work
+  ]
 })
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
@@ -17,7 +23,7 @@ export class SignupComponent implements OnInit {
   passwordMeetsLength = false;
   passwordHasLowerAndUpper = false;
   passwordHasNumberAndSymbol = false;
-  isSubmitting = false; // Track form submission
+  isSubmitting = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService) {}
 
@@ -28,22 +34,10 @@ export class SignupComponent implements OnInit {
 
   initForm(): void {
     this.signupForm = this.fb.group({
-      firstName: ['', [
-        Validators.required,
-        Validators.pattern(/^[A-Za-z]+$/)
-      ]],
-      lastName: ['', [
-        Validators.required,
-        Validators.pattern(/^[A-Za-z]+$/)
-      ]],
-      phoneNumber: ['', [
-        Validators.required, 
-        Validators.pattern('^[0-9]{10,15}$')
-      ]],
-      email: ['', [
-        Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-      ]],
+      firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
+      lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]],
+      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       password: ['', [
         Validators.required, 
         Validators.minLength(8),
@@ -77,16 +71,17 @@ export class SignupComponent implements OnInit {
         email: formValues.email,
         password: formValues.password
       };      
+
       this.authService.signUp(payload).subscribe(
         response => {
           console.log('Sign-up successful:', response);
-          alert('Sign-up successful! Please sign in.'); // Added alert
+          alert('Sign-up successful! Please sign in.');
           this.isSubmitting = false;
-          window.location.href = '/sign-in'; // Redirect to sign-in
+          window.location.href = '/sign-in'; // Redirect after sign-up
         },
         error => {
           console.error('Sign-up failed:', error);
-          alert('Sign-up failed! Please try again.'); // Added alert
+          alert('Sign-up failed! Please try again.');
           this.isSubmitting = false;
         }
       );

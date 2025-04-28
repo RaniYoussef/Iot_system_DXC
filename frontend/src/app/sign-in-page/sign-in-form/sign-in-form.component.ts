@@ -9,11 +9,12 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
 import { HttpClientModule } from '@angular/common/http'; // Needed for HTTP requests
+import { RouterModule, Router } from '@angular/router'; // ✅ Import RouterModule & Router
 
 @Component({
   selector: 'app-sign-in-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterModule], // ✅ Added RouterModule
   templateUrl: './sign-in-form.component.html',
   styleUrls: ['./sign-in-form.component.scss']
 })
@@ -24,7 +25,7 @@ export class SignInFormComponent {
   showForgotPasswordForm = false;
   resetMessage = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { // ✅ Inject Router
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],

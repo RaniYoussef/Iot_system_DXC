@@ -1,0 +1,99 @@
+:host {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .profile-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: var(--background-white);
+  }
+  
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .last-updated {
+    color: var(--text-tertiary);
+    font-size: 12px;
+  }
+  
+  .profile-content {
+    flex: 1;
+    padding: var(--spacing-md);
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+  }
+  
+  .profile-intro {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .profile-intro h2 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .highlight {
+    color: var(--primary-color);
+  }
+  
+  .intro-text {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+  }
+  
+  .next-btn {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 13px;
+  }
+  
+  .next-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .next-btn .material-icons {
+    margin-left: var(--spacing-xs);
+    font-size: 16px;
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-header {
+      padding: var(--spacing-sm);
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .profile-content {
+      padding: var(--spacing-sm);
+    }
+  
+    .last-updated {
+      margin-top: var(--spacing-xs);
+    }
+  }
+  

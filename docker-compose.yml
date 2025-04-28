@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8
+    container_name: iot_system_dxc_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: iot_system
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iot-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: iot_system_dxc_backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/iot_system
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - iot-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: iot_system_dxc_frontend
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - iot-net
+
+volumes:
+  mysql_data:
+
+networks:
+  iot-net:
+    driver: bridge

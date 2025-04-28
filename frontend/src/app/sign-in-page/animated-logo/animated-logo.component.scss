@@ -1,0 +1,75 @@
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  
+    .company-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+  }
+  
+  .logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neutral-50);
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+  
+    .iot-text {
+      animation: colorChange 8s infinite;
+      font-weight: 800;
+    }
+  
+    .jumping-e {
+      display: inline-block;
+      animation: jump 2s ease-in-out infinite;
+      transform-origin: bottom;
+    }
+  }
+  
+  .tagline {
+    font-size: 1.125rem;
+    color: var(--neutral-100);
+    opacity: 0.9;
+    margin-bottom: var(--space-4);
+    z-index: 3;
+  }
+  
+  @keyframes colorChange {
+    0% { color: #38bdf8; }
+    33% { color: #22d3ee; }
+    66% { color: #2dd4bf; }
+    100% { color: #38bdf8; }
+  }
+  
+  @keyframes jump {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+  }
+  
+  @media (max-width: 767px) {
+    .logo {
+      font-size: 1.75rem;
+    }
+    
+    .tagline {
+      font-size: 0.875rem;
+    }
+  }
+  
+  @media (max-width: 374px) {
+    .logo {
+      font-size: 1.5rem;
+    }
+  }

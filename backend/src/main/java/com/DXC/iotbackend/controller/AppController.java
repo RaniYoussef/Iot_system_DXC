@@ -23,9 +23,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 import java.time.Duration;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
+
+//import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -57,11 +62,18 @@ public class AppController {
         return true;
     }
 
+//    @PostMapping("/register")
+//    public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
+//        authService.registerUser(userDto);
+//        return ResponseEntity
+//                .status(HttpStatus.CREATED)
+//                .body(Map.of("message", "User registered successfully"));
+//    }
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
-        authService.registerUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-
+        return authService.registerUser(userDto);
     }
 
     @PostMapping("/login")
@@ -70,12 +82,27 @@ public class AppController {
         String email = InputSanitizer.sanitize(loginRequest.getEmail());
         String password = InputSanitizer.sanitize(loginRequest.getPassword());
 
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty() || !passwordEncoder.matches(password, userOpt.get().getPassword())) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid credentials"));
         }
+
+        UserEntity user = userOpt.get();
+
+
+
+//        UserEntity user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        if (!passwordEncoder.matches(password, user.getPassword())) {
+//            return ResponseEntity
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of("error", "Invalid credentials"));
+//        }
 
         // 1. Generate JWT Token
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
@@ -93,7 +120,7 @@ public class AppController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // 4. Return a simple success message
-        return ResponseEntity.ok("Logged in successfully!");
+        return ResponseEntity.ok(Map.of("message", "Logged in successfully!"));
     }
 
     @GetMapping("/user")

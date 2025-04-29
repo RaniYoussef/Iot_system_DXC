@@ -1,0 +1,199 @@
+.sidebar {
+    width: 280px;
+    height: 100%;
+    background-color: var(--primary-light);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .logo-container {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .logo {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .tagline {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    margin-right: var(--spacing-md);
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  .role, .location {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  
+  .navigation {
+    margin-bottom: auto;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-primary);
+    transition: background-color var(--transition-fast);
+  }
+  
+  .nav-item:hover {
+    background-color: rgba(66, 133, 244, 0.1);
+  }
+  
+  .nav-item.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .nav-item .material-icons {
+    margin-right: var(--spacing-sm);
+    font-size: 20px;
+  }
+  
+  .profile-completion {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .completion-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+    font-size: 13px;
+  }
+  
+  .progress-bar {
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+    transition: width var(--transition-normal);
+  }
+  
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+  }
+  
+  .logout-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--error-color);
+  }
+  
+  .logout-btn .material-icons {
+    margin-right: var(--spacing-sm);
+    font-size: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: var(--spacing-sm);
+    }
+  
+    .logo-container {
+      width: 50%;
+      margin-bottom: var(--spacing-sm);
+      border-bottom: none;
+    }
+  
+    .user-profile {
+      width: 50%;
+      margin-bottom: var(--spacing-sm);
+    }
+  
+    .navigation {
+      width: 100%;
+      display: flex;
+      margin-bottom: var(--spacing-sm);
+    }
+  
+    .nav-item {
+      flex: 1;
+      justify-content: center;
+      margin-right: var(--spacing-xs);
+      padding: var(--spacing-xs);
+    }
+  
+    .nav-item .material-icons {
+      margin-right: 0;
+    }
+  
+    .nav-item span:not(.material-icons) {
+      display: none;
+    }
+  
+    .profile-completion {
+      display: none;
+    }
+  
+    .logout-btn {
+      padding: var(--spacing-xs);
+      position: absolute;
+      top: var(--spacing-sm);
+      right: var(--spacing-sm);
+    }
+  
+    .logout-btn span:not(.material-icons) {
+      display: none;
+    }
+  }
+  

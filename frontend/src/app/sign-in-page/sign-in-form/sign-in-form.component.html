@@ -1,0 +1,111 @@
+<div class="sign-in-form-container">
+  <div class="form-header">
+    <img src="assets\images\IoTelligenceLogo.png" alt="IoTelligence" class="header-logo" />
+    <h2>Welcome to IoTelligence</h2>
+    <p *ngIf="!showForgotPasswordForm">Sign in to your account</p>
+    <p *ngIf="showForgotPasswordForm">Reset your password</p>
+  </div>
+
+  <!-- Sign In Form -->
+  <div *ngIf="!showForgotPasswordForm">
+    <div class="social-auth">
+      <button type="button" class="social-button google" (click)="signInWithGoogle()">
+        <img src="https://www.google.com/favicon.ico" alt="Google" class="social-icon" />
+        <span>Sign in with Google</span>
+      </button>
+    </div>
+
+    <div class="divider">
+      <span>or continue with email</span>
+    </div>
+
+    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [ngClass]="{ 'error': email?.invalid && email?.touched }"
+        />
+        <div *ngIf="email?.invalid && email?.touched" class="error-message">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['pattern']">Please enter a valid email format</span> <!-- ✅ Updated here -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          [ngClass]="{ 'error': password?.invalid && password?.touched }"
+        />
+        <div *ngIf="password?.invalid && password?.touched" class="error-message">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <div class="remember-me">
+          <input type="checkbox" id="rememberMe" formControlName="rememberMe" />
+          <label for="rememberMe">Remember me</label>
+        </div>
+        <button type="button" class="forgot-password" (click)="toggleForgotPassword()">Forgot password?</button>
+      </div>
+
+      <div class="reset-message" *ngIf="resetMessage">{{ resetMessage }}</div>
+
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="isSubmitting || signInForm.invalid"
+      >
+        Sign In
+      </button>
+
+      <!-- Updated Sign up Redirect -->
+      <div class="signup-prompt">
+        <span>Don't have an account?</span>
+        <a routerLink="/sign-up">Sign up</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Forgot Password Form -->
+  <div *ngIf="showForgotPasswordForm" class="forgot-password-form">
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="sendResetLink()" class="form">
+      <div class="form-group">
+        <label for="forgotEmail">Enter your email to reset password</label>
+        <input
+          type="email"
+          id="forgotEmail"
+          formControlName="email"
+          placeholder="Enter your email"
+          [ngClass]="{ 'error': forgotEmail?.invalid && forgotEmail?.touched }"
+        />
+        <div *ngIf="forgotEmail?.invalid && forgotEmail?.touched" class="error-message">
+          <span *ngIf="forgotEmail?.errors?.['required']">Email is required</span>
+          <span *ngIf="forgotEmail?.errors?.['pattern']">Please enter a valid email format</span> <!-- ✅ Updated here -->
+        </div>
+      </div>
+
+      <div class="reset-message success-message" *ngIf="resetMessage">
+        {{ resetMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-button" [disabled]="forgotPasswordForm.invalid">
+          Send Reset Link
+        </button>
+        <button type="button" class="back-button" (click)="toggleForgotPassword()">
+          Back to Sign In
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<main class="profile-container">
+    <header class="profile-header">
+      <h1>Profile Settings</h1>
+      <span class="last-updated">Last updated: {{ user.lastUpdated }}</span>
+    </header>
+  
+    <div class="profile-content">
+      <div class="profile-intro">
+        <h2>Complete your <span class="highlight">Profile</span></h2>
+        <p class="intro-text">Let's get you started with IoTelligence.</p>
+      </div>
+  
+      <app-profile-form 
+        [user]="user"
+        (profileUpdate)="onProfileUpdate()"
+      ></app-profile-form>
+  
+      <app-password-form
+        (passwordVerified)="onPasswordVerified($event)"
+      ></app-password-form>
+  
+      <div class="action-buttons">
+        <button 
+          class="btn-primary next-btn"
+          [disabled]="!canProceed()"
+          (click)="onNext()"
+        >
+          Next <span class="material-icons">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  
+    <app-footer></app-footer>
+  </main>
+  

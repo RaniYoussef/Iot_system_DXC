@@ -5,12 +5,15 @@ import com.DXC.iotbackend.model.UserEntity;
 import com.DXC.iotbackend.payload.UpdatePasswordRequest;
 import com.DXC.iotbackend.util.InputSanitizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.DXC.iotbackend.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -22,19 +25,33 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
-    public void registerUser(UserDto user) {
+    public ResponseEntity<?> registerUser(UserDto user) {
         String sanitizedUsername = InputSanitizer.sanitize(user.getUsername());
         String sanitizedEmail = InputSanitizer.sanitize(user.getEmail());
         String sanitizedPassword = InputSanitizer.sanitize(user.getPassword());
         String sanitizedFirstName = InputSanitizer.sanitize(user.getFirstName());
         String sanitizedLastName = InputSanitizer.sanitize(user.getLastName());
 
+
         if (userRepository.existsByEmail(sanitizedEmail)) {
-            throw new RuntimeException("Email already registered");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "Email already registered"));
         }
+
         if (userRepository.existsByUsername(sanitizedUsername)) {
-            throw new RuntimeException("Username already registered");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "Username already registered"));
         }
+
+
+//        if (userRepository.existsByEmail(sanitizedEmail)) {
+//            throw new RuntimeException("Email already registered");
+//        }
+//        if (userRepository.existsByUsername(sanitizedUsername)) {
+//            throw new RuntimeException("Username already registered");
+//        }
 
         String hashedPassword = encoder.encode(user.getPassword());
 
@@ -55,6 +72,11 @@ public class AuthService {
         System.out.println("Username: " + sanitizedUsername);
         System.out.println("Email: " + user.getEmail());
         System.out.println("Hashed Password: " + sanitizedEmail);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("message", "User registered successfully"));
+
     }
 
 //    public User getUserProfile(String email) {

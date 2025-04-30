@@ -22,6 +22,10 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -79,15 +83,34 @@ public class SecurityConfig {
 
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*");
-        config.addAllowedHeader("*"); // allow all headers including Authorization
-        config.addAllowedMethod("*"); // GET, POST, etc.
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .exposedHeaders("Set-Cookie"); // <- Required
+            }
+        };
     }
+
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowedOrigins(List.of("http://localhost:4200")); // exact origin
+//        config.setAllowCredentials(true); // allow cookies
+//        config.addAllowedHeader("*"); // allow all headers including Authorization
+//        config.addAllowedMethod("*"); // GET, POST, etc.
+//        config.setAllowCredentials(true); // 👈 MUST be true to allow cookies
+//        config.setExposedHeaders(List.of("Set-Cookie")); // Optional, for visibility
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
 
 }

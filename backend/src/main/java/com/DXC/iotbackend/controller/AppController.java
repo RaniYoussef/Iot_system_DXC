@@ -110,9 +110,10 @@ public class AppController {
         // 2. Create Secure Cookie
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true) // prevent JavaScript access
-                .secure(true)   // send cookie only on HTTPS (good practice)
+                .secure(false)   // send cookie only on HTTPS (good practice) -- but since on local host false
                 .path("/")      // cookie accessible across all endpoints
-                .sameSite("Strict") // CSRF protection
+                //.sameSite("Strict") // CSRF protection
+                .sameSite("Lax") //protect against CSRF in Put,Delete and Post -- not as strong as Strict -- but needs to be used since we use different ports for backend and frontend -- None since it doesn't work using either strict or lax
                 .maxAge(Duration.ofHours(1)) // 1 hour expiration
                 .build();
 

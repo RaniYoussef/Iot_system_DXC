@@ -9,6 +9,8 @@ export class AuthService {
   // Updated URLs
   private signUpUrl = 'http://localhost:8080/api/register'; // Sign Up Endpoint
   private signInUrl = 'http://localhost:8080/api/login'; // Sign In Endpoint
+  private profileUrl = 'http://localhost:8080/api/user';
+
 
   constructor(private http: HttpClient) {}
 
@@ -25,6 +27,11 @@ export class AuthService {
   
 
   signIn(data: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.signInUrl, data); // Added <any> for type clarity
+    return this.http.post<any>(this.signInUrl, data, { withCredentials: true });
   }
+
+  getProfile(): Observable<any> {
+    return this.http.get<any>(this.profileUrl, { withCredentials: true });
+  }
+
 }

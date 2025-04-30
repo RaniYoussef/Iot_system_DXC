@@ -14,6 +14,55 @@ export class ProfileFormComponent {
   @Input() user!: User;
   @Output() profileUpdate = new EventEmitter<void>();
 
+  // 👇 NEW: Holds the base64 preview of the selected image
+  profilePhotoUrl: string | null = null;
+
+  // 👇 NEW: Controls if form fields are editable
+  isEditable = false;
+
+  // 👇 NEW: Toggles editable mode
+  toggleEdit(): void {
+    this.isEditable = !this.isEditable;
+  }
+
+  // 👇 NEW: Used to trigger the hidden file input
+  triggerPhotoInput(event: Event): void {
+    event.preventDefault();
+    const input = document.getElementById('photoInput') as HTMLInputElement;
+    if (input) {
+      input.click();
+    }
+  }
+
+  // 👇 NEW: Handles photo removal and resets input
+  removePhoto(): void {
+    this.profilePhotoUrl = null;
+
+    const fileInput = document.getElementById('photoInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ''; // Clear input so same file can be selected again
+    }
+
+    this.onInputChange(); // Optionally update profile status
+  }
+
+  // 👇 NEW: Handles image selection and sets preview
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profilePhotoUrl = reader.result as string;
+        this.onInputChange(); // Optional: triggers update
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Reset input to allow same file selection next time
+    input.value = '';
+  }
+
   getUserInitials(): string {
     return this.user?.firstName.charAt(0) + this.user?.lastName.charAt(0);
   }

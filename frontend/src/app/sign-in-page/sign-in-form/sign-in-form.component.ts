@@ -10,6 +10,7 @@ import {
 import { AuthService } from '../../services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr'; // ✅ NEW
 
 @Component({
   selector: 'app-sign-in-form',
@@ -25,11 +26,16 @@ export class SignInFormComponent {
   showForgotPasswordForm = false;
   resetMessage = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService // ✅ NEW
+  ) {
     this.signInForm = this.fb.group({
       email: ['', [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) // STRONG email validation
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
@@ -38,7 +44,7 @@ export class SignInFormComponent {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) // STRONG forgot password email validation
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]]
     });
   }
@@ -69,16 +75,13 @@ export class SignInFormComponent {
       this.authService.signIn(formData).subscribe(
         response => {
           console.log('Sign in successful:', response);
-          alert('Sign-in successful!');
+          this.toastr.success('Signed in successfully!', 'Success'); // ✅ TOAST
           this.isSubmitting = false;
-
           this.router.navigate(['/profile']);
-
-
         },
         error => {
           console.error('Sign in failed:', error);
-          alert('Sign-in failed! Please try again.');
+          this.toastr.error('Sign-in failed. Please try again.', 'Error'); // ✅ TOAST
           this.isSubmitting = false;
         }
       );

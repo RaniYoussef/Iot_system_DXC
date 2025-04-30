@@ -111,7 +111,13 @@ export class SignupComponent implements OnInit {
         },
         error => {
           console.error('Sign-up failed:', error);
-          this.toastr.error('Sign-up failed! Please try again.', 'Error'); // ✅ TOAST
+          
+          if (error.status === 409 && error.error?.error) {
+            this.toastr.error(error.error.error, 'Sign-up failed'); // Shows backend error like "Email already registered"
+          } else {
+            this.toastr.error('Sign-up failed! Please try again.', 'Error');
+          }
+        
           this.isSubmitting = false;
         }
       );

@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr'; // ✅ Toast import
+import { AuthService } from '../../services/auth.service';
 import { User } from '../../model/user.model';
 
 @Component({
@@ -12,7 +15,24 @@ import { User } from '../../model/user.model';
 export class SidebarComponent {
   @Input() user!: User;
 
+  constructor(
+    private router: Router,
+    private authService: AuthService, // still here if you need it later
+    private toastr: ToastrService      // ✅ Injected toast service
+  ) {}
+
   getUserInitials(): string {
     return this.user?.firstName.charAt(0) + this.user?.lastName.charAt(0);
+  }
+
+  logout(): void {
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
+      localStorage.clear();
+      sessionStorage.clear();
+
+      this.toastr.success('Logged out successfully', 'Success'); // ✅ Toast message
+      this.router.navigate(['/sign-in']);
+    }
   }
 }

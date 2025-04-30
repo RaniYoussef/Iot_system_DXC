@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
+import { ToastrService } from 'ngx-toastr'; // ✅ NEW
 
 @Component({
   selector: 'app-signup',
@@ -37,7 +38,11 @@ export class SignupComponent implements OnInit {
   passwordHasNumberAndSymbol = false;
   isSubmitting = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private toastr: ToastrService, // ✅ NEW
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -64,7 +69,6 @@ export class SignupComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/\s/g, '');
 
-    // Limit the username to 10 characters
     if (input.value.length > 10) {
       input.value = input.value.slice(0, 10);
     }
@@ -96,18 +100,18 @@ export class SignupComponent implements OnInit {
         username: formValues.username,
         email: formValues.email,
         password: formValues.password
-      };      
+      };
 
       this.authService.signUp(payload).subscribe(
         response => {
           console.log('Sign-up successful:', response);
-          alert('Sign-up successful! Please sign in.');
+          this.toastr.success('Sign-up successful! Please sign in.', 'Success'); // ✅ TOAST
           this.isSubmitting = false;
-          window.location.href = '/sign-in'; 
+          window.location.href = '/sign-in';
         },
         error => {
           console.error('Sign-up failed:', error);
-          alert('Sign-up failed! Please try again.');
+          this.toastr.error('Sign-up failed! Please try again.', 'Error'); // ✅ TOAST
           this.isSubmitting = false;
         }
       );

@@ -2,6 +2,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PasswordState } from '../../model/user.model';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+//import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-password-form',
@@ -27,11 +32,30 @@ export class PasswordFormComponent {
   resetMethod: 'email' | 'phone' | null = null;
   otpValue = '';
 
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
+
   verifyPassword(): void {
-    if (this.passwordState.currentPassword === 'demo123') {
-      this.passwordState.isVerified = true;
-      this.passwordVerified.emit(true);
-    }
+    const payload = { password: this.passwordState.currentPassword };
+
+    this.http.post<{ valid: boolean }>(
+      //`${environment.apiBaseUrl}/verify-password`
+      "http://localhost:8080/api/user/verify-password" ,
+      payload,
+      { withCredentials: true }
+    ).pipe(
+      catchError((error) => {
+        this.toastr.error('Verification failed.');
+        return of({ valid: false });
+      })
+    ).subscribe(res => {
+      if (res.valid) {
+        this.passwordState.isVerified = true;
+        this.passwordVerified.emit(true);
+        this.toastr.success('Password verified successfully!');
+      } else {
+        this.toastr.error('Incorrect password.');
+      }
+    });
   }
 
   toggleCurrentPasswordVisibility(): void {
@@ -53,8 +77,29 @@ export class PasswordFormComponent {
 
   updatePassword(): void {
     if (this.canUpdatePassword()) {
-      console.log('Password updated successfully');
-      this.resetForm();
+      const payload = {
+        oldPassword: this.passwordState.currentPassword,
+        newPassword: this.passwordState.newPassword
+      };
+
+      this.http.put<{ success: boolean }>(
+        "http://localhost:8080/api/user/update-password",
+       // `${environment.apiBaseUrl}/update-password`,
+        payload,
+        { withCredentials: true }
+      ).pipe(
+        catchError((error) => {
+          this.toastr.error('Password update failed.');
+          return of({ success: false });
+        })
+      ).subscribe(res => {
+        if (res.success) {
+          this.toastr.success('Password updated successfully!');
+          this.resetForm();
+        } else {
+          this.toastr.error('Failed to update password.');
+        }
+      });
     }
   }
 

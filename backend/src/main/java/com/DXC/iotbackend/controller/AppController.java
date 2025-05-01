@@ -12,6 +12,7 @@ import com.DXC.iotbackend.util.InputSanitizer;
 import com.DXC.iotbackend.util.JwtUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -152,19 +155,43 @@ public class AppController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @PutMapping("/user/password")
-    public ResponseEntity<String> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
-                                                 Authentication authentication) {
-        String result = authService.updatePassword(request, authentication);
 
+    @PostMapping("user/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
+        String rawPassword = body.get("password");
+
+        // Extract username from JWT (already authenticated)
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return ResponseEntity.ok(Map.of("valid", true));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("valid", false, "message", "Incorrect password"));
+        }
+    }
+
+
+    @PutMapping("user/update-password")
+    public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
+                                                 Authentication authentication) {
+
+        System.out.println("Old: " + request.getOldPassword());
+        System.out.println("New: " + request.getNewPassword());
+        System.out.println("Auth User: " + authentication.getName());
+
+        String result = authService.updatePassword(request, authentication);
         if (result.equals("Password updated successfully.")) {
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(Map.of("success", true, "message", result));
         } else if (result.equals("Old password is incorrect.")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", result));
         } else if (result.equals ("New password must be different from the old password." ))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", result));
+
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "Unexpected error."));
         }
     }
 

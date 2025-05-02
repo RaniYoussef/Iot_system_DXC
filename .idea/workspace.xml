@@ -4,39 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="12b39c24-cdb7-4fb9-a131-74c2a2977582" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-build-push.sh" afterDir="false" />
+    <list default="true" id="94b8d743-adb2-43ea-977f-9d2fb40381b1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Iot_system_DXC.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Iot_system_DXC.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29-Apr-25_6_34_PM_[Changes]/shelved.patch" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29-Apr-25_6_34_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29-Apr-25_6_34_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29-Apr-25_6_34_PM__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/HELP.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/HELP.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/IotBackendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/IotBackendApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/IotSystemDxcApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/IotSystemDxcApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/RateLimitingFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/RateLimitingFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/RedisRateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/RedisRateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/UserDetailsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/UserDetailsImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/controller/AppController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/controller/AppController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/controller/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/controller/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/model/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/model/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/SignInRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/SignInRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/SignUpRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/SignUpRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/UpdatePasswordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/UpdatePasswordRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/UserProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/payload/UserProfileResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/InputSanitizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/InputSanitizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/DXC/iotbackend/util/JwtUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/dxc/iotbackend/UserRepositoryTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/dxc/iotbackend/EmmyyApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/dxc/iotbackend/EmmyyApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/dxc/iotbackend/UserRepositoryTests.java.bak" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/dxc/iotbackend/UserRepositoryTests.java.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/example/demo/DemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/example/demo/DemoApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/EmmyyApplication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/HelloWorldController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/SecurityConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/controller/AppController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/controller/GlobalExceptionHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/model/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/payload/SignInRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/payload/SignUpRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/payload/UpdatePasswordRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/repository/UserRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/emmy/emmyy/service/UserService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/emmyy-0.0.1-SNAPSHOT.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/surefire-reports/TEST-com.emmy.emmyy.EmmyyApplicationTests.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/surefire-reports/TEST-com.emmy.emmyy.UserRepositoryTests.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/surefire-reports/com.emmy.emmyy.EmmyyApplicationTests.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/surefire-reports/com.emmy.emmyy.UserRepositoryTests.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/com/emmy/emmyy/EmmyyApplicationTests.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/com/emmy/emmyy/UserRepositoryTests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-build-push.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-build-push.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

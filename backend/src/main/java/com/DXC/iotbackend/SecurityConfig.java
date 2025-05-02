@@ -31,6 +31,9 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final RateLimitingFilter rateLimitingFilter;
 
+
+
+
     @Autowired
     public SecurityConfig(JwtFilter jwtFilter, RateLimitingFilter rateLimitingFilter) {
         this.jwtFilter = jwtFilter;

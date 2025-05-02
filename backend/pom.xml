@@ -131,8 +131,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.DXC.iotbackend.IotSystemDxcApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 </project>

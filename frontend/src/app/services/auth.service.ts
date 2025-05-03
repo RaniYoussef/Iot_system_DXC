@@ -11,7 +11,6 @@ export class AuthService {
   private signInUrl = 'http://localhost:8080/api/login'; // Sign In Endpoint
   private profileUrl = 'http://localhost:8080/api/user';
 
-
   constructor(private http: HttpClient) {}
 
   // Accepts firstName and lastName separately
@@ -24,14 +23,13 @@ export class AuthService {
   }): Observable<any> {
     return this.http.post<any>(this.signUpUrl, data);
   }
-  
 
-  signIn(data: { email: string; password: string }): Observable<any> {
+  // ✅ Updated to support optional rememberMe flag
+  signIn(data: { email: string; password: string; rememberMe?: boolean }): Observable<any> {
     return this.http.post<any>(this.signInUrl, data, { withCredentials: true });
   }
 
   getProfile(): Observable<any> {
     return this.http.get<any>(this.profileUrl, { withCredentials: true });
   }
-
 }

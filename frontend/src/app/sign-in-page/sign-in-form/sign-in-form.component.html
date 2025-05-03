@@ -62,12 +62,17 @@
         <button type="button" class="forgot-password" (click)="toggleForgotPassword()">Forgot password?</button>
       </div>
 
+      <div *ngIf="signInForm.invalid && (signInForm.dirty || signInForm.touched)" class="form-hint">
+        Please fill in all required fields correctly to sign in.
+      </div>
+      
       <div class="reset-message" *ngIf="resetMessage">{{ resetMessage }}</div>
-
+      
       <button type="submit" class="submit-button" [disabled]="isSubmitting || signInForm.invalid">
-        Sign In
+        <span *ngIf="!isSubmitting">Sign In</span>
+        <span *ngIf="isSubmitting" class="spinner"></span>
       </button>
-
+      
       <div class="signup-prompt">
         <span>Don't have an account?</span>
         <a routerLink="/sign-up">Sign up</a>

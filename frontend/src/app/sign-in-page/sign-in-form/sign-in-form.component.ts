@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -11,14 +11,13 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
 
 const strongPasswordValidators = [
   Validators.required,
   Validators.minLength(8),
-  Validators.maxLength(8),
   Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/)
 ];
 
@@ -40,7 +39,7 @@ function matchPasswordsValidator(): ValidatorFn {
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule
-  ],
+  ],  
   templateUrl: './sign-in-form.component.html',
   styleUrls: ['./sign-in-form.component.scss']
 })
@@ -78,7 +77,6 @@ export class SignInFormComponent implements OnInit {
       ]]
     });
 
-    // ✅ Includes confirmPassword and validator
     this.resetPasswordForm = this.fb.group({
       newPassword: ['', strongPasswordValidators],
       confirmPassword: ['', Validators.required]
@@ -127,7 +125,12 @@ export class SignInFormComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    this.authService.signIn(this.signInForm.value).subscribe({
+    // ✅ Trim email and password before sending to backend
+    const { email, password } = this.signInForm.value;
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    this.authService.signIn({ email: trimmedEmail, password: trimmedPassword }).subscribe({
       next: () => {
         this.toastr.success('Signed in successfully!', 'Success');
         this.isSubmitting = false;
@@ -160,7 +163,6 @@ export class SignInFormComponent implements OnInit {
   onResetSubmit(): void {
     if (this.resetPasswordForm.invalid || !this.token) return;
 
-    // ✅ Additional check for password mismatch
     if (this.resetPasswordForm.errors?.['passwordMismatch']) {
       this.toastr.error('Passwords do not match.', 'Error');
       return;

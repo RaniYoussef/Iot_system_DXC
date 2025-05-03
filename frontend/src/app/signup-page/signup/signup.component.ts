@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr'; // ✅ NEW
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -41,7 +42,8 @@ export class SignupComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private toastr: ToastrService, // ✅ NEW
+    private toastr: ToastrService,
+    private router: Router // ✅ ADD THIS LINE
   ) {}
 
   ngOnInit(): void {
@@ -137,8 +139,22 @@ export class SignupComponent implements OnInit {
   }
 
   signupWithGoogle(): void {
-    console.log('Sign up with Google clicked');
+    this.isSubmitting = true;
+
+    this.authService.signInWithGoogle()
+      .then(response => {
+        this.toastr.success('Signed up successfully with Google!', 'Success');
+        console.log('Google signup response:', response);
+        this.isSubmitting = false;
+        this.router.navigate(['/dashboard']); // Redirect to dashboard or welcome page
+      })
+      .catch(error => {
+        console.error('Google Sign-Up failed:', error);
+        this.toastr.error('Google Sign-Up failed. Please try again.', 'Error');
+        this.isSubmitting = false;
+      });
   }
+
 
   getFieldError(fieldName: string): string {
     const control = this.signupForm.get(fieldName);

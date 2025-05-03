@@ -188,6 +188,18 @@ export class SignInFormComponent implements OnInit {
   }
 
   signInWithGoogle(): void {
-    console.log('Google sign-in clicked');
+    this.isSubmitting = true;
+    this.authService.signInWithGoogle()
+      .then(response => {
+        this.toastr.success('Signed in successfully with Google!', 'Success');
+        console.log('Google login response:', response);
+        this.isSubmitting = false;
+        // Optionally redirect: this.router.navigate(['/dashboard']);
+      })
+      .catch(error => {
+        console.error('Google Sign-In failed:', error);
+        this.toastr.error('Google Sign-In failed. Please try again.', 'Error');
+        this.isSubmitting = false;
+      });
   }
 }

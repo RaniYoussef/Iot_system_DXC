@@ -50,7 +50,7 @@
     color: var(--neutral-700);
     transition: all 0.2s ease;
     gap: var(--space-2);
-    
+
     &:hover {
       background: var(--neutral-50);
     }
@@ -66,7 +66,7 @@
   text-align: center;
   position: relative;
   margin: var(--space-4) 0;
-  
+
   &::before,
   &::after {
     content: '';
@@ -76,10 +76,15 @@
     height: 1px;
     background-color: var(--neutral-200);
   }
-  
-  &::before { left: 0; }
-  &::after { right: 0; }
-  
+
+  &::before {
+    left: 0;
+  }
+
+  &::after {
+    right: 0;
+  }
+
   span {
     background: white;
     padding: 0 var(--space-2);
@@ -95,7 +100,7 @@
 
   .form-group {
     margin-bottom: var(--space-4);
-    
+
     label {
       display: block;
       font-size: 0.875rem;
@@ -139,7 +144,7 @@
       align-items: center;
       gap: var(--space-2);
 
-      input[type="checkbox"] {
+      input[type='checkbox'] {
         width: 16px;
         height: 16px;
       }
@@ -223,4 +228,53 @@
 
 .forgot-password-form {
   margin-top: var(--space-4);
+}
+
+/* ✅ Explicit styling for reset password form */
+.reset-password-form {
+  margin-top: var(--space-4);
+
+  .form-group {
+    margin-bottom: var(--space-4);
+
+    &:not(:last-child) {
+      margin-bottom: var(--space-3); // spacing between new password and confirm password
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--neutral-700);
+      margin-bottom: var(--space-2);
+    }
+
+    input {
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--neutral-200);
+      border-radius: 8px;
+      font-size: 0.875rem;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 2px rgba(0, 144, 249, 0.1);
+      }
+
+      &.error {
+        border-color: var(--error-500);
+      }
+    }
+
+    .error-message {
+      margin-top: var(--space-1);
+      color: var(--error-500);
+      font-size: 0.75rem;
+    }
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: var(--space-3);
+  }
 }

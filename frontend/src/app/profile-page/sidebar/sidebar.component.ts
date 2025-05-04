@@ -28,11 +28,18 @@ export class SidebarComponent {
   logout(): void {
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
-      localStorage.clear();
-      sessionStorage.clear();
-
-      this.toastr.success('Logged out successfully', 'Success'); // ✅ Toast message
-      this.router.navigate(['/sign-in']);
+      this.authService.logout().subscribe({
+        next: () => {
+          localStorage.clear();
+          sessionStorage.clear();
+          this.toastr.success('Logged out successfully', 'Success');
+          this.router.navigate(['/sign-in']);
+        },
+        error: () => {
+          this.toastr.error('Logout failed. Please try again.', 'Error');
+        }
+      });
     }
   }
+  
 }

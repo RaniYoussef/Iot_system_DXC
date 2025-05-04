@@ -2,6 +2,8 @@ package com.DXC.iotbackend.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "userssss")
 public class UserEntity {
@@ -12,6 +14,14 @@ public class UserEntity {
 
     @Column(name = "token_issued_at")
     private Long tokenIssuedAt; // store as epoch milliseconds
+
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
 
     private String username;
     private String password;
@@ -38,6 +48,25 @@ public class UserEntity {
 
     // Getters & Setters
     public Long getId() { return id; }
+
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
 
 
     public Long getTokenIssuedAt() {

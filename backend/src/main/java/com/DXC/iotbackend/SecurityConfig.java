@@ -6,10 +6,13 @@ import com.DXC.iotbackend.RateLimitingFilter;
 import com.DXC.iotbackend.UserDetailsImpl;
 import com.DXC.iotbackend.model.UserEntity;
 import com.DXC.iotbackend.repository.UserRepository;
+import com.DXC.iotbackend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,6 +28,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+//import com.DXC.iotbackend.oauth2.CustomOAuth2UserService;
+import com.DXC.iotbackend.CustomOAuth2UserService;
+
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+
+import java.time.Duration;
 import java.util.List;
 
 @Configuration
@@ -42,30 +53,90 @@ public class SecurityConfig {
     }
 
 
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.headers(headers ->
-                headers.xssProtection(
-                        xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
-                ).contentSecurityPolicy(
-                        cps -> cps.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none';")
-                ));
-        System.out.println(" SecurityFilterChain setup completed");
-        return http
+        http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/login", "/api/register").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-                                .anyRequest().denyAll() // default deny
-                        //.anyRequest().authenticated()
+                        .requestMatchers("/api/**", "/oauth2/**", "/login/**","/logout").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class) // Rate limiting first
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //JWT authentication
-                .build();
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler((request, response, authentication) -> {
+                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+                            String email = oAuth2User.getAttribute("email");
+
+                            UserEntity user = userRepository.findByEmail(email).orElseThrow();
+
+                            String jwt = jwtUtil.generateToken(user.getUsername(), user.getRole());
+
+                            ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                                    .httpOnly(true)
+                                    .secure(false)
+                                    .path("/")
+                                    .sameSite("Lax")
+                                    .maxAge(Duration.ofHours(1))
+                                    .build();
+
+                            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                            response.sendRedirect("http://localhost:4200"); // adjust your frontend route
+                        })
+
+                );
+
+        http.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
+
+
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//
+//        http.headers(headers ->
+//                headers.xssProtection(
+//                        xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
+//                ).contentSecurityPolicy(
+//                        cps -> cps.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none';")
+//                ));
+//        System.out.println(" SecurityFilterChain setup completed");
+//        return http
+//                .csrf(csrf -> csrf.disable())
+//                .cors(cors -> {})
+//                .authorizeHttpRequests(auth -> auth
+//                                .requestMatchers(
+//                                        "/api/login",
+//                                        "/api/register",
+//                                        "/api/forgot-password",
+//                                        "/api/reset-password",
+//                                        "/oauth2/**",
+//                                        "/login/**"
+//                                ).permitAll()
+//                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+//                                .anyRequest().denyAll() // default deny
+//                        //.anyRequest().authenticated()
+//                )
+//                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class) // Rate limiting first
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //JWT authentication
+//                .build();
+//    }
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {

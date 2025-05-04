@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr'; // ✅ NEW
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -41,7 +42,8 @@ export class SignupComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private toastr: ToastrService, // ✅ NEW
+    private toastr: ToastrService,
+    private router: Router // ✅ ADD THIS LINE
   ) {}
 
   ngOnInit(): void {
@@ -137,8 +139,10 @@ export class SignupComponent implements OnInit {
   }
 
   signupWithGoogle(): void {
-    console.log('Sign up with Google clicked');
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+
   }
+
 
   getFieldError(fieldName: string): string {
     const control = this.signupForm.get(fieldName);

@@ -1,13 +1,14 @@
 <div class="sign-in-form-container">
   <div class="form-header">
-    <img src="assets\images\IoTelligenceLogo.png" alt="IoTelligence" class="header-logo" />
+    <img src="assets/images/IoTelligenceLogo.png" alt="IoTelligence" class="header-logo" />
     <h2>Welcome to IoTelligence</h2>
-    <p *ngIf="!showForgotPasswordForm">Sign in to your account</p>
+    <p *ngIf="!showForgotPasswordForm && !showResetPasswordForm">Sign in to your account</p>
     <p *ngIf="showForgotPasswordForm">Reset your password</p>
+    <p *ngIf="showResetPasswordForm">Set a new password</p>
   </div>
 
   <!-- Sign In Form -->
-  <div *ngIf="!showForgotPasswordForm">
+  <div *ngIf="!showForgotPasswordForm && !showResetPasswordForm">
     <div class="social-auth">
       <button type="button" class="social-button google" (click)="signInWithGoogle()">
         <img src="https://www.google.com/favicon.ico" alt="Google" class="social-icon" />
@@ -31,7 +32,7 @@
         />
         <div *ngIf="email?.invalid && email?.touched" class="error-message">
           <span *ngIf="email?.errors?.['required']">Email is required</span>
-          <span *ngIf="email?.errors?.['pattern']">Please enter a valid email format</span> <!-- ✅ Updated here -->
+          <span *ngIf="email?.errors?.['pattern']">Please enter a valid email format</span>
         </div>
       </div>
 
@@ -46,7 +47,10 @@
         />
         <div *ngIf="password?.invalid && password?.touched" class="error-message">
           <span *ngIf="password?.errors?.['required']">Password is required</span>
-          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters</span>
+          <span *ngIf="password?.errors?.['pattern']">
+            Must include uppercase, lowercase, and number/symbol
+          </span>
         </div>
       </div>
 
@@ -58,17 +62,17 @@
         <button type="button" class="forgot-password" (click)="toggleForgotPassword()">Forgot password?</button>
       </div>
 
+      <div *ngIf="signInForm.invalid && (signInForm.dirty || signInForm.touched)" class="form-hint">
+        Please fill in all required fields correctly to sign in.
+      </div>
+      
       <div class="reset-message" *ngIf="resetMessage">{{ resetMessage }}</div>
-
-      <button
-        type="submit"
-        class="submit-button"
-        [disabled]="isSubmitting || signInForm.invalid"
-      >
-        Sign In
+      
+      <button type="submit" class="submit-button" [disabled]="isSubmitting || signInForm.invalid">
+        <span *ngIf="!isSubmitting">Sign In</span>
+        <span *ngIf="isSubmitting" class="spinner"></span>
       </button>
-
-      <!-- Updated Sign up Redirect -->
+      
       <div class="signup-prompt">
         <span>Don't have an account?</span>
         <a routerLink="/sign-up">Sign up</a>
@@ -77,7 +81,7 @@
   </div>
 
   <!-- Forgot Password Form -->
-  <div *ngIf="showForgotPasswordForm" class="forgot-password-form">
+  <div *ngIf="showForgotPasswordForm && !showResetPasswordForm" class="forgot-password-form">
     <form [formGroup]="forgotPasswordForm" (ngSubmit)="sendResetLink()" class="form">
       <div class="form-group">
         <label for="forgotEmail">Enter your email to reset password</label>
@@ -90,7 +94,7 @@
         />
         <div *ngIf="forgotEmail?.invalid && forgotEmail?.touched" class="error-message">
           <span *ngIf="forgotEmail?.errors?.['required']">Email is required</span>
-          <span *ngIf="forgotEmail?.errors?.['pattern']">Please enter a valid email format</span> <!-- ✅ Updated here -->
+          <span *ngIf="forgotEmail?.errors?.['pattern']">Please enter a valid email format</span>
         </div>
       </div>
 
@@ -108,4 +112,58 @@
       </div>
     </form>
   </div>
+<!-- Reset Password Form (token-based) -->
+<div *ngIf="showResetPasswordForm" class="reset-password-form">
+  <form [formGroup]="resetPasswordForm" (ngSubmit)="onResetSubmit()" class="form">
+    <div class="form-group">
+      <label for="newPassword">Enter New Password</label>
+      <input
+        type="password"
+        id="newPassword"
+        formControlName="newPassword"
+        placeholder="New Password"
+        [ngClass]="{ 'error': newPassword?.invalid && newPassword?.touched }"
+      />
+      <div *ngIf="newPassword?.invalid && newPassword?.touched" class="error-message">
+        <span *ngIf="newPassword?.errors?.['required']">Password is required</span>
+        <span *ngIf="newPassword?.errors?.['minlength']">Password must be at least 8 characters</span>
+        <span *ngIf="newPassword?.errors?.['pattern']">
+          Must include uppercase, lowercase, and number/symbol
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirm New Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        placeholder="Confirm New Password"
+        [ngClass]="{
+          'error':
+            (confirmPassword?.invalid && confirmPassword?.touched) ||
+            resetPasswordForm.errors?.['passwordMismatch']
+        }"
+      />
+      <div
+        *ngIf="
+          (confirmPassword?.invalid && confirmPassword?.touched) ||
+          resetPasswordForm.errors?.['passwordMismatch']
+        "
+        class="error-message"
+      >
+        <span *ngIf="confirmPassword?.errors?.['required']">Confirmation is required</span>
+        <span *ngIf="resetPasswordForm.errors?.['passwordMismatch']">Passwords do not match</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-button" [disabled]="resetPasswordForm.invalid">
+        Reset Password
+      </button>
+    </div>
+  </form>
 </div>
+
+

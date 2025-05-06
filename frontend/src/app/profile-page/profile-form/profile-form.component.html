@@ -80,10 +80,13 @@
     </div>
   </div>
 
-  <!-- 👇 Move this here -->
   <div class="form-edit-toggle">
     <button class="edit-btn" (click)="toggleEdit()">
       {{ isEditable ? 'Cancel' : 'Edit Profile' }}
     </button>
+  </div>
+
+  <div *ngIf="isEditable" class="form-save-btn">
+    <button class="save-btn" (click)="saveProfile()">Save Changes</button>
   </div>
 </div>

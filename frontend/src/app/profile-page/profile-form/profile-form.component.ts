@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { User } from '../../model/user.model';
 
 @Component({
@@ -14,18 +15,39 @@ export class ProfileFormComponent {
   @Input() user!: User;
   @Output() profileUpdate = new EventEmitter<void>();
 
-  // 👇 NEW: Holds the base64 preview of the selected image
   profilePhotoUrl: string | null = null;
-
-  // 👇 NEW: Controls if form fields are editable
   isEditable = false;
 
-  // 👇 NEW: Toggles editable mode
+  private http = inject(HttpClient);
+
   toggleEdit(): void {
     this.isEditable = !this.isEditable;
   }
 
-  // 👇 NEW: Used to trigger the hidden file input
+  saveProfile(): void {
+    if (!this.isEditable) return;
+
+    const updatedProfile = {
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      phoneNumber: this.user.phoneNumber,
+      email: this.user.email,
+      profilePhoto: this.profilePhotoUrl // optional: if your backend supports base64 image
+    };
+
+    this.http.post('https://your-backend-api.com/api/update-profile', updatedProfile).subscribe({
+      next: (res) => {
+        console.log('✅ Profile updated:', res);
+        alert('✅ Profile updated successfully!');
+        this.isEditable = false;
+      },
+      error: (err) => {
+        console.error('❌ Failed to update profile:', err);
+        alert('❌ Failed to update profile. Please try again.');
+      }
+    });
+  }
+
   triggerPhotoInput(event: Event): void {
     event.preventDefault();
     const input = document.getElementById('photoInput') as HTMLInputElement;
@@ -34,19 +56,15 @@ export class ProfileFormComponent {
     }
   }
 
-  // 👇 NEW: Handles photo removal and resets input
   removePhoto(): void {
     this.profilePhotoUrl = null;
-
     const fileInput = document.getElementById('photoInput') as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = ''; // Clear input so same file can be selected again
+      fileInput.value = '';
     }
-
-    this.onInputChange(); // Optionally update profile status
+    this.onInputChange();
   }
 
-  // 👇 NEW: Handles image selection and sets preview
   onPhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -54,17 +72,15 @@ export class ProfileFormComponent {
       const reader = new FileReader();
       reader.onload = () => {
         this.profilePhotoUrl = reader.result as string;
-        this.onInputChange(); // Optional: triggers update
+        this.onInputChange();
       };
       reader.readAsDataURL(file);
     }
-
-    // Reset input to allow same file selection next time
     input.value = '';
   }
 
   getUserInitials(): string {
-    return this.user?.firstName.charAt(0) + this.user?.lastName.charAt(0);
+    return (this.user?.firstName?.charAt(0) || '') + (this.user?.lastName?.charAt(0) || '');
   }
 
   onNameChange(): void {
@@ -84,13 +100,8 @@ export class ProfileFormComponent {
       this.user.phoneNumber,
       this.user.email,
     ];
-
-    const filledFields = fields.filter(
-      (field) => field?.trim().length > 0
-    ).length;
-    this.user.profileCompletion = Math.round(
-      (filledFields / fields.length) * 100
-    );
+    const filledFields = fields.filter(field => field?.trim().length > 0).length;
+    this.user.profileCompletion = Math.round((filledFields / fields.length) * 100);
   }
 
   private updateLastModified(): void {

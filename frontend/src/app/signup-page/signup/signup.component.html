@@ -1,0 +1,187 @@
+<div class="signup-container" [@fadeIn]>
+  <div class="video-container" [@fadeIn]>
+    <video autoplay muted loop playsinline class="signup-video">
+      <source src="assets/videos/SignUpVideo.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="form-container" [@fadeIn]>
+    <div class="form-header">
+      <div class="logo-text-container">
+        <img src="assets/images/IoTelligenceLogo.png" alt="IoTelligence Logo" class="logo" />
+        <h1 class="animated-title">IoT<span class="jumping-e">e</span>lligence</h1>
+      </div>
+      <p class="subtitle">Secure Your Communications with IoTelligence</p>
+    </div>
+
+    <div class="social-signup">
+      <button type="button" class="social-button google-button" (click)="signupWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="social-icon" />
+        Sign up with Google
+      </button>
+    </div>
+
+    <div class="divider">
+      <span>or sign up with email</span>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <div class="input-container">
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              placeholder="Enter first name"
+              [ngClass]="{
+                'valid': signupForm.get('firstName')?.valid && signupForm.get('firstName')?.touched,
+                'invalid': signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched
+              }"
+            />
+            <span class="validation-icon" *ngIf="signupForm.get('firstName')?.touched">
+              {{ signupForm.get('firstName')?.valid ? '✓' : '✗' }}
+            </span>
+          </div>
+          <div class="error-message" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">
+            {{ getFieldError('firstName') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <div class="input-container">
+            <input
+              type="text"
+              id="lastName"
+              formControlName="lastName"
+              placeholder="Enter last name"
+              [ngClass]="{
+                'valid': signupForm.get('lastName')?.valid && signupForm.get('lastName')?.touched,
+                'invalid': signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched
+              }"
+            />
+            <span class="validation-icon" *ngIf="signupForm.get('lastName')?.touched">
+              {{ signupForm.get('lastName')?.valid ? '✓' : '✗' }}
+            </span>
+          </div>
+          <div class="error-message" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">
+            {{ getFieldError('lastName') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-container">
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="Enter username"
+            (input)="preventSpace($event)"
+            [ngClass]="{
+              'valid': signupForm.get('username')?.valid && signupForm.get('username')?.touched,
+              'invalid': signupForm.get('username')?.invalid && signupForm.get('username')?.touched
+            }"
+          />
+          <span class="validation-icon" *ngIf="signupForm.get('username')?.touched">
+            {{ signupForm.get('username')?.valid ? '✓' : '✗' }}
+          </span>
+        </div>
+        <div class="error-message" *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
+          {{ getFieldError('username') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <div class="input-container">
+          <input
+            type="tel"
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="Enter phone number"
+            [ngClass]="{
+              'valid': signupForm.get('phoneNumber')?.valid && signupForm.get('phoneNumber')?.touched,
+              'invalid': signupForm.get('phoneNumber')?.invalid && signupForm.get('phoneNumber')?.touched
+            }"
+          />
+          <span class="validation-icon" *ngIf="signupForm.get('phoneNumber')?.touched">
+            {{ signupForm.get('phoneNumber')?.valid ? '✓' : '✗' }}
+          </span>
+        </div>
+        <div class="error-message" *ngIf="signupForm.get('phoneNumber')?.invalid && signupForm.get('phoneNumber')?.touched">
+          {{ getFieldError('phoneNumber') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter email address"
+            [ngClass]="{
+              'valid': signupForm.get('email')?.valid && signupForm.get('email')?.touched,
+              'invalid': signupForm.get('email')?.invalid && signupForm.get('email')?.touched
+            }"
+          />
+          <span class="validation-icon" *ngIf="signupForm.get('email')?.touched">
+            {{ signupForm.get('email')?.valid ? '✓' : '✗' }}
+          </span>
+        </div>
+        <div class="error-message" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <div class="form-group password-group">
+        <label for="password">Password</label>
+        <div class="password-input-container">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            placeholder="Create password"
+            [ngClass]="{
+              'valid': signupForm.get('password')?.valid && signupForm.get('password')?.touched,
+              'invalid': signupForm.get('password')?.invalid && signupForm.get('password')?.touched
+            }"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
+          >
+            {{ passwordVisible ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div class="password-requirements" [class.active]="signupForm.get('password')?.dirty">
+          <p class="requirement" [class.met]="passwordMeetsLength">At least 8 characters</p>
+          <p class="requirement" [class.met]="passwordHasLowerAndUpper">Mix of uppercase and lowercase letters</p>
+          <p class="requirement" [class.met]="passwordHasNumberAndSymbol">At least one number and special character</p>
+        </div>
+      </div>
+
+      <div class="form-group terms-signup-row">
+        <div class="checkbox-inline">
+          <input type="checkbox" id="agreeToTerms" formControlName="agreeToTerms" />
+          <label for="agreeToTerms" class="checkbox-label">
+            By signing up, you accept the <a href="#" class="terms-link">Terms</a> & <a href="#" class="terms-link">Privacy Policy</a>.
+          </label>
+        </div>
+        <button type="submit" class="submit-button-inline" [disabled]="signupForm.invalid">Sign Up</button>
+      </div>
+
+      <div class="login-link">
+        Already have an account? <a routerLink="/sign-in">Sign In</a>
+      </div>
+    </form>
+  </div>
+</div>

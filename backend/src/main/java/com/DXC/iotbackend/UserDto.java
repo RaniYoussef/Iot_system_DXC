@@ -23,8 +23,8 @@ public class UserDto {
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     @Pattern(
-            regexp = "^[A-Za-z0-9]+$",
-            message = "Username must contain only letters and numbers (no spaces or special characters)"
+            regexp = "^[A-Za-z0-9._]+$",
+            message = "Username may contain letters, numbers, underscores (_) and dots (.) only"
     )
     private String username;
 
@@ -41,6 +41,11 @@ public class UserDto {
             message = "Password must be at least 8 characters, include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
     )
     private String password;
+
+
+    private String profilePhoto;
+    public String getProfilePhoto() { return profilePhoto; }
+    public void setProfilePhoto(String profilePhoto) { this.profilePhoto = profilePhoto; }
 
     public UserDto() {}
 

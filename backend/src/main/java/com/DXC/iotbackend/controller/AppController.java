@@ -139,7 +139,9 @@ public class AppController {
                             user.getUsername(),
                             user.getFirstName(),
                             user.getLastName(),
-                            user.getEmail()
+                            user.getEmail(),
+                            user.getProfilePhoto()
+                            //user.isOAuthUser()
                     );
                     return ResponseEntity.ok(profile);
                 })
@@ -322,6 +324,7 @@ public class AppController {
                     newUser.setUsername(email);
                     newUser.setFirstName(name);
                     newUser.setRole("ROLE_USER");
+                    //newUser.setOAuthUser(true);
                     return userRepository.save(newUser);
                 });
 
@@ -355,13 +358,15 @@ public class AppController {
         return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 
-    @PutMapping("/user/update-info")
+    @PostMapping("/user/update-profile")
     public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, String> body, Authentication auth) {
         String newFirstName = body.get("firstName");
         String newLastName = body.get("lastName");
         String newEmail = body.get("email");
+        //String profilePhoto = body.get("profilePhoto");
 
-        Optional<UserEntity> userOpt = userRepository.findByUsername(auth.getName());
+        Optional<UserEntity> userOpt = userRepository.findByUsername(auth.getName())
+                .or(() -> userRepository.findByEmail(auth.getName()));
 
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found"));
@@ -369,20 +374,48 @@ public class AppController {
 
         UserEntity user = userOpt.get();
 
-        if (newEmail != null && !newEmail.equals(user.getUsername())) {
-            if (userRepository.existsByUsername(newEmail)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Username already taken"));
+        if (newEmail != null && !newEmail.equals(user.getEmail())) {
+            if (userRepository.existsByEmail(newEmail)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email already in use"));
             }
-            user.setUsername(newEmail);
+            user.setEmail(newEmail);
         }
+
 
         if (newFirstName != null) user.setFirstName(newFirstName);
         if (newLastName != null) user.setLastName(newLastName);
+        //if (profilePhoto != null) user.setProfilePhoto(profilePhoto);
 
         userRepository.save(user);
 
         return ResponseEntity.ok(Map.of("message", "User info updated successfully"));
     }
+
+
+
+    @PutMapping("/user/update-photo")
+    public ResponseEntity<?> updateProfilePhoto(@RequestBody Map<String, String> body, Authentication auth) {
+        String base64Photo = body.get("profilePhoto");
+
+        if (base64Photo == null || base64Photo.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Photo data is required"));
+        }
+
+        System.out.println("Photo size: " + base64Photo.length());
+
+        Optional<UserEntity> userOpt = userRepository.findByUsername(auth.getName())
+                .or(() -> userRepository.findByEmail(auth.getName()));
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found"));
+        }
+        UserEntity user = userOpt.get();
+        user.setProfilePhoto(base64Photo);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of("message", "Profile photo updated"));
+    }
+
 
 
 

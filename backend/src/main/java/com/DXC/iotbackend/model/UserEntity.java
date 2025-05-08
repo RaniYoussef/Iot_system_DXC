@@ -31,7 +31,14 @@ public class UserEntity {
 
     private String firstName;
     private String lastName;
+//    @Column(name = "oauth_user")
+//    private Boolean  oauthUser = false;
 
+
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String profilePhoto;
     // Constructors
     public UserEntity() {}
 
@@ -43,8 +50,18 @@ public class UserEntity {
         this.firstName = firstName;
         this.lastName = lastName;
 
-
     }
+
+//    public UserEntity(String username, String password, String email,String role, String firstName, String lastName, String profilePhoto) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.role=role;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.profilePhoto = profilePhoto ;
+//
+//    }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -106,4 +123,23 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
+
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+
+
+//    public Boolean  isOAuthUser() {
+//        return oauthUser;
+//    }
+//
+//    public void setOAuthUser(Boolean  oauthUser) {
+//        this.oauthUser = oauthUser;
+//    }
 }

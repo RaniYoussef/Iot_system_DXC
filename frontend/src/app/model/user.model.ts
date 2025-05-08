@@ -9,7 +9,12 @@ export interface User {
     profilePicture?: string;
     profileCompletion: number;
     lastUpdated: string;
+    profilePhoto?: string; // 👈 Add this
+    oauthUser?: boolean; // ✅ new
+
+
   }
+  
   
   export interface PasswordState {
     currentPassword: string;

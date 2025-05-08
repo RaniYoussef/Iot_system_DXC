@@ -9,7 +9,7 @@ import java.time.Duration;
 @Component
 public class RedisRateLimiter {
 
-    private static final int MAX_REQUESTS = 5;
+    private static final int MAX_REQUESTS = 20;
     private static final Duration WINDOW = Duration.ofMinutes(1);
 
     @Autowired

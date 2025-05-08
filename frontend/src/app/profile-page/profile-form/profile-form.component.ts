@@ -1,7 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../model/user.model';
+import { HttpClient } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-profile-form',
@@ -10,10 +13,14 @@ import { User } from '../../model/user.model';
   templateUrl: './profile-form.component.html',
   styleUrls: ['./profile-form.component.scss']
 })
-export class ProfileFormComponent {
+export class ProfileFormComponent implements OnInit {
   @Input() user!: User;
   @Output() profileUpdate = new EventEmitter<void>();
 
+
+  private toastr = inject(ToastrService);
+
+  private http = inject(HttpClient);
   // 👇 NEW: Holds the base64 preview of the selected image
   profilePhotoUrl: string | null = null;
 
@@ -24,6 +31,13 @@ export class ProfileFormComponent {
   toggleEdit(): void {
     this.isEditable = !this.isEditable;
   }
+
+  ngOnInit() {
+    if (this.user.profilePhoto) {
+      this.profilePhotoUrl = this.user.profilePhoto; // 👈 Show from backend
+    }
+  }
+  
 
   // 👇 NEW: Used to trigger the hidden file input
   triggerPhotoInput(event: Event): void {
@@ -54,14 +68,26 @@ export class ProfileFormComponent {
       const reader = new FileReader();
       reader.onload = () => {
         this.profilePhotoUrl = reader.result as string;
-        this.onInputChange(); // Optional: triggers update
+  
+        // ✅ Automatically send to server as soon as it's ready
+        this.http.put('http://localhost:8080/api/user/update-photo', 
+          { profilePhoto: this.profilePhotoUrl },
+          { withCredentials: true }
+        ).subscribe({
+          next: () => {
+            this.toastr.success('Profile photo updated!');
+            this.profileUpdate.emit(); // Optionally notify parent
+          },
+          error: () => {
+            this.toastr.error('Failed to update photo.');
+          }
+        });
       };
       reader.readAsDataURL(file);
     }
-
-    // Reset input to allow same file selection next time
     input.value = '';
   }
+  
 
   getUserInitials(): string {
     return this.user?.firstName.charAt(0) + this.user?.lastName.charAt(0);
@@ -101,4 +127,31 @@ export class ProfileFormComponent {
       year: 'numeric',
     });
   }
+
+
+  saveProfile(): void {
+    if (!this.isEditable) return;
+  
+    const updatedProfile = {
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      email: this.user.email,
+      //profilePhoto: this.profilePhotoUrl // base64 string
+    };
+  
+    this.http.post('http://localhost:8080/api/user/update-profile', updatedProfile, { withCredentials: true }).subscribe({
+      next: () => {
+        //alert('✅ Profile updated successfully!');
+        this.toastr.success('Profile updated successfully!');
+        this.isEditable = false;
+        this.profileUpdate.emit(); // Notify parent to refresh user data
+      },
+      error: () => {
+        alert('❌ Failed to update profile. Please try again.');
+      }
+    });
+  }
+  
+
 }
+

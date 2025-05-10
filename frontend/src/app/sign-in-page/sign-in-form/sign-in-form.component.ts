@@ -87,26 +87,31 @@ export class SignInFormComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // Check for reset token first
     this.token = this.route.snapshot.queryParamMap.get('token');
+  
     if (this.token) {
       this.showResetPasswordForm = true;
       this.showForgotPasswordForm = false;
       return;
     }
   
-    // Check if user just came back from Google OAuth
+    // ✅ Don't auto-login if redirected from logout
+    const justLoggedOut = this.route.snapshot.queryParamMap.get('loggedOut') === 'true';
+    if (justLoggedOut) return;
+  
+    // ✅ Auto-login check (only if not just logged out)
     this.http.get<{ username: string }>('http://localhost:8080/api/user', { withCredentials: true }).subscribe({
       next: (user) => {
         this.toastr.success(`Welcome back, ${user.username}`);
-        this.router.navigateByUrl('/profile');
+        this.router.navigateByUrl('/dashboard');
       },
-      error: (err) => {
-        console.log('Not authenticated or JWT invalid:', err);
-        // Remain on login
+      error: () => {
+        // Stay on login page
       }
     });
   }
+  
+  
   
 
   get email() {
@@ -152,7 +157,7 @@ export class SignInFormComponent implements OnInit {
       next: () => {
         this.toastr.success('Signed in successfully!', 'Success');
         this.isSubmitting = false;
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/dashboard']);
       },
       error: () => {
         this.toastr.error('Sign-in failed. Please try again.', 'Error');

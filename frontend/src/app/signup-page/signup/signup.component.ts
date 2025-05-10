@@ -101,7 +101,8 @@ export class SignupComponent implements OnInit {
         lastName: formValues.lastName,
         username: formValues.username,
         email: formValues.email,
-        password: formValues.password
+        password: formValues.password,
+        phoneNumber: formValues.phoneNumber
       };
 
       this.authService.signUp(payload).subscribe(

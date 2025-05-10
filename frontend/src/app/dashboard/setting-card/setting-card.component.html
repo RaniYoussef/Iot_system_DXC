@@ -1,0 +1,53 @@
+<div class="setting-card">
+  <div class="setting-header">
+    <span class="metric-name">{{ displayName }}</span>
+  </div>
+
+  <div class="setting-body">
+    <div class="form-group threshold-input">
+      <label class="form-label" for="{{ setting.id }}">Threshold</label>
+
+      <!-- Render number input if no dropdown options -->
+      <input
+        *ngIf="!options?.length"
+        type="number"
+        [id]="setting.id"
+        class="form-control"
+        [(ngModel)]="thresholdValue"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+      />
+
+      <!-- Render dropdown if options are passed (e.g., for status, pollutionLevel, congestionLevel) -->
+      <select
+        *ngIf="options?.length"
+        [id]="setting.id"
+        class="form-control"
+        [(ngModel)]="thresholdValue"
+      >
+        <option *ngFor="let opt of options" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+
+    <!-- Alert Type only shown if not hidden -->
+    <div class="form-group alert-type" *ngIf="!hideAlertType">
+      <label class="form-label" for="{{ setting.id }}-alert">Alert Type</label>
+      <select 
+        [id]="setting.id + '-alert'"
+        class="form-control"
+        [(ngModel)]="alertType"
+      >
+        <option value="above">Above</option>
+        <option value="below">Below</option>
+      </select>
+    </div>
+
+    <button 
+      class="btn btn-primary save-btn"
+      (click)="saveSettings()"
+    >
+      Save
+    </button>
+  </div>
+</div>

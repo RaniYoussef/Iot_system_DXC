@@ -31,6 +31,8 @@ public class AuthService {
         String sanitizedPassword = InputSanitizer.sanitize(user.getPassword());
         String sanitizedFirstName = InputSanitizer.sanitize(user.getFirstName());
         String sanitizedLastName = InputSanitizer.sanitize(user.getLastName());
+        String sanitizedPhoneNumber = InputSanitizer.sanitize(user.getPhoneNumber());
+
 
 
         if (userRepository.existsByEmail(sanitizedEmail)) {
@@ -61,7 +63,8 @@ public class AuthService {
                 sanitizedEmail,
                 "USER",
                 sanitizedFirstName,
-                sanitizedLastName
+                sanitizedLastName,
+                sanitizedPhoneNumber
         );
 
         //entity.setTokenIssuedAt(System.currentTimeMillis());

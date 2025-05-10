@@ -27,6 +27,7 @@ public class UserEntity {
     private String password;
     private String email;
     private String role; // "USER" or "ADMIN"
+    private String phoneNumber;
 
 
     private String firstName;
@@ -42,13 +43,14 @@ public class UserEntity {
     // Constructors
     public UserEntity() {}
 
-    public UserEntity(String username, String password, String email,String role, String firstName, String lastName) {
+    public UserEntity(String username, String password, String email,String role, String firstName, String lastName,String phoneNumber) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role=role;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
 
     }
 
@@ -131,6 +133,14 @@ public class UserEntity {
 
     public String getProfilePhoto() {
         return profilePhoto;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
 

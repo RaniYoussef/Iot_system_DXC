@@ -140,7 +140,8 @@ public class AppController {
                             user.getFirstName(),
                             user.getLastName(),
                             user.getEmail(),
-                            user.getProfilePhoto()
+                            user.getProfilePhoto(),
+                            user.getPhoneNumber()
                             //user.isOAuthUser()
                     );
                     return ResponseEntity.ok(profile);
@@ -363,6 +364,7 @@ public class AppController {
         String newFirstName = body.get("firstName");
         String newLastName = body.get("lastName");
         String newEmail = body.get("email");
+        String newPhoneNumber = body.get("phoneNumber");
         //String profilePhoto = body.get("profilePhoto");
 
         Optional<UserEntity> userOpt = userRepository.findByUsername(auth.getName())
@@ -384,6 +386,7 @@ public class AppController {
 
         if (newFirstName != null) user.setFirstName(newFirstName);
         if (newLastName != null) user.setLastName(newLastName);
+        if (newPhoneNumber != null) user.setPhoneNumber(newPhoneNumber);
         //if (profilePhoto != null) user.setProfilePhoto(profilePhoto);
 
         userRepository.save(user);

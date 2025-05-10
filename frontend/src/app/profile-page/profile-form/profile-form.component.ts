@@ -136,6 +136,7 @@ export class ProfileFormComponent implements OnInit {
       firstName: this.user.firstName,
       lastName: this.user.lastName,
       email: this.user.email,
+      phoneNumber: this.user.phoneNumber,
       //profilePhoto: this.profilePhotoUrl // base64 string
     };
   

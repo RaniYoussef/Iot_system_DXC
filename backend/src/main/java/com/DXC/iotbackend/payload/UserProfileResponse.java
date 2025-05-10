@@ -7,6 +7,7 @@ public class UserProfileResponse {
     private String email;
     private String profilePhoto;
     private boolean oauthUser;
+    private String phoneNumber;
 
 //    public boolean isOAuthUser() {
 //        return Boolean.TRUE.equals(this.oauthUser);
@@ -22,12 +23,13 @@ public class UserProfileResponse {
 //        this.oauthUser = oauthUser;
 //    }
 
-    public UserProfileResponse(String username, String firstName, String lastName, String email, String profilePhoto ){
+    public UserProfileResponse(String username, String firstName, String lastName, String email, String profilePhoto, String phoneNumber ){
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.profilePhoto = profilePhoto;
+        this.phoneNumber = phoneNumber;
     }
 
     // Getters
@@ -36,5 +38,6 @@ public class UserProfileResponse {
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
     public String getProfilePhoto() { return profilePhoto; }
+    public String getPhoneNumber () { return  phoneNumber; }
 //    public Boolean  isOauthUser() { return oauthUser; }
 }

@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<div class="settings-page">
+  <div class="page-header">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-description">
+      Configure thresholds and alerts for environmental monitoring metrics
+    </p>
+  </div>
+
+  <div class="settings-grid">
+    <app-section-card title="🚦 Traffic">
+      <app-traffic-settings></app-traffic-settings>
+    </app-section-card>
+
+    <app-section-card title="🌫️ Air">
+      <app-air-settings></app-air-settings>
+    </app-section-card>
+
+    <app-section-card title="💡 Light">
+      <app-light-settings></app-light-settings>
+    </app-section-card>
+  </div>
+</div>

@@ -40,6 +40,7 @@ export class SidebarComponent {
   
         // ✅ Just redirect regardless of login type — no Google logout
         this.router.navigate(['/sign-in'], { queryParams: { loggedOut: 'true' } });
+
         this.toastr.success('You have been signed out.');
       },
       error: () => {

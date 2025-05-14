@@ -169,12 +169,34 @@ public class AppController {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        if (user.getPassword() == null) {
+            return ResponseEntity.ok(Map.of("valid", true, "passwordNull", true)); // ✅ Skip verification
+        }
+
         if (passwordEncoder.matches(rawPassword, user.getPassword())) {
             return ResponseEntity.ok(Map.of("valid", true));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("valid", false, "message", "Incorrect password"));
         }
     }
+
+    @GetMapping("/user/password-null")
+    public ResponseEntity<?> isPasswordNull(Authentication authentication) {
+        String username = authentication.getName();
+
+        Optional<UserEntity> userOpt = userRepository.findByUsername(username)
+                .or(() -> userRepository.findByEmail(username));
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found"));
+        }
+
+        boolean isNull = (userOpt.get().getPassword() == null);
+        return ResponseEntity.ok(Map.of("passwordNull", isNull));
+    }
+
+
+
 
 
     @PutMapping("user/update-password")
@@ -356,6 +378,7 @@ public class AppController {
                 .maxAge(0)
                 .build();
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        SecurityContextHolder.clearContext();
         return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 

@@ -95,6 +95,14 @@ public class AuthService {
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
 
+            String currentPassword = user.getPassword(); // Can be null
+
+            if (currentPassword == null || currentPassword.isBlank()) {
+                String hashedPassword = encoder.encode(request.getNewPassword());
+                user.setPassword(hashedPassword);
+                userRepository.save(user);
+                return "Password created successfully.";
+            }
             // Verify old password for double security
             if (!encoder.matches(request.getOldPassword(), user.getPassword())) {
                 return "Old password is incorrect.";

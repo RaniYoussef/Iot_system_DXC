@@ -388,7 +388,6 @@ public class AppController {
         String newLastName = body.get("lastName");
         String newEmail = body.get("email");
         String newPhoneNumber = body.get("phoneNumber");
-        //String profilePhoto = body.get("profilePhoto");
 
         Optional<UserEntity> userOpt = userRepository.findByUsername(auth.getName())
                 .or(() -> userRepository.findByEmail(auth.getName()));
@@ -397,20 +396,48 @@ public class AppController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found"));
         }
 
-        UserEntity user = userOpt.get();
+        // ===== EMAIL VALIDATION =====
+        if (newEmail != null) {
+            String emailRegex = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
+            if (!newEmail.matches(emailRegex)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format"));
+            }
 
-        if (newEmail != null && !newEmail.equals(user.getEmail())) {
-            if (userRepository.existsByEmail(newEmail)) {
+            if (!newEmail.equals(userOpt.get().getEmail()) && userRepository.existsByEmail(newEmail)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email already in use"));
             }
-            user.setEmail(newEmail);
         }
 
+        // ===== FIRST NAME VALIDATION =====
+        if (newFirstName != null) {
+            String nameRegex = "^[A-Za-z\\s]{2,20}$";
+            if (!newFirstName.matches(nameRegex)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "First name must be 2–20 characters and only letters and spaces"));
+            }
+        }
 
+        // ===== LAST NAME VALIDATION =====
+        if (newLastName != null) {
+            String nameRegex = "^[A-Za-z\\s]{2,20}$";
+            if (!newLastName.matches(nameRegex)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Last name must be 2–20 characters and only letters and spaces"));
+            }
+        }
+
+        // ===== PHONE NUMBER VALIDATION =====
+        if (newPhoneNumber != null) {
+            String phoneRegex = "^[0-9]{10,15}$";
+            if (!newPhoneNumber.matches(phoneRegex)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Phone number must be 10 to 15 digits"));
+            }
+        }
+
+        // ==== UPDATE FIELDS ====
+        UserEntity user = userOpt.get();
+        if (newEmail != null) user.setEmail(newEmail);
         if (newFirstName != null) user.setFirstName(newFirstName);
         if (newLastName != null) user.setLastName(newLastName);
         if (newPhoneNumber != null) user.setPhoneNumber(newPhoneNumber);
-        //if (profilePhoto != null) user.setProfilePhoto(profilePhoto);
 
         userRepository.save(user);
 

@@ -1,13 +1,21 @@
-# Stage 1: Build Angular app
-FROM node:18-alpine AS build
+# === STAGE: Angular Development Server with ng serve ===
+FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
-COPY . .
-RUN npm install
-RUN npm run build
 
-# Stage 2: Serve app with NGINX
-FROM nginx:alpine
-COPY --from=build /app/dist/frontend-temp /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Install Angular CLI globally
+RUN npm install -g @angular/cli
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+# Copy the full Angular source code
+COPY . .
+
+# Expose ng serve port
+EXPOSE 4200
+
+# Start Angular dev server
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]

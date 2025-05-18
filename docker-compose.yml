@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: iotdb
+      MYSQL_USER: iotuser
+      MYSQL_PASSWORD: iotpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -proot || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - iot-net
+
+  redis:
+    image: redis:7
+    container_name: iot_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - iot-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: iot-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/iotdb
+      SPRING_DATASOURCE_USERNAME: iotuser
+      SPRING_DATASOURCE_PASSWORD: iotpass
+      SPRING_REDIS_HOST: iot_redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - iot-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: iot-frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - iot-net
+    command: ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+
+volumes:
+  mysql-data:
+
+networks:
+  iot-net:
+    driver: bridge

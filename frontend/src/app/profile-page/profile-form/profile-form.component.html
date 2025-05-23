@@ -1,0 +1,93 @@
+<div class="profile-form">
+  <div class="avatar-section">
+    <div class="avatar">
+      <ng-container *ngIf="!profilePhotoUrl">
+        <span>{{ getUserInitials() }}</span>
+      </ng-container>
+      <ng-container *ngIf="profilePhotoUrl">
+        <img [src]="profilePhotoUrl" alt="Profile Photo" class="profile-image" />
+      </ng-container>
+    </div>
+
+    <input
+      type="file"
+      id="photoInput"
+      accept="image/*"
+      hidden
+      (change)="onPhotoSelected($event)"
+    />
+
+    <button class="change-photo-btn" (click)="triggerPhotoInput($event)">
+      Change Photo
+    </button>
+
+    <button
+      class="remove-photo-btn"
+      *ngIf="profilePhotoUrl"
+      (click)="removePhoto()"
+    >
+      Remove Photo
+    </button>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <input 
+        type="text" 
+        id="firstName" 
+        [(ngModel)]="user.firstName" 
+        (ngModelChange)="onNameChange()"
+        [readonly]="!isEditable"
+        placeholder="First Name"
+        required
+      >
+    </div>
+    <div class="form-group">
+      <input 
+        type="text" 
+        id="lastName" 
+        [(ngModel)]="user.lastName" 
+        (ngModelChange)="onNameChange()"
+        [readonly]="!isEditable"
+        placeholder="Last Name"
+        required
+      >
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <input 
+        type="tel" 
+        id="phoneNumber" 
+        [(ngModel)]="user.phoneNumber" 
+        (ngModelChange)="onInputChange()"
+        [readonly]="!isEditable"
+        placeholder="Phone Number"
+        required
+      >
+    </div>
+    <div class="form-group">
+      <input 
+        type="email" 
+        id="email" 
+        [(ngModel)]="user.email" 
+        (ngModelChange)="onInputChange()"
+        [readonly]="!isEditable"
+        placeholder="Email"
+        required
+      >
+    </div>
+  </div>
+
+  <!-- 👇 Move this here -->
+  <div class="form-edit-toggle">
+    <button class="edit-btn" (click)="toggleEdit()">
+      {{ isEditable ? 'Cancel' : 'Edit Profile' }}
+    </button>
+    <div *ngIf="isEditable" class="form-save-btn">
+      <button class="save-btn"   [disabled]="!user.firstName || !user.lastName || !user.email"
+      (click)="saveProfile()">Save Changes</button>
+    </div>
+  </div>
+</div>

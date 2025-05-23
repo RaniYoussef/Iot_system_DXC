@@ -1,0 +1,27 @@
+<div class="settings-wrapper">
+  <div class="settings-section">
+    <app-setting-card
+      [category]="'air'"
+      [setting]="settings.co"
+      displayName="CO"
+      [min]="0"
+      [max]="100"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'air'"
+      [setting]="settings.ozone"
+      displayName="Ozone"
+      [min]="0"
+      [max]="300"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'air'"
+      [setting]="settings.pollutionLevel"
+      displayName="Pollution Level"
+      [options]="pollutionOptions"
+      [hideAlertType]="true"
+    ></app-setting-card>
+  </div>
+</div>

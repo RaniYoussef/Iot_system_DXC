@@ -1,0 +1,110 @@
+.setting-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--neutral-200);
+  margin-bottom: 16px;
+}
+
+.setting-card:last-child {
+  border-bottom: none;
+}
+
+.setting-header {
+  margin-bottom: 16px;
+}
+
+.metric-name {
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.setting-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto; /* Input, Select, Save Button */
+  gap: 16px;
+  align-items: end; /* ✅ Align all elements to bottom */
+}
+
+.setting-body input,
+.setting-body select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--neutral-300);
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  height: 38px;
+  background-color: white;
+  box-shadow: none;
+  appearance: none; /* Remove OS-specific styling */
+  cursor: pointer;
+}
+
+/* Add icon to indicate dropdown (custom arrow if needed) */
+.setting-body select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.5 5.5a.5.5 0 0 1 .8-.4L8 9.293 13.7 5.1a.5.5 0 0 1 .6.8l-6 5a.5.5 0 0 1-.6 0l-6-5a.5.5 0 0 1-.2-.4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 32px;
+}
+
+.setting-body input:focus,
+.setting-body select:focus {
+  border-color: var(--primary-500);
+  outline: none;
+  transform: scale(1.02); /* Smooth zoom animation */
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+}
+
+.setting-body select option {
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: white;
+  color: var(--neutral-900);
+}
+
+/* Modern browsers only (dropdown menu smoothness): */
+.setting-body select:active {
+  transition: all 0.2s ease-in-out;
+}
+
+.save-btn {
+  background-color: var(--primary-500);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transform: translateY(-8px); /* ✅ Slight upward push for visual balance */
+}
+
+.save-btn:hover {
+  background-color: var(--primary-600);
+}
+
+.save-btn:active {
+  animation: pulse 0.3s;
+}
+
+@media (max-width: 768px) {
+  .setting-body {
+    grid-template-columns: 1fr;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}

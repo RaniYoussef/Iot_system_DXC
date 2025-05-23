@@ -1,0 +1,27 @@
+<div class="settings-wrapper">
+  <div class="settings-section">
+    <app-setting-card
+      [category]="'light'"
+      [setting]="settings.brightnessLevel"
+      displayName="Brightness Level"
+      [min]="0"
+      [max]="100"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'light'"
+      [setting]="settings.powerConsumption"
+      displayName="Power Consumption"
+      [min]="0"
+      [max]="2000"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'light'"
+      [setting]="settings.status"
+      displayName="Status"
+      [options]="statusOptions"
+      [hideAlertType]="true"
+    ></app-setting-card>
+  </div>
+</div>

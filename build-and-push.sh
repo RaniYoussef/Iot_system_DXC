@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # === SETTINGS ===
-DOCKER_USERNAME="raniyoussef"
+DOCKER_USERNAME="amrkamoun"
 BACKEND_IMAGE_NAME="iot-backend"
 FRONTEND_IMAGE_NAME="iot-frontend"
 

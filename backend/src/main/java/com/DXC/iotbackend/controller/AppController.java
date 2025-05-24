@@ -317,7 +317,7 @@ public class AppController {
         String newPassword = body.get("newPassword");
 
         // ✅ Strong password regex: min 8 chars, 1 upper, 1 lower, 1 digit, 1 special
-        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String passwordPattern = "^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@$!%?&])[A-Za-z\\d@$!%?&]{8,}$";
 
         if (newPassword == null || !newPassword.matches(passwordPattern)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -468,15 +468,5 @@ public class AppController {
 
         return ResponseEntity.ok(Map.of("message", "Profile photo updated"));
     }
-
-
-
-
-
-
-
-
-
-
 
 }

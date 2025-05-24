@@ -46,8 +46,6 @@ public class AirPollutionData {
             message = "Pollution level must be one of: Good, Moderate, Unhealthy, Very Unhealthy, Hazardous")
     private String pollutionLevel;
 
-    public AirPollutionData() {}
-
     public AirPollutionData(String location, LocalDateTime timestamp, float pm2_5, float pm10, float co, float no2, float so2, float ozone, String pollutionLevel) {
         this.location = location;
         this.timestamp = timestamp;
@@ -58,5 +56,9 @@ public class AirPollutionData {
         this.so2 = so2;
         this.ozone = ozone;
         this.pollutionLevel = pollutionLevel;
+    }
+
+    public AirPollutionData() {
+
     }
 }

@@ -33,6 +33,14 @@ public class AlertSettingController {
         return service.getAll();
     }
 
+    @GetMapping("/filter")
+    public List<AlertSetting> getFilteredSettings(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String metric
+    ) {
+        return service.getFiltered(type, metric);
+    }
+
 
     @RestControllerAdvice
     public class GlobalExceptionHandler {

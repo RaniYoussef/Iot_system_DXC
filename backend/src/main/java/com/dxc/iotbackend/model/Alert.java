@@ -20,5 +20,13 @@ public class Alert {
     private float value; // The actual value that violated the threshold
     private String location;
     private LocalDateTime timestamp;
+
+    private String alertType;
+
+    @Column(name = "is_read", nullable = false)
+    private boolean read = false;
+
+    @Column(length = 255)
+    private String message;
 }
 

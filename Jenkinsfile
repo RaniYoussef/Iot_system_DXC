@@ -16,26 +16,31 @@ pipeline {
         }
 
         stage('Build Backend') {
+            agent {
+                docker {
+                    image 'eclipse-temurin:21-jdk-alpine'
+                    args '-v /root/.m2:/root/.m2' // optional: cache Maven repo
+                }
+            }
             steps {
                 dir('backend') {
-                    docker.image('eclipse-temurin:21-jdk-alpine').inside {
-                        // Set executable permission for mvnw
-                        sh 'chmod +x ./mvnw'
-                        // Use Maven wrapper to build your backend
-                        sh './mvnw clean package -DskipTests'
-                    }
+                    sh 'chmod +x ./mvnw'
+                    sh './mvnw clean package -DskipTests'
                 }
             }
         }
 
         stage('Test Backend') {
+            agent {
+                docker {
+                    image 'eclipse-temurin:21-jdk-alpine'
+                    args '-v /root/.m2:/root/.m2' // optional: cache Maven repo
+                }
+            }
             steps {
                 dir('backend') {
-                    docker.image('eclipse-temurin:21-jdk-alpine').inside {
-                        // Ensure mvnw is executable before testing
-                        sh 'chmod +x ./mvnw'
-                        sh './mvnw test'
-                    }
+                    sh 'chmod +x ./mvnw'
+                    sh './mvnw test'
                 }
             }
         }

@@ -18,6 +18,8 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('backend') {
+                    // Set executable permission for mvnw
+                    sh 'chmod +x ./mvnw'
                     // Use Maven wrapper to build your backend
                     sh './mvnw clean package -DskipTests'
                 }
@@ -27,6 +29,8 @@ pipeline {
         stage('Test Backend') {
             steps {
                 dir('backend') {
+                    // Ensure mvnw is executable before testing
+                    sh 'chmod +x ./mvnw'
                     sh './mvnw test'
                 }
             }

@@ -54,6 +54,12 @@ pipeline {
         }
 
         stage('Build Frontend') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-v /root/.npm:/root/.npm' // optional: cache npm packages
+                }
+            }
             steps {
                 dir('frontend') {
                     sh 'npm install'
@@ -63,6 +69,12 @@ pipeline {
         }
 
         stage('Test Frontend') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-v /root/.npm:/root/.npm' // optional: cache npm packages
+                }
+            }
             steps {
                 dir('frontend') {
                     sh 'npm test -- --watch=false'  // Run tests once, no watch mode

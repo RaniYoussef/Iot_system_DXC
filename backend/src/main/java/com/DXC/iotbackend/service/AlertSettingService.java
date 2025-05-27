@@ -103,7 +103,7 @@ public class AlertSettingService {
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
                 alert.setTimestamp(data.getTimestamp());
-                alert.setAlertType(setting.getAlertType()); // ✅ Add this
+                alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
             }
         }
@@ -138,7 +138,7 @@ public class AlertSettingService {
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
                 alert.setTimestamp(data.getTimestamp());
-                alert.setAlertType(setting.getAlertType()); // ✅ Add this
+                alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
                 alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
             }
@@ -174,7 +174,7 @@ public class AlertSettingService {
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
                 alert.setTimestamp(data.getTimestamp());
-                alert.setAlertType(setting.getAlertType()); // ✅ Add this
+                alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
             }
         }

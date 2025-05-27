@@ -20,7 +20,7 @@ public class SensorDataScheduler {
     private final Random random = new Random();
     private final String BASE_URL = "http://localhost:8080/api";
 
-    @Scheduled(fixedRate = 60000) // every 30 seconds
+    @Scheduled(fixedRate = 60000) // every 1 min
     public void sendRandomSensorData() {
         sendTrafficData();
         sendAirPollutionData();
@@ -34,7 +34,7 @@ public class SensorDataScheduler {
         TrafficTypeData data = new TrafficTypeData(
                 randomLocation,
                 LocalDateTime.now(),
-                random.nextInt(100),                           // trafficDensity
+                random.nextInt(500),                           // trafficDensity
                 10 + random.nextFloat() * 80,                  // avgSpeed
                 randomLevel(new String[]{"Low", "Moderate", "High","Severe"})
         );

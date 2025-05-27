@@ -50,6 +50,7 @@ Serve Angular on http://localhost:4200
 Serve Spring Boot backend on http://localhost:8080
 
 To build and push the latest frontend and backend images to Docker Hub, use the provided shell script:
+dos2unix build-and-push.sh
 chmod +x build-and-push.sh
 ./build-and-push.sh
 This will:
@@ -135,6 +136,9 @@ docker run -d \
   -p 4200:4200 \
   raniyoussef/iot-frontend
 ///////////////////////////////////////////////////////////////////////////////
+
+docker pull raniyoussef/iot-backend
+docker pull raniyoussef/iot-frontend
 
 
 

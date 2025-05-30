@@ -140,6 +140,15 @@ docker run -d \
 docker pull raniyoussef/iot-backend
 docker pull raniyoussef/iot-frontend
 
+//////////////////////////////////////////////////////////////////////////////
+sprint#3---jenkis setup :
+docker run -d \
+  --name jenkins-cicd \
+  -p 8081:8080 \
+  -v jenkins-data:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --group-add=$(getent group docker | cut -d: -f3) \
+  custom-jenkins-docker
 
-
+  or if it exist just : docker start jenkins-cicd
 

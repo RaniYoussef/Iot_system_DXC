@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/alert-settings")
+@RequestMapping("${api.base-path}${alert-settings-path}") // /api/alert-settings
 @CrossOrigin
 
 public class AlertSettingController {
@@ -33,7 +33,7 @@ public class AlertSettingController {
         return service.getAll();
     }
 
-    @GetMapping("/filter")
+    @GetMapping("${alert.filtering}") // /filter
     public List<AlertSetting> getFilteredSettings(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String metric

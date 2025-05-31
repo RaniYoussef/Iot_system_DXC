@@ -7,7 +7,7 @@ import com.DXC.iotbackend.service.SensorDataService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/sensor")
+@RequestMapping("${api.base-path}${sensor.general-path}") // /api/sensor
 @CrossOrigin
 public class SensorDataController {
 

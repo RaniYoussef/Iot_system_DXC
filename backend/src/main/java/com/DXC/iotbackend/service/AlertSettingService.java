@@ -4,6 +4,7 @@ import com.DXC.iotbackend.model.*;
 import com.DXC.iotbackend.repository.AlertSettingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,9 +103,10 @@ public class AlertSettingService {
                 alert.setMetric(setting.getMetric());
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
-                alert.setTimestamp(data.getTimestamp());
+                alert.setTimestamp(LocalDateTime.now());
                 alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
+                alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
             }
         }
 
@@ -137,7 +139,7 @@ public class AlertSettingService {
                 alert.setMetric(setting.getMetric());
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
-                alert.setTimestamp(data.getTimestamp());
+                alert.setTimestamp(LocalDateTime.now());
                 alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
                 alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
@@ -173,9 +175,10 @@ public class AlertSettingService {
                 alert.setMetric(setting.getMetric());
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
-                alert.setTimestamp(data.getTimestamp());
+                alert.setTimestamp(LocalDateTime.now());
                 alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
+                alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
             }
         }
 

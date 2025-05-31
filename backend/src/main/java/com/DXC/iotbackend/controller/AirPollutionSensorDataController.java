@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/air-pollution-sensor")
+@RequestMapping("${api.base-path}${sensor.air-path}") // /api/air-pollution-sensor
 @CrossOrigin
 @Valid
 public class AirPollutionSensorDataController {

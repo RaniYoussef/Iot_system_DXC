@@ -37,7 +37,7 @@ import java.time.Duration;
 //import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${api.base-path}")
 public class AppController {    
 
     @Autowired
@@ -75,12 +75,12 @@ public class AppController {
 //    }
 
 
-    @PostMapping("/register")
+    @PostMapping("${auth.register}")
     public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
         return authService.registerUser(userDto);
     }
 
-    @PostMapping("/login")
+    @PostMapping("${auth.login}")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest,
                                    HttpServletResponse response) {
         String email = InputSanitizer.sanitize(loginRequest.getEmail());
@@ -128,7 +128,7 @@ public class AppController {
         return ResponseEntity.ok(Map.of("message", "Logged in successfully!"));
     }
 
-    @GetMapping("/user")
+    @GetMapping("${auth.profile}")
     public ResponseEntity<?> getUserProfile(Authentication auth) {
         String identity = auth.getName();
 
@@ -159,7 +159,7 @@ public class AppController {
 //    }
 
 
-    @PostMapping("user/verify-password")
+    @PostMapping("${auth.profile}${auth.verifyPassword}")
     public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
         String rawPassword = body.get("password");
 
@@ -180,7 +180,7 @@ public class AppController {
         }
     }
 
-    @GetMapping("/user/password-null")
+    @GetMapping("${auth.profile}${auth.passwordNull}")
     public ResponseEntity<?> isPasswordNull(Authentication authentication) {
         String username = authentication.getName();
 
@@ -199,7 +199,7 @@ public class AppController {
 
 
 
-    @PutMapping("user/update-password")
+    @PutMapping("${auth.profile}${auth.updatePassword}")
     public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
                                                  Authentication authentication) {
 
@@ -223,7 +223,7 @@ public class AppController {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/forgot-password")
+    @PostMapping("${auth.forgotPassword}")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
@@ -306,7 +306,7 @@ public class AppController {
 //    }
 
 
-    @PostMapping("/reset-password")
+    @PostMapping("${auth.resetPassword}")
     public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestBody Map<String, String> body) {
         Optional<UserEntity> userOpt = userRepository.findByResetTokenAndResetTokenExpiryAfter(token, LocalDateTime.now());
 
@@ -333,7 +333,7 @@ public class AppController {
         return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
     }
 
-    @GetMapping("/oauth2/success")
+    @GetMapping("${auth.oauthSuccess}")
     public ResponseEntity<?> handleGoogleLogin(Authentication authentication, HttpServletResponse response) {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
@@ -368,7 +368,7 @@ public class AppController {
     }
 
 
-    @GetMapping("/logout")
+    @GetMapping("${auth.logout}")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
@@ -382,7 +382,7 @@ public class AppController {
         return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 
-    @PostMapping("/user/update-profile")
+    @PostMapping("${auth.profile}${auth.updateProfile}")
     public ResponseEntity<?> updateUserInfo(@RequestBody Map<String, String> body, Authentication auth) {
         String newFirstName = body.get("firstName");
         String newLastName = body.get("lastName");
@@ -446,7 +446,7 @@ public class AppController {
 
 
 
-    @PutMapping("/user/update-photo")
+    @PutMapping("${auth.profile}${auth.updatePhoto}")
     public ResponseEntity<?> updateProfilePhoto(@RequestBody Map<String, String> body, Authentication auth) {
         String base64Photo = body.get("profilePhoto");
 

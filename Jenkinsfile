@@ -3,32 +3,27 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "raniyoussef/iot-system"
-        SONARQUBE = 'SonarQube'  // this name must match the one in Jenkins > Manage Jenkins > Configure System
-    }
-
-    tools {
-        maven 'Maven 3.8.1'
-        nodejs 'NodeJS 18'
+        SONARQUBE = 'SonarQube'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/RaniYoussef/Iot_system_DXC.git', branch: 'dev'
+                git url: 'https://github.com/RaniYoussef/Iot_system_DXC.git', branch: 'rani-sprint4-devops'
             }
         }
 
         stage('Build Backend') {
-            dir('backend') {
-                steps {
+            steps {
+                dir('backend') {
                     sh 'mvn clean install'
                 }
             }
         }
 
         stage('Build Frontend') {
-            dir('frontend') {
-                steps {
+            steps {
+                dir('frontend') {
                     sh 'npm install'
                     sh 'npm run build'
                 }
@@ -49,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''

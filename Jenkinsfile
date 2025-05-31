@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "raniyoussef/iot-system"
+        BACKEND_IMAGE = "raniyoussef/iot-backend"
+        FRONTEND_IMAGE = "raniyoussef/iot-frontend"
         SONARQUBE = 'SonarQube'
     }
 
@@ -13,43 +14,36 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
-            steps {
-                dir('backend') {
-                    sh 'mvn clean install'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                dir('frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
-                }
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE}") {
-                    sh 'sonar-scanner'
+                    // Scan backend Java code
+                    dir('backend') {
+                        sh 'sonar-scanner'
+                    }
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Backend Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:${BUILD_NUMBER} .'
+                sh 'docker build -t $BACKEND_IMAGE:${BUILD_NUMBER} ./backend'
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Build Frontend Docker Image') {
+            steps {
+                sh 'docker build -t $FRONTEND_IMAGE:${BUILD_NUMBER} ./frontend'
+            }
+        }
+
+        stage('Push Images to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE:${BUILD_NUMBER}
+                        docker push $BACKEND_IMAGE:${BUILD_NUMBER}
+                        docker push $FRONTEND_IMAGE:${BUILD_NUMBER}
                     '''
                 }
             }

@@ -14,10 +14,32 @@ pipeline {
             }
         }
 
+        stage('Build Backend Docker Image (With JAR)') {
+            steps {
+                dir('backend') {
+                    sh 'docker build -t temp-backend-build .'
+                }
+            }
+        }
+
+        stage('Extract Target Directory') {
+            steps {
+                dir('backend') {
+                    // Create a temp container from the built image
+                    sh 'docker create --name backend_extract_temp temp-backend-build'
+
+                    // Copy the /app/target directory from the container to Jenkins workspace
+                    sh 'docker cp backend_extract_temp:/app/target ./target'
+
+                    // Remove temp container
+                    sh 'docker rm backend_extract_temp'
+                }
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE}") {
-                    // Scan backend Java code
                     dir('backend') {
                         sh 'sonar-scanner'
                     }
@@ -25,13 +47,13 @@ pipeline {
             }
         }
 
-        stage('Build Backend Docker Image') {
+        stage('Build Backend Image (Tagged)') {
             steps {
                 sh 'docker build -t $BACKEND_IMAGE:${BUILD_NUMBER} ./backend'
             }
         }
 
-        stage('Build Frontend Docker Image') {
+        stage('Build Frontend Image (Tagged)') {
             steps {
                 sh 'docker build -t $FRONTEND_IMAGE:${BUILD_NUMBER} ./frontend'
             }

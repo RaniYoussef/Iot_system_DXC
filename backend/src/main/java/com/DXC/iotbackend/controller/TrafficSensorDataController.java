@@ -7,19 +7,24 @@ import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
 import com.DXC.iotbackend.service.TrafficSensorDataService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/traffic-sensor")
+@RequestMapping("${api.base-path}${sensor.traffic-path}") // /// /api/traffic-sensor
 @CrossOrigin
 public class TrafficSensorDataController {
 
@@ -46,7 +51,7 @@ public class TrafficSensorDataController {
         return service.getFilteredTrafficData(location, congestionLevel, start, end, pageable);
     }
 
-    @GetMapping("/with-alerts")
+    @GetMapping("${sensor.with.alert}") // /with-alerts
     public List<TrafficReadingWithAlertDTO> getTrafficWithAlerts(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String congestionLevel,
@@ -58,12 +63,44 @@ public class TrafficSensorDataController {
         return service.getTrafficReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir);
     }
 
-    @GetMapping("/locations")
+    @GetMapping("${senor.location}") // /location
     public List<String> getDistinctLocations() {
         return service.getDistinctLocations();
     }
 
+    @ControllerAdvice
+    public class GlobalExceptionHandler {
 
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+            Map<String, String> errors = new HashMap<>();
+            ex.getBindingResult().getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return errors;
+        }
+    }
+
+
+
+
+    @GetMapping("with-alertss") // /with-alerts
+    public Page<TrafficReadingWithAlertDTO> getTTrafficReadingsWithAlerts(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String congestionLevel,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @RequestParam(defaultValue = "timestamp") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.getTTrafficReadingsWithAlertInfo(
+                location, congestionLevel, start, end, sortBy, sortDir, pageable
+        );
+    }
 
 }
 

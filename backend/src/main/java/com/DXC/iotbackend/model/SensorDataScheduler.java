@@ -18,7 +18,7 @@ public class SensorDataScheduler {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
-    private final String BASE_URL = "http://localhost:8080/api";
+    private final String BASE_URL = "{$scheduler.BASE_URL}";
 
     @Scheduled(fixedRate = 60000) // every 1 min
     public void sendRandomSensorData() {
@@ -39,12 +39,16 @@ public class SensorDataScheduler {
                 randomLevel(new String[]{"Low", "Moderate", "High","Severe"})
         );
 
-        post("/traffic-sensor", data);
+        post("{$sensor.traffic-path}", data);
     }
 
     private void sendAirPollutionData() {
+
+        String[] locations = { "Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara" };
+        String randomLocation = locations[random.nextInt(locations.length)];
+
         AirPollutionData data = new AirPollutionData(
-                "Smouha",
+                randomLocation,
                 LocalDateTime.now(),
                 randomFloat(0, 35), // pm2_5
                 randomFloat(0, 45), // pm10
@@ -55,19 +59,23 @@ public class SensorDataScheduler {
                 randomLevel(new String[]{"Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous"})
         );
 
-        post("/air-pollution-sensor", data);
+        post("{$sensor.air-path}", data);
     }
 
     private void sendLightData() {
+
+        String[] locations = { "Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara" };
+        String randomLocation = locations[random.nextInt(locations.length)];
+
         StreetLightData data = new StreetLightData(
-                "Corniche",
+                randomLocation,
                 LocalDateTime.now(),
                 random.nextInt(101),              // brightnessLevel
                 randomFloat(0, 5000),             // powerConsumption
                 randomLevel(new String[]{"ON", "OFF"})
         );
 
-        post("/light-sensor", data);
+        post("{$sensor.light-path}", data);
     }
 
     private void post(String path, Object body) {

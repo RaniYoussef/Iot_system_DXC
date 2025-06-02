@@ -17,4 +17,9 @@ export class ChooseDashboardComponent {
   goToTrafficDashboard(): void {
     this.router.navigate(['/traffic-dashboard']); 
   }
+    goToLightcDashboard(): void {
+    this.router.navigate(['/light-dashboard']); 
+  }
+
+  
 }

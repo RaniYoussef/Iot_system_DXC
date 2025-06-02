@@ -15,7 +15,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -proot || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -proot || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -68,8 +68,40 @@ services:
       - iot-net
     command: ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    container_name: jenkins-cicd
+    restart: always
+    user: root
+    ports:
+      - "8081:8080"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - iot-net
+
+  sonarqube:
+    image: sonarqube:9.9-community
+    container_name: sonarqube
+    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    networks:
+      - iot-net
+
 volumes:
   mysql-data:
+  jenkins-data:
+  sonarqube_data:
+  sonarqube_extensions:
 
 networks:
   iot-net:

@@ -10,6 +10,7 @@ import { TrafficDashboardComponent } from './Dashboard/traffic-dashboard/traffic
 // import { AlertComponent } from './Dashboard/Alert/alert.component';
 import { AlertComponent } from './Dashboard/alert/alert.component';
 //import { TrafficVisualisationComponent} from './Dashboard/traffic-visualisation/traffic-visualisation.component';
+import { LightDashboardComponent } from './Dashboard/light-dashboard/light-dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
@@ -21,6 +22,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: ChooseDashboardComponent },
   { path: 'traffic-dashboard', component: TrafficDashboardComponent },
   { path: 'Settings', component: SettingsPageComponent},
+  { path: 'light-dashboard', component: LightDashboardComponent },
     //{ path: 'traffic-visualisation', component: TrafficVisualisationComponent },
   { path: 'alert', component: AlertComponent }
 

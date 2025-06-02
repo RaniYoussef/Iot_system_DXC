@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router'; // ✅ Import Router
+import { Router } from '@angular/router'; 
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
-// import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'app-choose-dashboard',
@@ -16,5 +15,8 @@ export class ChooseDashboardComponent {
 
   goToTrafficDashboard(): void {
     this.router.navigate(['/traffic-dashboard']); 
+  }
+    goToLightcDashboard(): void {
+    this.router.navigate(['/light-dashboard']); 
   }
 }

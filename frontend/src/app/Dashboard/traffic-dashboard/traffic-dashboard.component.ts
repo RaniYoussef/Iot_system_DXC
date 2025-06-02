@@ -72,7 +72,7 @@ ngOnInit(): void {
   this.fetchAllLocations();
   this.fetchTrafficData(); // Initial load
 
-this.refreshSubscription = interval(60000).subscribe(() => {
+this.refreshSubscription = interval(10000).subscribe(() => {
   this.isAutoRefresh = true; // ✅ Set flag to true before refresh
   this.fetchTrafficData();
 });

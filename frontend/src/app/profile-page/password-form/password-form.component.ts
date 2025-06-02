@@ -2,11 +2,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PasswordState } from '../../model/user.model';
-import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-//import { environment } from 'src/environments/environment';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-password-form',
@@ -32,18 +31,13 @@ export class PasswordFormComponent {
   resetMethod: 'email' | 'phone' | null = null;
   otpValue = '';
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private authService: AuthService, private toastr: ToastrService) {}
 
   verifyPassword(): void {
-    const payload = { password: this.passwordState.currentPassword };
+    const password = this.passwordState.currentPassword;
 
-    this.http.post<{ valid: boolean }>(
-      //`${environment.apiBaseUrl}/verify-password`
-      "http://localhost:8080/api/user/verify-password" ,
-      payload,
-      { withCredentials: true }
-    ).pipe(
-      catchError((error) => {
+    this.authService.verifyPassword(password).pipe(
+      catchError(() => {
         this.toastr.error('Verification failed.');
         return of({ valid: false });
       })
@@ -76,31 +70,23 @@ export class PasswordFormComponent {
   }
 
   updatePassword(): void {
-    if (this.canUpdatePassword()) {
-      const payload = {
-        oldPassword: this.passwordState.currentPassword,
-        newPassword: this.passwordState.newPassword
-      };
+    if (!this.canUpdatePassword()) return;
 
-      this.http.put<{ success: boolean }>(
-        "http://localhost:8080/api/user/update-password",
-       // `${environment.apiBaseUrl}/update-password`,
-        payload,
-        { withCredentials: true }
-      ).pipe(
-        catchError((error) => {
-          this.toastr.error('Password update failed.');
-          return of({ success: false });
-        })
-      ).subscribe(res => {
-        if (res.success) {
-          this.toastr.success('Password updated successfully!');
-          this.resetForm();
-        } else {
-          this.toastr.error('Failed to update password.');
-        }
-      });
-    }
+    const { currentPassword, newPassword } = this.passwordState;
+
+    this.authService.updatePassword(currentPassword, newPassword).pipe(
+      catchError(() => {
+        this.toastr.error('Password update failed.');
+        return of({ success: false });
+      })
+    ).subscribe(res => {
+      if (res.success) {
+        this.toastr.success('Password updated successfully!');
+        this.resetForm();
+      } else {
+        this.toastr.error('Failed to update password.');
+      }
+    });
   }
 
   cancelUpdate(): void {
@@ -108,9 +94,7 @@ export class PasswordFormComponent {
   }
 
   toggleResetOptions(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
+    if (event) event.preventDefault();
     this.showResetOptions = !this.showResetOptions;
     this.resetMethod = null;
     this.otpValue = '';

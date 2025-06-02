@@ -9,6 +9,8 @@ import {
 } from '../model/settings.model';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr'; // ✅ Added
+import { ConfigService } from './config.service'; 
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +20,15 @@ export class SettingsService {
   public settings$ = this.settingsSource.asObservable();
 
   // ✅ Replace this URL later with your real ngrok endpoint
-  private backendUrl = 'http://localhost:8080/api/alert-settings';
+private get backendUrl() {
+  return `${this.configService.apiBaseUrl}/api/alert-settings`;
+}
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {} // ✅ Toastr injected
+constructor(
+  private http: HttpClient,
+  private toastr: ToastrService,
+  private configService: ConfigService
+) {}
 
   private getDefaultSettings(): EnvironmentalSettings {
     return {

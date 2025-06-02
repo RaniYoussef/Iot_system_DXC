@@ -1,9 +1,11 @@
 package com.DXC.iotbackend.service;
 
-import com.DXC.iotbackend.model.AlertSetting;
+import com.DXC.iotbackend.model.*;
 import com.DXC.iotbackend.repository.AlertSettingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,14 @@ public class AlertSettingService {
         validateMetricForType(setting.getType(), setting.getMetric());
         validateThresholdValue(setting.getType(), setting.getMetric(), setting.getThresholdValue());
         return repository.save(setting);
+    }
+
+    public List<AlertSetting> getFiltered(String type, String metric) {
+        List<AlertSetting> all = repository.findAll();
+        return all.stream()
+                .filter(s -> type == null || s.getType().equalsIgnoreCase(type))
+                .filter(s -> metric == null || s.getMetric().equalsIgnoreCase(metric))
+                .toList();
     }
 
     public List<AlertSetting> getAll() {
@@ -64,4 +74,144 @@ public class AlertSettingService {
             }
         }
     }
+
+
+    public List<Alert> checkThresholdViolations(AirPollutionData data) {
+        List<AlertSetting> settings = repository.findAll();
+        List<Alert> alerts = new ArrayList<>();
+
+        for (AlertSetting setting : settings) {
+            if (!setting.getType().equalsIgnoreCase("Air_Pollution")) continue;
+
+            float actualValue = switch (setting.getMetric()) {
+                case "co" -> data.getCo();
+                case "ozone" -> data.getOzone();
+                default -> -1f;
+            };
+
+            if (actualValue == -1f) continue;
+
+            boolean isViolated = switch (setting.getAlertType()) {
+                case "above" -> actualValue > setting.getThresholdValue();
+                case "below" -> actualValue < setting.getThresholdValue();
+                default -> false;
+            };
+
+            if (isViolated) {
+                Alert alert = new Alert();
+                alert.setType(setting.getType());
+                alert.setMetric(setting.getMetric());
+                alert.setLocation(data.getLocation());
+                alert.setValue(actualValue);
+                alert.setTimestamp(LocalDateTime.now());
+                alert.setAlertType(setting.getAlertType()); 
+                alerts.add(alert);
+                alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
+            }
+        }
+
+        return alerts;
+    }
+
+    public List<Alert> checkThresholdViolations(TrafficTypeData data) {
+        List<Alert> alerts = new ArrayList<>();
+
+        for (AlertSetting setting : repository.findAll()) {
+            if (!setting.getType().equalsIgnoreCase("Traffic")) continue;
+
+            float actualValue = switch (setting.getMetric()) {
+                case "trafficDensity" -> data.getTrafficDensity();
+                case "avgSpeed" -> data.getAvgSpeed();
+                default -> -1f;
+            };
+
+            if (actualValue == -1f) continue;
+
+            boolean violated = switch (setting.getAlertType()) {
+                case "above" -> actualValue > setting.getThresholdValue();
+                case "below" -> actualValue < setting.getThresholdValue();
+                default -> false;
+            };
+
+            if (violated) {
+                Alert alert = new Alert();
+                alert.setType("Traffic");
+                alert.setMetric(setting.getMetric());
+                alert.setLocation(data.getLocation());
+                alert.setValue(actualValue);
+                alert.setTimestamp(LocalDateTime.now());
+                alert.setAlertType(setting.getAlertType()); 
+                alerts.add(alert);
+                alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
+            }
+        }
+
+        return alerts;
+    }
+
+    public List<Alert> checkThresholdViolations(StreetLightData data) {
+        List<Alert> alerts = new ArrayList<>();
+
+        for (AlertSetting setting : repository.findAll()) {
+            if (!setting.getType().equalsIgnoreCase("Street_Light")) continue;
+
+            float actualValue = switch (setting.getMetric()) {
+                case "brightnessLevel" -> data.getBrightnessLevel();
+                case "powerConsumption" -> data.getPowerConsumption();
+                default -> -1f;
+            };
+
+            if (actualValue == -1f) continue;
+
+            boolean violated = switch (setting.getAlertType()) {
+                case "above" -> actualValue > setting.getThresholdValue();
+                case "below" -> actualValue < setting.getThresholdValue();
+                default -> false;
+            };
+
+            if (violated) {
+                Alert alert = new Alert();
+                alert.setType("Street_Light");
+                alert.setMetric(setting.getMetric());
+                alert.setLocation(data.getLocation());
+                alert.setValue(actualValue);
+                alert.setTimestamp(LocalDateTime.now());
+                alert.setAlertType(setting.getAlertType()); 
+                alerts.add(alert);
+                alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));
+            }
+        }
+
+        return alerts;
+    }
+
+
+
+    private String buildAlertMessage(Alert alert, float threshold) {
+        String metricLabel = switch (alert.getMetric()) {
+            case "trafficDensity" -> "Traffic Density";
+            case "avgSpeed" -> "Average Speed";
+            case "co" -> "CO Level";
+            case "ozone" -> "Ozone Level";
+            case "brightnessLevel" -> "Brightness Level";
+            case "powerConsumption" -> "Power Consumption";
+            default -> "Metric";
+        };
+
+        String direction = alert.getAlertType().equals("above") ? "exceeded" : "dropped below";
+
+        return String.format(
+                "🚨 %s %s threshold at %s" +
+                        " Current: %.1f | Threshold: %.1f " +
+                        "🕒 %s",
+                metricLabel,
+                direction,
+                alert.getLocation(),
+                alert.getValue(),
+                threshold,
+                alert.getTimestamp().toLocalTime().toString()
+        );
+    }
+
 }
+

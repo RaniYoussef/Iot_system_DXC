@@ -50,6 +50,7 @@ Serve Angular on http://localhost:4200
 Serve Spring Boot backend on http://localhost:8080
 
 To build and push the latest frontend and backend images to Docker Hub, use the provided shell script:
+dos2unix build-and-push.sh
 chmod +x build-and-push.sh
 ./build-and-push.sh
 This will:
@@ -136,6 +137,21 @@ docker run -d \
   raniyoussef/iot-frontend
 ///////////////////////////////////////////////////////////////////////////////
 
+docker pull raniyoussef/iot-backend
+docker pull raniyoussef/iot-frontend
+
+//////////////////////////////////////////////////////////////////////////////
+sprint#3---jenkis setup :
+docker run -d \
+  --name jenkins-cicd \
+  -p 8081:8080 \
+  -v jenkins-data:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  custom-jenkins-sonar
 
 
+  or if it exist just : docker start jenkins-cicd
 
+/////////////////////////////////////////////////////////////////
+user:admin
+password:SonarQube1234

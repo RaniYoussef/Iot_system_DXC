@@ -31,6 +31,21 @@ public class TrafficSensorDataController extends BaseSensorDataController<Traffi
     protected TrafficSensorDataService getService() {
         return service;
     }
+
+    @GetMapping("${sensor.with.alert}")
+    public Page<TrafficReadingWithAlertDTO> getTrafficReadings(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String congestionLevel,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @RequestParam(defaultValue = "timestamp") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return getService().getReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir, pageable);
+    }
 }
 
 //@GetMapping

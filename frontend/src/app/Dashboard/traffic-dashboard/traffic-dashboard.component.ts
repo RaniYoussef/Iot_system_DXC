@@ -8,6 +8,8 @@ import { TrafficService, TrafficReadingWithAlertDTO } from 'src/app/services/tra
 import { interval, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
+import { ChartConfiguration } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 
 interface TrafficData {
   location: string;
@@ -26,6 +28,7 @@ interface TrafficData {
     FormsModule,
     HttpClientModule,
     HeaderComponent,
+    NgChartsModule
     // AlertComponent,
   ],
   templateUrl: './traffic-dashboard.component.html',
@@ -59,6 +62,75 @@ export class TrafficDashboardComponent implements OnInit, OnDestroy {
   totalPages: number = 1;
   pages: number[] = [];
 
+
+  showVisualizations = false;
+
+speedTrend: 'up' | 'down' | 'flat' = 'flat';
+speedChange: number = 0;
+chartLabels: string[] = [];
+
+speedChartData: ChartConfiguration<'line'>['data'] = {
+  labels: [],
+  datasets: [{
+    data: [],
+    label: 'Avg Speed (km/h)',
+    borderColor: '#6366f1',
+    backgroundColor: '#a5b4fc',
+    pointBackgroundColor: '#6366f1',
+    pointBorderColor: '#fff',
+    tension: 0.4,
+    borderWidth: 2,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    fill: false
+  }]
+};
+
+densityChartData: ChartConfiguration<'bar'>['data'] = {
+  labels: [],
+  datasets: [{
+    data: [],
+    label: 'Traffic Density',
+    backgroundColor: '#facc15',
+    borderColor: '#b45309',
+    borderWidth: 1
+  }]
+};
+
+chartOptions: ChartConfiguration<'line' | 'bar'>['options'] = {
+  responsive: true,
+  plugins: {
+    legend: {
+      labels: {
+        color: '#374151',
+        font: { size: 12, weight: 'bold' }
+      }
+    },
+    tooltip: {
+      backgroundColor: '#1f2937',
+      titleColor: '#f9fafb',
+      bodyColor: '#f9fafb'
+    }
+  },
+scales: {
+  x: {
+    ticks: { color: '#6b7280' },
+    grid: { color: '#e5e7eb' }
+  },
+  y: {
+    beginAtZero: true,
+    ticks: {
+      color: '#6b7280',
+      stepSize: 10 // 👈 adjust for better scale
+    },
+    grid: { color: '#f3f4f6' }
+  }
+}
+
+};
+
+
+
   // constructor(private trafficService: TrafficService) {}
 
 constructor(
@@ -72,14 +144,16 @@ ngOnInit(): void {
   this.fetchAllLocations();
   this.fetchTrafficData(); // Initial load
 
-this.refreshSubscription = interval(10000).subscribe(() => {
+this.refreshSubscription = interval(60000).subscribe(() => {
   this.isAutoRefresh = true; // ✅ Set flag to true before refresh
   this.fetchTrafficData();
 });
 
 }
 
-
+toggleVisualizations(): void {
+  this.showVisualizations = !this.showVisualizations;
+}
 fetchAllLocations(): void {
   this.trafficService.getAllLocations().subscribe(locations => {
     this.allLocations = locations;
@@ -117,7 +191,7 @@ this.trafficService.getTrafficData(filters).subscribe(data => {
     alert: d.alertTimestamp
   }));
 
-  // ✅ Only show banner for new alerts during auto-refresh (not on first load or filter)
+  //  Only show banner for new alerts during auto-refresh (not on first load or filter)
   const allAlerts = data.flatMap(d => (d as any).alerts ?? []);
   const latest = allAlerts
     .filter((a: any) => a.timestamp)
@@ -134,12 +208,14 @@ this.trafficService.getTrafficData(filters).subscribe(data => {
 
 
   this.filteredData = [...this.data];
+  this.updateCharts();
   this.currentPage = 1;
   this.updatePagination();
 
-this.isAutoRefresh = false; // ✅ Reset the flag after each load
-this.isFirstLoad = false;   // ✅ Mark first load done
+this.isAutoRefresh = false; //  Reset the flag after each load
+this.isFirstLoad = false;   //  Mark first load done
 });
+
 
 }
 
@@ -180,8 +256,8 @@ resetFilters(): void {
   this.selectedCongestion = '';
   this.fromDate = '';
   this.toDate = '';
-  this.sortBy = ''; // ✅ Clear sort column
-  this.sortDirection = {}; // ✅ Clear sort direction map
+  this.sortBy = ''; //  Clear sort column
+  this.sortDirection = {}; //  Clear sort direction map
   this.selectedSortDirection = 'desc';
   this.pendingSortDirection = 'desc';
   this.fetchTrafficData();
@@ -231,14 +307,17 @@ this.filteredData.sort((a, b) => {
   }
 }
 
-  updatePagination() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    const end = start + this.pageSize;
-    this.paginatedData = this.filteredData.slice(start, end);
+updatePagination(): void {
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  this.paginatedData = this.filteredData.slice(start, end);
 
-    this.totalPages = Math.ceil(this.filteredData.length / this.pageSize);
-    this.pages = this.generatePagination(this.currentPage, this.totalPages);
-  }
+  this.totalPages = Math.ceil(this.filteredData.length / this.pageSize);
+  this.pages = this.generatePagination(this.currentPage, this.totalPages);
+
+  this.updateCharts(); // ✅ Correct placement
+}
+
 
 generatePagination(current: number, total: number): number[] {
   const range: number[] = [];
@@ -281,6 +360,7 @@ generatePagination(current: number, total: number): number[] {
   nextPage() {
     if ((this.currentPage * this.pageSize) < this.filteredData.length) {
       this.currentPage++;
+      this.showVisualizations = false;
       this.updatePagination();
     }
   }
@@ -288,6 +368,7 @@ generatePagination(current: number, total: number): number[] {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.showVisualizations = false;
       this.updatePagination();
     }
   }
@@ -372,6 +453,29 @@ toggleCollapse() {
 goBack(): void {
   this.location.back();
 }
+updateCharts(): void {
+  const sorted = [...this.paginatedData].sort(
+    (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+  );
+
+  const chartLabels = sorted.map(d => new Date(d.time).toLocaleTimeString());
+  const avgSpeeds = sorted.map(d => d.speed);
+  const trafficDensities = sorted.map(d => d.density);
+
+  // ✅ Update the chart data using only paginated data
+  this.speedChartData.labels = chartLabels;
+  this.speedChartData.datasets[0].data = avgSpeeds;
+
+  this.densityChartData.labels = chartLabels;
+  this.densityChartData.datasets[0].data = trafficDensities;
+
+  const last = avgSpeeds[avgSpeeds.length - 1] ?? 0;
+  const prev = avgSpeeds[avgSpeeds.length - 2] ?? last;
+
+  this.speedTrend = last > prev ? 'up' : last < prev ? 'down' : 'flat';
+  this.speedChange = prev === 0 ? 0 : ((last - prev) / prev) * 100;
+}
+
 
 
 

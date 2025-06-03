@@ -181,7 +181,18 @@ fetchTrafficData(): void {
     filters.sortDir = this.selectedSortDirection;
   }
 
-this.trafficService.getTrafficData(filters).subscribe(data => {
+this.trafficService.getTrafficData({
+  location: this.selectedLocation,
+  congestionLevel: this.selectedCongestion,
+  start: this.fromDate ? this.fromDate + 'T00:00:00' : undefined,
+  end: this.toDate ? this.toDate + 'T23:59:59' : undefined,
+  sortBy: this.sortBy === 'alert' ? 'alertTimestamp' : this.sortBy,
+  sortDir: this.selectedSortDirection,
+  page: this.currentPage - 1,     // ✅ 0-based index
+  size: this.pageSize             // ✅ number of results per page
+}).subscribe(res => {
+  const data = res.content;
+
   this.data = data.map(d => ({
     location: d.location,
     time: d.timestamp,
@@ -191,30 +202,16 @@ this.trafficService.getTrafficData(filters).subscribe(data => {
     alert: d.alertTimestamp
   }));
 
-  //  Only show banner for new alerts during auto-refresh (not on first load or filter)
-  const allAlerts = data.flatMap(d => (d as any).alerts ?? []);
-  const latest = allAlerts
-    .filter((a: any) => a.timestamp)
-    .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+  this.filteredData = [...this.data]; // now only contains one page
 
-  if (this.isAutoRefresh && latest && latest.timestamp !== this.latestAlertTimestamp) {
-    this.latestAlertTimestamp = latest.timestamp;
-    this.bannerMessage = latest.message;
-
-    setTimeout  (() => {
-      this.bannerMessage = null;
-    }, 5000);
-  }
-
-
-  this.filteredData = [...this.data];
-  this.updateCharts();
-  this.currentPage = 1;
+  this.totalPages = Math.ceil(res.totalElements / this.pageSize); // ✅ use real total
   this.updatePagination();
 
-this.isAutoRefresh = false; //  Reset the flag after each load
-this.isFirstLoad = false;   //  Mark first load done
+  this.updateCharts();
+  this.isAutoRefresh = false;
+  this.isFirstLoad = false;
 });
+
 
 
 }
@@ -308,15 +305,11 @@ this.filteredData.sort((a, b) => {
 }
 
 updatePagination(): void {
-  const start = (this.currentPage - 1) * this.pageSize;
-  const end = start + this.pageSize;
-  this.paginatedData = this.filteredData.slice(start, end);
-
-  this.totalPages = Math.ceil(this.filteredData.length / this.pageSize);
+  this.paginatedData = this.filteredData;  // ← use as-is (already paged by backend)
   this.pages = this.generatePagination(this.currentPage, this.totalPages);
-
-  this.updateCharts(); // ✅ Correct placement
+  this.updateCharts();
 }
+
 
 
 generatePagination(current: number, total: number): number[] {

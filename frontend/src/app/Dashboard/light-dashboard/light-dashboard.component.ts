@@ -193,7 +193,9 @@ fetchDataFromBackend(): void {
       this.filterSummary = `Showing ${res.content.length} of ${res.totalElements} result(s)`;
       this.updateCharts(res.content);
       // ✅ Detect new alerts (if alerts are sent in res.alerts)
-      const allAlerts = (res as any).alerts ?? [];
+const allAlerts = res.content
+  .flatMap((r: any) => r.alerts || [])
+  .filter((a: any) => a.timestamp);
       const latest = allAlerts
         .filter((a: any) => a.timestamp)
         .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];

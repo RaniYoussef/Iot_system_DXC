@@ -3,6 +3,7 @@ package com.DXC.iotbackend.model;
 
 
 import com.DXC.iotbackend.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,17 @@ public class SensorDataScheduler {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
-    private final String BASE_URL = "{$scheduler.BASE_URL}";
+    @Value("${scheduler.BASE_URL}")
+    private String BASE_URL;
+    @Value("${sensor.traffic-path}")
+    private String trafficPath;
+
+    @Value("${sensor.air-path}")
+    private String airPath;
+
+    @Value("${sensor.light-path}")
+    private String lightPath;
+
 
     @Scheduled(fixedRate = 60000) // every 1 min
     public void sendRandomSensorData() {
@@ -39,7 +50,7 @@ public class SensorDataScheduler {
                 randomLevel(new String[]{"Low", "Moderate", "High","Severe"})
         );
 
-        post("{$sensor.traffic-path}", data);
+        post(trafficPath, data);
     }
 
     private void sendAirPollutionData() {
@@ -59,7 +70,7 @@ public class SensorDataScheduler {
                 randomLevel(new String[]{"Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous"})
         );
 
-        post("{$sensor.air-path}", data);
+        post(airPath, data);
     }
 
     private void sendLightData() {
@@ -75,7 +86,7 @@ public class SensorDataScheduler {
                 randomLevel(new String[]{"ON", "OFF"})
         );
 
-        post("{$sensor.light-path}", data);
+        post(lightPath, data);
     }
 
     private void post(String path, Object body) {

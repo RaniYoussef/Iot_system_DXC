@@ -11,5 +11,4 @@ public class IotSystemDxcApplication {
     public static void main(String[] args) {
         SpringApplication.run(IotSystemDxcApplication.class, args);
     }
-
 }

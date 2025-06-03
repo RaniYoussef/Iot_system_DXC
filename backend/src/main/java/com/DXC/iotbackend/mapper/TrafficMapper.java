@@ -8,7 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, TrafficReadingWithAlertDTO> {
+public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, TrafficReadingWithAlertDTO>
+        implements SensorMapper<TrafficTypeData, TrafficReadingWithAlertDTO> {
 
     @Override
     protected String getSensorType() {

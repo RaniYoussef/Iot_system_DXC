@@ -34,7 +34,7 @@ export class LightService {
     });
 
     return this.http.get<{ content: StreetLightReading[], totalElements: number }>(
-      `${this.configService.apiBaseUrl}/api/light-sensor/with-alertss`, // must match your controller's endpoint
+      `${this.configService.apiBaseUrl}/api/light-sensor/with-alerts`, // must match your controller's endpoint
       { params }
     );
   }

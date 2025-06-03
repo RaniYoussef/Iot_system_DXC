@@ -31,7 +31,7 @@ public class SensorDataScheduler {
     private String lightPath;
 
 
-    @Scheduled(fixedRate = 10000) // every 1 min
+    @Scheduled(fixedRate = 60000) // every 1 min
     public void sendRandomSensorData() {
         sendTrafficData();
         sendAirPollutionData();

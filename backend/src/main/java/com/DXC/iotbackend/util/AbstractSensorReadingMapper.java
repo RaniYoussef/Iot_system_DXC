@@ -10,16 +10,16 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
     public List<DTO> mapReadingsWithAlerts(
             List<T> readings,
             List<?> alerts,
-            String location,
-            String status,
+            String filter1,
+            String filter2,
             LocalDateTime start,
             LocalDateTime end,
             String sortBy,
             String sortDir
     ) {
         List<DTO> result = readings.stream()
-                .filter(r -> location == null || location.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse("")))
-                .filter(r -> status == null || status.equalsIgnoreCase(Optional.ofNullable(getStatus(r)).orElse("")))
+                .filter(r -> filter1 == null || filter1.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse("")))
+                .filter(r -> filter2 == null || filter2.equalsIgnoreCase(Optional.ofNullable(getStatus(r)).orElse("")))
                 .filter(r -> start == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isBefore(start)).orElse(false))
                 .filter(r -> end == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isAfter(end)).orElse(false))
                 .map(r -> {

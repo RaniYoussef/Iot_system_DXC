@@ -10,22 +10,22 @@ import java.util.List;
 public class SensorFilterSpecificationBuilder {
 
     public static <T> Specification<T> buildCommonFilters(
-            String location,
-            String statusOrCongestion,
+            String variable1,
+            String variable2,
             LocalDateTime start,
             LocalDateTime end,
-            String locationField,
-            String statusField
+            String variable1Field,
+            String variable2Field
     ) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (location != null && !location.isBlank()) {
-                predicates.add(cb.equal(cb.lower(root.get(locationField)), location.toLowerCase()));
+            if (variable1 != null && !variable1.isBlank()) {
+                predicates.add(cb.equal(cb.lower(root.get(variable1Field)), variable1.toLowerCase()));
             }
 
-            if (statusOrCongestion != null && !statusOrCongestion.isBlank()) {
-                predicates.add(cb.equal(cb.lower(root.get(statusField)), statusOrCongestion.toLowerCase()));
+            if (variable2 != null && !variable2.isBlank()) {
+                predicates.add(cb.equal(cb.lower(root.get(variable2Field)), variable2.toLowerCase()));
             }
 
             if (start != null) {

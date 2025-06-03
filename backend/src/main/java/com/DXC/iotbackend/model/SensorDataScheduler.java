@@ -1,5 +1,8 @@
 package com.DXC.iotbackend.model;
 
+
+
+import com.DXC.iotbackend.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,10 +19,8 @@ public class SensorDataScheduler {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
-
     @Value("${scheduler.BASE_URL}")
     private String BASE_URL;
-
     @Value("${sensor.traffic-path}")
     private String trafficPath;
 
@@ -28,6 +29,7 @@ public class SensorDataScheduler {
 
     @Value("${sensor.light-path}")
     private String lightPath;
+
 
     @Scheduled(fixedRate = 10000) // every 1 min
     public void sendRandomSensorData() {

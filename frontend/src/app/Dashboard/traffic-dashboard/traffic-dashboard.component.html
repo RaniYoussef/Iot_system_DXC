@@ -82,7 +82,52 @@
             </div>
 
         </div>
+<div class="viz-header">
+  <button class="viz-toggle-btn" (click)="toggleVisualizations()">
+    <i class="fas" [ngClass]="showVisualizations ? 'fa-eye-slash' : 'fa-eye'"></i>
+    {{ showVisualizations ? 'Hide Visualizations' : 'Show Visualizations' }}
+  </button>
+</div>
 
+<!-- Chart Section -->
+<div *ngIf="showVisualizations" class="chart-card">
+  <div class="chart-grid">
+    <!-- Speed Trend Line Chart -->
+    <div class="chart-container">
+      <h4>
+        Speed Trends (km/h)
+        <span [ngClass]="{
+          'trend-up': speedTrend === 'up',
+          'trend-down': speedTrend === 'down',
+          'trend-flat': speedTrend === 'flat'
+        }">
+          {{
+            speedTrend === 'up' ? '▲' :
+            speedTrend === 'down' ? '▼' : '●'
+          }}
+          {{ speedChange.toFixed(1) }}%
+        </span>
+      </h4>
+      <canvas baseChart
+              [data]="speedChartData"
+              [options]="chartOptions"
+              [labels]="chartLabels"
+              [type]="'line'">
+      </canvas>
+    </div>
+
+    <!-- Density Bar Chart -->
+    <div class="chart-container">
+      <h4>Traffic Density (vehicles/hour)</h4>
+      <canvas baseChart
+              [data]="densityChartData"
+              [options]="chartOptions"
+              [labels]="chartLabels"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
+</div>
         <div class="table-card">
             <table>
                 <thead>

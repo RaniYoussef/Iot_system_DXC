@@ -31,7 +31,7 @@ public class SensorDataScheduler {
     private String lightPath;
 
 
-    @Scheduled(fixedRate = 60000) // every 1 min
+    @Scheduled(fixedRate = 10000) // every 1 min
     public void sendRandomSensorData() {
         sendTrafficData();
         sendAirPollutionData();
@@ -39,7 +39,7 @@ public class SensorDataScheduler {
     }
 
     private void sendTrafficData() {
-        String[] locations = { "Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara" };
+        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
         String randomLocation = locations[random.nextInt(locations.length)];
 
         TrafficTypeData data = new TrafficTypeData(
@@ -47,26 +47,25 @@ public class SensorDataScheduler {
                 LocalDateTime.now(),
                 random.nextInt(500),                           // trafficDensity
                 10 + random.nextFloat() * 80,                  // avgSpeed
-                randomLevel(new String[]{"Low", "Moderate", "High","Severe"})
+                randomLevel(new String[]{"Low", "Moderate", "High", "Severe"})
         );
 
         post(trafficPath, data);
     }
 
     private void sendAirPollutionData() {
-
-        String[] locations = { "Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara" };
+        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
         String randomLocation = locations[random.nextInt(locations.length)];
 
         AirPollutionData data = new AirPollutionData(
                 randomLocation,
                 LocalDateTime.now(),
-                randomFloat(0, 35), // pm2_5
-                randomFloat(0, 45), // pm10
-                randomFloat(0, 50), // co
-                randomFloat(0, 40), // no2
-                randomFloat(0, 25), // so2
-                randomFloat(0, 300), // ozone
+                randomFloat(0, 35),    // pm2_5
+                randomFloat(0, 45),    // pm10
+                randomFloat(0, 50),    // co
+                randomFloat(0, 40),    // no2
+                randomFloat(0, 25),    // so2
+                randomFloat(0, 300),   // ozone
                 randomLevel(new String[]{"Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous"})
         );
 
@@ -74,15 +73,14 @@ public class SensorDataScheduler {
     }
 
     private void sendLightData() {
-
-        String[] locations = { "Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara" };
+        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
         String randomLocation = locations[random.nextInt(locations.length)];
 
         StreetLightData data = new StreetLightData(
                 randomLocation,
                 LocalDateTime.now(),
-                random.nextInt(101),              // brightnessLevel
-                randomFloat(0, 5000),             // powerConsumption
+                random.nextInt(101),            // brightnessLevel
+                randomFloat(0, 5000),           // powerConsumption
                 randomLevel(new String[]{"ON", "OFF"})
         );
 

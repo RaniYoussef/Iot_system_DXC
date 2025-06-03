@@ -155,8 +155,8 @@ export class LightDashboardComponent implements OnInit {
     // this.loadMockData();
     // this.applyFilters();
     this.fetchLocations();
-   // this.fetchDataFromBackend();
-    this.refreshSubscription = interval(600000).subscribe(() => {
+    this.fetchDataFromBackend();
+  this.refreshSubscription = interval(60000).subscribe(() => {
     this.isAutoRefresh = true;
     this.fetchDataFromBackend();
   });

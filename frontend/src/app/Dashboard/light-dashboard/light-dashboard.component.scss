@@ -511,3 +511,14 @@ canvas {
     font-size: 1rem;
   }
 }
+.alert-banner {
+  background-color: #fef3c7; // light yellow
+  color: #92400e;            // dark orange
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+

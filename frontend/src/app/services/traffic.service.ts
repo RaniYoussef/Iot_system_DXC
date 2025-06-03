@@ -1,6 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from './config.service';
 
 export interface Alert {
   id: string;
@@ -16,28 +17,24 @@ export interface TrafficReadingWithAlertDTO {
   avgSpeed: number;
   congestionLevel: string;
   alertTimestamp?: string;
-  alerts?: Alert[]; // ✅ Add this
+  alerts?: Alert[];
 }
 
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TrafficService {
-  private baseUrl = 'http://localhost:8080/api/traffic-sensor/with-alerts'; // Adjust if deployed
+  private baseUrl: string;
 
-  constructor(private http: HttpClient) {}
-
+  constructor(private http: HttpClient, private configService: ConfigService) {
+    this.baseUrl = `${this.configService.apiBaseUrl}/api/traffic-sensor`;
+  }
 
   getAllLocations(): Observable<string[]> {
-  return this.http.get<string[]>('http://localhost:8080/api/traffic-sensor/locations');
-}
+    return this.http.get<string[]>(`${this.baseUrl}/locations`);
+  }
 
-getTrafficDataWithAlerts() {
-  return this.http.get<TrafficReadingWithAlertDTO[]>('http://localhost:8080/api/traffic-sensor/with-alerts');
-}
-
-
+  getTrafficDataWithAlerts(): Observable<TrafficReadingWithAlertDTO[]> {
+    return this.http.get<TrafficReadingWithAlertDTO[]>(`${this.baseUrl}/with-alerts`);
+  }
 
   getTrafficData(filters: {
     location?: string;
@@ -52,6 +49,6 @@ getTrafficDataWithAlerts() {
       if (val) params = params.set(key, val);
     });
 
-    return this.http.get<TrafficReadingWithAlertDTO[]>(this.baseUrl, { params });
+    return this.http.get<TrafficReadingWithAlertDTO[]>(`${this.baseUrl}/with-alerts`, { params });
   }
 }

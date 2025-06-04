@@ -1,0 +1,35 @@
+<app-header></app-header>
+<!-- Show a 500 error alert -->
+<!-- <app-alert [statusCode]="500"></app-alert> -->
+
+<!-- Show a 404 error alert -->
+
+<div class="dashboard-content">
+  <section class="dashboard-intro">
+    <h1>Welcome to the IOT System Tracking Dashboard</h1>
+    <p>Monitor and manage your connected devices and systems from a single, easy-to-use interface.</p>
+  </section>
+
+  <section class="dashboard-cards">
+    <div class="card" (click)="goToTrafficDashboard()" style="cursor: pointer;">
+      <div class="icon-circle">🚦</div>
+      <h3>Traffic Monitoring</h3>
+      <p>Monitor and analyze traffic conditions in real-time.</p>
+    </div>
+    <div class="card" (click)="goToLightcDashboard()" style="cursor: pointer;">
+      <div class="icon-circle">💡</div>
+      <h3>Street Light Management</h3>
+      <p>Control and manage street lights across the city.</p>
+    </div>
+    <div class="card">
+      <div class="icon-circle">🌫️</div>
+      <h3>Air Pollution Monitoring</h3>
+      <p>Track air quality and pollution levels.</p>
+    </div>
+  </section>
+
+  <footer class="dashboard-footer">
+    <hr />
+    <p>© 2025 IOT System Tracking. All rights reserved.</p>
+  </footer>
+</div>

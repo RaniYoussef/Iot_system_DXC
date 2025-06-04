@@ -1,0 +1,120 @@
+// /* Layout that sticks the footer to the bottom */
+// html, body {
+//   height: 100%;
+//   margin: 0;
+// }
+
+// .page-container {
+//   display: flex;
+//   flex-direction: column;
+//   min-height: 100vh;
+// }
+
+// /* Fills remaining space between header and footer */
+// .dashboard-content {
+//   flex: 0.7;
+// }
+
+
+
+
+.dashboard-content {
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  font-size: 1rem;  // ✅ was 1.8rem or higher
+  font-weight: 600;    // ✅ slightly lighter than bold
+  margin-bottom: 0.5rem;
+  color: #1f2937;       // ✅ keeps contrast
+}
+
+
+
+.dashboard-intro p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2.5rem;
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+
+  h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #111827;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.icon-circle {
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.icon-circle {
+  transition: transform 0.3s ease;
+}
+
+.card:hover .icon-circle {
+  transform: scale(1.1);
+}
+.dashboard-intro h1 {
+  font-size: 2.5rem;
+}
+
+.dashboard-intro p {
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+}
+
+.dashboard-footer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  text-align: center;
+
+  hr {
+    margin-bottom: 1rem;
+    margin-top: 0;
+    width: 80%; // Optional: reduce line width
+    margin-left: auto;
+    margin-right: auto;
+    border-color: #e5e7eb;
+  }
+}

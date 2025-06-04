@@ -1,0 +1,37 @@
+# Use the official Jenkins LTS image as the base
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install Docker CLI dependencies and utilities
+RUN apt-get update && \
+    apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common \
+    unzip \
+    wget \
+    dnsutils \
+    iputils-ping && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bookworm stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+    apt-get install -y docker-ce-cli && \
+    groupadd -f docker && \
+    usermod -aG docker jenkins && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install SonarQube Scanner
+RUN curl -O https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip && \
+    unzip sonar-scanner-cli-5.0.1.3006-linux.zip && \
+    mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner && \
+    ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner && \
+    rm sonar-scanner-cli-5.0.1.3006-linux.zip
+
+# Set environment variable for Sonar Scanner
+ENV PATH="/opt/sonar-scanner/bin:${PATH}"
+
+USER jenkins

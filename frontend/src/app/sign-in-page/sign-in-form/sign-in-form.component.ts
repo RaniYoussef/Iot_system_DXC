@@ -1,19 +1,19 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
-  ReactiveFormsModule,
-  FormsModule,
   ValidationErrors,
   AbstractControl,
-  ValidatorFn
+  ValidatorFn,
+  ReactiveFormsModule,
+  FormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 const strongPasswordValidators = [
   Validators.required,
@@ -21,7 +21,7 @@ const strongPasswordValidators = [
   Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/)
 ];
 
-// ✅ Custom validator to match passwords
+// ✅ Match passwords custom validator
 function matchPasswordsValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
     const password = group.get('newPassword')?.value;
@@ -39,7 +39,7 @@ function matchPasswordsValidator(): ValidatorFn {
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule
-  ],  
+  ],
   templateUrl: './sign-in-form.component.html',
   styleUrls: ['./sign-in-form.component.scss']
 })
@@ -58,7 +58,6 @@ export class SignInFormComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient,
     private toastr: ToastrService
   ) {
     this.signInForm = this.fb.group({
@@ -83,24 +82,20 @@ export class SignInFormComponent implements OnInit {
     }, { validators: matchPasswordsValidator() });
   }
 
-
-
-
   ngOnInit(): void {
     this.token = this.route.snapshot.queryParamMap.get('token');
-  
+
     if (this.token) {
       this.showResetPasswordForm = true;
       this.showForgotPasswordForm = false;
       return;
     }
-  
-    // ✅ Don't auto-login if redirected from logout
+
     const justLoggedOut = this.route.snapshot.queryParamMap.get('loggedOut') === 'true';
     if (justLoggedOut) return;
-  
-    // ✅ Auto-login check (only if not just logged out)
-    this.http.get<{ username: string }>('http://localhost:8080/api/user', { withCredentials: true }).subscribe({
+
+    // ✅ Auto-login check
+    this.authService.getProfile().subscribe({
       next: (user) => {
         this.toastr.success(`Welcome back, ${user.username}`);
         this.router.navigateByUrl('/dashboard');
@@ -110,9 +105,6 @@ export class SignInFormComponent implements OnInit {
       }
     });
   }
-  
-  
-  
 
   get email() {
     return this.signInForm.get('email');
@@ -147,16 +139,14 @@ export class SignInFormComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-
-    // ✅ Trim email and password before sending to backend
     const { email, password } = this.signInForm.value;
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
 
-    this.authService.signIn({ email: trimmedEmail, password: trimmedPassword }).subscribe({
+    this.authService.signIn({
+      email: email.trim(),
+      password: password.trim()
+    }).subscribe({
       next: () => {
         this.toastr.success('Signed in successfully!', 'Success');
-        this.isSubmitting = false;
         this.router.navigate(['/dashboard']);
       },
       error: () => {
@@ -173,7 +163,7 @@ export class SignInFormComponent implements OnInit {
     }
 
     const email = this.forgotPasswordForm.value.email;
-    this.http.post('http://localhost:8080/api/forgot-password', { email }).subscribe({
+    this.authService.sendForgotPassword(email).subscribe({
       next: () => {
         this.resetMessage = `A reset link has been sent to ${email}`;
         this.toastr.success('Reset link sent!', 'Success');
@@ -186,17 +176,15 @@ export class SignInFormComponent implements OnInit {
 
   onResetSubmit(): void {
     if (this.resetPasswordForm.invalid || !this.token) return;
-  
+
     if (this.resetPasswordForm.errors?.['passwordMismatch']) {
       this.toastr.error('Passwords do not match.', 'Error');
       return;
     }
-  
-    const password = this.resetPasswordForm.value.newPassword;
-  
-    this.http.post(`http://localhost:8080/api/reset-password?token=${this.token}`, {
-      newPassword: password
-    }).subscribe({
+
+    const newPassword = this.resetPasswordForm.value.newPassword;
+
+    this.authService.resetPassword(this.token, newPassword).subscribe({
       next: () => {
         this.toastr.success('Password changed successfully!', 'Success');
         this.resetPasswordForm.reset();
@@ -209,9 +197,8 @@ export class SignInFormComponent implements OnInit {
       }
     });
   }
-  
 
   signInWithGoogle(): void {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = this.authService.getGoogleRedirectUrl();
   }
 }

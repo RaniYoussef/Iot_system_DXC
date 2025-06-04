@@ -169,52 +169,59 @@ fetchAllLocations(): void {
 
 
 fetchTrafficData(): void {
-  const filters: any = {
+  this.trafficService.getTrafficData({
     location: this.selectedLocation,
-    congestionLevel: this.selectedCongestion
-  };
+    congestionLevel: this.selectedCongestion,
+    start: this.fromDate ? this.fromDate + 'T00:00:00' : undefined,
+    end: this.toDate ? this.toDate + 'T23:59:59' : undefined,
+    sortBy: this.sortBy === 'alert' ? 'alertTimestamp' : this.sortBy,
+    sortDir: this.selectedSortDirection,
+    page: this.currentPage - 1,
+    size: this.pageSize
+  }).subscribe(res => {
+    const data = res.content.map(d => ({
+      location: d.location,
+      time: d.timestamp,
+      density: d.trafficDensity,
+      speed: d.avgSpeed,
+      congestion: d.congestionLevel,
+      alert: d.alertTimestamp,
+      alerts: d.alerts // ✅ Only if your backend includes alert objects
+    }));
 
-  if (this.fromDate) filters.start = this.fromDate + 'T00:00:00';
-  if (this.toDate) filters.end = this.toDate + 'T23:59:59';
-  if (this.sortBy) {
-    filters.sortBy = this.sortBy === 'alert' ? 'alertTimestamp' : this.sortBy;
-    filters.sortDir = this.selectedSortDirection;
-  }
+    this.data = data;
+    this.filteredData = [...data];
+    this.paginatedData = [...data];
 
-this.trafficService.getTrafficData({
-  location: this.selectedLocation,
-  congestionLevel: this.selectedCongestion,
-  start: this.fromDate ? this.fromDate + 'T00:00:00' : undefined,
-  end: this.toDate ? this.toDate + 'T23:59:59' : undefined,
-  sortBy: this.sortBy === 'alert' ? 'alertTimestamp' : this.sortBy,
-  sortDir: this.selectedSortDirection,
-  page: this.currentPage - 1,     // ✅ 0-based index
-  size: this.pageSize             // ✅ number of results per page
-}).subscribe(res => {
-  const data = res.content;
+    this.totalPages = Math.ceil(res.totalElements / this.pageSize);
+    this.pages = this.generatePagination(this.currentPage, this.totalPages);
 
-  this.data = data.map(d => ({
-    location: d.location,
-    time: d.timestamp,
-    density: d.trafficDensity,
-    speed: d.avgSpeed,
-    congestion: d.congestionLevel,
-    alert: d.alertTimestamp
-  }));
+    this.updateCharts(data);
 
-  this.filteredData = [...this.data]; // now only contains one page
+    // ✅ ALERT BANNER LOGIC STARTS HERE
+    const allAlerts = data
+      .flatMap(d => d.alerts || [])
+      .filter(a => a.timestamp);
 
-  this.totalPages = Math.ceil(res.totalElements / this.pageSize); // ✅ use real total
-  this.updatePagination();
+    const latest = allAlerts
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
 
-  this.updateCharts();
-  this.isAutoRefresh = false;
-  this.isFirstLoad = false;
-});
+    if (this.isAutoRefresh && latest && latest.timestamp !== this.latestAlertTimestamp) {
+      this.latestAlertTimestamp = latest.timestamp;
+      this.bannerMessage = latest.message || 'New traffic alert received';
 
+      setTimeout(() => {
+        this.bannerMessage = null;
+      }, 5000);
+    }
+    // ✅ ALERT BANNER LOGIC ENDS HERE
 
-
+    this.isAutoRefresh = false;
+    this.isFirstLoad = false;
+  });
 }
+
+
 
 
 
@@ -223,26 +230,23 @@ applyFilters(): void {
   const fromDateObj = this.fromDate ? new Date(this.fromDate) : null;
   const toDateObj = this.toDate ? new Date(this.toDate) : null;
 
+  // Validate date logic
   if ((fromDateObj && fromDateObj > now) || (toDateObj && toDateObj > now)) {
-    this.toastr.error('Date cannot be in the future.', 'Invalid Date', {
-      timeOut: 8000,
-      closeButton: true,
-      positionClass: 'toast-bottom-right'
-    });
-    return;
-  }
-    if (fromDateObj && toDateObj && toDateObj < fromDateObj) {
-    this.toastr.error('2nd Date cannot be before 1st Date.', 'Invalid Date Range', {
-      timeOut: 8000,
-      closeButton: true,
-      positionClass: 'toast-bottom-right'
-    });
+    this.toastr.error('Date cannot be in the future.', 'Invalid Date');
     return;
   }
 
+  if (fromDateObj && toDateObj && toDateObj < fromDateObj) {
+    this.toastr.error('End date cannot be before start date.', 'Invalid Date');
+    return;
+  }
+
+  // ✅ Reset page + apply sort + fetch with filters
   this.selectedSortDirection = this.pendingSortDirection;
+  this.currentPage = 1;
   this.fetchTrafficData();
 }
+
 
 
 
@@ -297,51 +301,51 @@ this.filteredData.sort((a, b) => {
 
 
 
-  goToPage(page: number) {
+goToPage(page: number): void {
   if (page >= 1 && page <= this.totalPages) {
     this.currentPage = page;
-    this.updatePagination();
+    this.fetchTrafficData(); // Backend handles correct pagination
   }
 }
 
+
+
 updatePagination(): void {
-  this.paginatedData = this.filteredData;  // ← use as-is (already paged by backend)
+  this.paginatedData = this.filteredData;
   this.pages = this.generatePagination(this.currentPage, this.totalPages);
-  this.updateCharts();
+if (this.paginatedData && this.paginatedData.length > 0) {
+  this.updateCharts(this.paginatedData);
+}
 }
 
 
 
 generatePagination(current: number, total: number): number[] {
-  const range: number[] = [];
+  const maxButtons = 3;
+  const pages: number[] = [];
 
-  if (total <= 5) {
-    for (let i = 1; i <= total; i++) range.push(i);
-  } else {
-    const showLeftEllipsis = current > 3;
-    const showRightEllipsis = current < total - 2;
+  const start = Math.max(current - Math.floor(maxButtons / 2), 1);
+  const end = Math.min(start + maxButtons - 1, total);
 
-    range.push(1);
-
-    if (showLeftEllipsis) {
-      range.push(-1); // backward ellipsis
+  if (start > 1) {
+    pages.push(1);
+    if (start > 2) {
+      pages.push(-1); // backward ellipsis
     }
-
-    const start = Math.max(2, current - 1);
-    const end = Math.min(total - 1, current + 1);
-
-    for (let i = start; i <= end; i++) {
-      range.push(i);
-    }
-
-    if (showRightEllipsis) {
-      range.push(-2); // forward ellipsis
-    }
-
-    range.push(total);
   }
 
-  return range;
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (end < total) {
+    if (end < total - 1) {
+      pages.push(-2); // forward ellipsis
+    }
+    pages.push(total);
+  }
+
+  return pages;
 }
 
 
@@ -350,32 +354,33 @@ generatePagination(current: number, total: number): number[] {
 
 
 
-  nextPage() {
-    if ((this.currentPage * this.pageSize) < this.filteredData.length) {
-      this.currentPage++;
-      this.showVisualizations = false;
-      this.updatePagination();
-    }
+
+nextPage() {
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+    this.showVisualizations = false;
+    this.fetchTrafficData(); 
   }
+}
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.showVisualizations = false;
-      this.updatePagination();
-    }
+
+prevPage() {
+  if (this.currentPage > 1) {
+    this.currentPage--;
+    this.showVisualizations = false;
+    this.fetchTrafficData();
   }
+}
 
 
-handleEllipsisClick(direction: 'forward' | 'backward') {
+handleEllipsisClick(direction: 'forward' | 'backward'): void {
   if (direction === 'forward') {
-    const newPage = Math.min(this.currentPage + 3, this.totalPages);
-    this.goToPage(newPage);
-  } else if (direction === 'backward') {
-    const newPage = Math.max(this.currentPage - 3, 1);
-    this.goToPage(newPage);
+    this.goToPage(Math.min(this.currentPage + 2, this.totalPages));
+  } else {
+    this.goToPage(Math.max(this.currentPage - 2, 1));
   }
 }
+
 
 
 
@@ -385,22 +390,12 @@ handleEllipsisClick(direction: 'forward' | 'backward') {
 get filterSummary(): string {
   const location = this.selectedLocation || 'All locations';
   const congestion = this.selectedCongestion || 'All congestion levels';
-
-  const sortMap: { [key: string]: string } = {
-    location: 'location',
-    time: 'time',
-    density: 'traffic density',
-    speed: 'speed',
-    congestion: 'congestion',
-    alert: 'alert'
-  };
-
-
-  const column = sortMap[this.sortBy] || 'no sort';
-  const dirLabel = this.pendingSortDirection === 'asc' ? 'ascending' : 'descending'; // ✅ uses pending value
+  const column = this.sortBy || 'no sort';
+  const dirLabel = this.pendingSortDirection === 'asc' ? 'ascending' : 'descending';
 
   return `${location} • ${congestion} • Sorted by ${column} (${dirLabel})`;
 }
+
 
 
 
@@ -446,8 +441,9 @@ toggleCollapse() {
 goBack(): void {
   this.location.back();
 }
-updateCharts(): void {
-  const sorted = [...this.paginatedData].sort(
+
+updateCharts(data: TrafficData[]): void {
+  const sorted = [...data].sort(
     (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
   );
 
@@ -455,19 +451,31 @@ updateCharts(): void {
   const avgSpeeds = sorted.map(d => d.speed);
   const trafficDensities = sorted.map(d => d.density);
 
-  // ✅ Update the chart data using only paginated data
-  this.speedChartData.labels = chartLabels;
-  this.speedChartData.datasets[0].data = avgSpeeds;
+  // ✅ Reassign the entire chart objects (new references)
+  this.speedChartData = {
+    labels: chartLabels,
+    datasets: [{
+      ...this.speedChartData.datasets[0], // retain color/style config
+      data: avgSpeeds
+    }]
+  };
 
-  this.densityChartData.labels = chartLabels;
-  this.densityChartData.datasets[0].data = trafficDensities;
+  this.densityChartData = {
+    labels: chartLabels,
+    datasets: [{
+      ...this.densityChartData.datasets[0],
+      data: trafficDensities
+    }]
+  };
 
+  // ✅ Update trends
   const last = avgSpeeds[avgSpeeds.length - 1] ?? 0;
   const prev = avgSpeeds[avgSpeeds.length - 2] ?? last;
 
   this.speedTrend = last > prev ? 'up' : last < prev ? 'down' : 'flat';
   this.speedChange = prev === 0 ? 0 : ((last - prev) / prev) * 100;
 }
+
 
 
 

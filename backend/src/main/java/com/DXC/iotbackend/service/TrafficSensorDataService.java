@@ -37,6 +37,11 @@ public class TrafficSensorDataService extends BaseSensorDataService<TrafficTypeD
         this.alertRepository = alertRepository;
         this.alertEmailService = alertEmailService;
     }
+    @Override
+    protected String getStatusFieldName() {
+        return "congestionLevel";
+    }
+
 
     @Override
     protected JpaRepository<TrafficTypeData, UUID> getRepository() {

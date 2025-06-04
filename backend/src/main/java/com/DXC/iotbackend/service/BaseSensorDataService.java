@@ -8,6 +8,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.DXC.iotbackend.util.SensorFilterSpecificationBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,8 @@ public abstract class BaseSensorDataService<T, DTO> {
     protected abstract AlertRepository getAlertRepository();
     protected abstract AlertEmailService getAlertEmailService();
     protected abstract SensorMapper<T, DTO> getMapper();
+
+    protected abstract String getStatusFieldName();
 
     @SuppressWarnings("unchecked")
     private JpaSpecificationExecutor<T> specRepo() {
@@ -36,6 +39,18 @@ public abstract class BaseSensorDataService<T, DTO> {
         return saved;
     }
 
+    protected Specification<T> buildFilterSpec(String location, String statusOrLevel,
+                                               LocalDateTime start, LocalDateTime end) {
+        return SensorFilterSpecificationBuilder.buildCommonFilters(
+                location,
+                statusOrLevel,
+                start,
+                end,
+                "location",
+                getStatusFieldName()
+        );
+    }
+
     public Page<DTO> getReadingsWithAlertInfo(
             String filter1,
             String filter2,
@@ -46,8 +61,9 @@ public abstract class BaseSensorDataService<T, DTO> {
             Pageable pageable
     ) {
         // Step 1: Build filtering specification
-        Specification<T> spec = com.DXC.iotbackend.util.SensorFilterSpecificationBuilder
-                .buildCommonFilters(filter1, filter2, start, end, "location", "status");
+
+        Specification<T> spec = buildFilterSpec(filter1, filter2, start, end); // Use the local method instead
+
 
         // Step 2: Get all filtered entities (not just one page)
         List<T> filteredEntities = specRepo().findAll(spec);

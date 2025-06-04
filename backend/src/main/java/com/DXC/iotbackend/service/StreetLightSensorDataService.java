@@ -36,6 +36,12 @@ public class StreetLightSensorDataService extends BaseSensorDataService<StreetLi
     }
 
     @Override
+    protected String getStatusFieldName() {
+        return "status";
+    }
+
+
+    @Override
     protected JpaRepository<StreetLightData, UUID> getRepository() {
         return repository;
     }

@@ -141,6 +141,11 @@ docker pull raniyoussef/iot-backend
 docker pull raniyoussef/iot-frontend
 
 //////////////////////////////////////////////////////////////////////////////
+
+docker exec jenkins-cicd cat /var/jenkins_home/secrets/initialAdminPassword
+
+usernaem : Rani
+passwrod : Jenkis1234
 sprint#3---jenkis setup :
 docker run -d \
   --name jenkins-cicd \
@@ -151,7 +156,10 @@ docker run -d \
 
 
   or if it exist just : docker start jenkins-cicd
+  pass: ocker exec -it jenkins-cicd cat /var/jenkins_home/secrets/initialAdminPassword
 
 /////////////////////////////////////////////////////////////////
 user:admin
 password:SonarQube1234
+
+docker-compose up -d jenkins sonarqube

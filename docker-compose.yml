@@ -7,9 +7,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: iotdb
-      MYSQL_USER: iotuser
-      MYSQL_PASSWORD: iotpass
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
     ports:
       - "3307:3306"
     volumes:
@@ -39,13 +39,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/iotdb
-      SPRING_DATASOURCE_USERNAME: iotuser
-      SPRING_DATASOURCE_PASSWORD: iotpass
-      SPRING_REDIS_HOST: iot_redis
-      SPRING_REDIS_PORT: 6379
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       mysql:
         condition: service_healthy
@@ -53,6 +46,8 @@ services:
         condition: service_started
     networks:
       - iot-net
+    env_file:
+      - ./backend/.env
 
   frontend:
     build:

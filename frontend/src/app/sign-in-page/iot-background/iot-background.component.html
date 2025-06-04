@@ -1,0 +1,17 @@
+<div class="iot-background">
+    <div class="device-container">
+      <div 
+        *ngFor="let device of devices" 
+        class="iot-device" 
+        [ngClass]="[device.type, device.size]"
+        [style.top]="device.top"
+        [style.left]="device.left"
+        [style.animation-delay]="device.animationDelay"
+      >
+        {{ getDeviceIcon(device.type) }}
+      </div>
+    </div>
+    
+    <div class="connection-lines"></div>
+    <div class="glow-overlay"></div>
+  </div>

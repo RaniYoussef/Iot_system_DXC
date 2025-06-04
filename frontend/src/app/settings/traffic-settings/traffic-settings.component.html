@@ -1,0 +1,28 @@
+<div class="settings-wrapper">
+  <div class="settings-section">
+    <app-setting-card
+      [category]="'traffic'"
+      [setting]="settings.density"
+      displayName="Traffic Density"
+      [min]="0"
+      [max]="500"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'traffic'"
+      [setting]="settings.avgSpeed"
+      displayName="Average Speed"
+      [min]="0"
+      [max]="150"
+      [step]="0.1"
+    ></app-setting-card>
+
+    <app-setting-card
+      [category]="'traffic'"
+      [setting]="settings.congestionLevel"
+      displayName="Congestion Level"
+      [options]="congestionOptions"
+      [hideAlertType]="true"
+    ></app-setting-card>
+  </div>
+</div>

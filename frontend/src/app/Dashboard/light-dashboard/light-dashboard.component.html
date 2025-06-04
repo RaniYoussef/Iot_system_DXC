@@ -1,0 +1,206 @@
+<app-header></app-header>
+
+<div *ngIf="bannerMessage" class="alert-banner">
+  {{ bannerMessage }}
+</div>
+
+<div class="main-container">
+  <div class="dashboard-card">
+    <div class="filter-card">
+      <div class="filter-header">
+        <div class="filter-title">
+          <i class="fas fa-filter"></i>
+          <span>Filter & Sort Data</span>
+        </div>
+        <a class="toggle-collapse" (click)="toggleCollapse()">
+          {{ isCollapsed ? 'Expand' : 'Collapse' }}
+        </a>
+      </div>
+
+      <div *ngIf="!isCollapsed">
+        <div class="filter-grid">
+          <div class="form-group">
+            <label>Location</label>
+            <select [(ngModel)]="selectedLocation">
+              <option value="">All Locations</option>
+              <option *ngFor="let loc of allLocations" [value]="loc">{{ loc }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="selectedStatus">
+              <option value="">All</option>
+              <option value="ON">ON</option>
+              <option value="OFF">OFF</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>From Date</label>
+            <input type="date" [(ngModel)]="fromDate" />
+          </div>
+
+          <div class="form-group">
+            <label>To Date</label>
+            <input type="date" [(ngModel)]="toDate" />
+          </div>
+
+          <div class="form-group">
+            <label>Sort By</label>
+            <select [(ngModel)]="sortBy">
+              <option value="">No Sort</option>
+              <option value="timestamp">Timestamp</option>
+              <option value="brightnessLevel">Brightness Level</option>
+              <option value="powerConsumption">Power Consumption</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Sort Direction</label>
+            <select [(ngModel)]="pendingSortDirection">
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn-reset" (click)="resetFilters()">Reset</button>
+          <button class="btn-apply" (click)="applyFilters()">Apply Filters</button>
+        </div>
+      </div>
+
+      <div class="filter-summary">
+        {{ filterSummary }}
+      </div>
+    </div>
+
+
+    <div class="viz-header">
+      <button class="viz-toggle-btn" (click)="toggleVisualizations()">
+        <i class="fas" [ngClass]="showVisualizations ? 'fa-eye-slash' : 'fa-eye'"></i>
+        {{ showVisualizations ? 'Hide Visualizations' : 'Show Visualizations' }}
+      </button>
+    </div>
+
+    <div *ngIf="showVisualizations" class="chart-card">
+      <div class="chart-card">
+          <div class="chart-grid">
+              <div class="chart-container">
+              <h4>
+                Brightness Trends (%)
+                <span [ngClass]="{
+                  'trend-up': brightnessTrend === 'up',
+                  'trend-down': brightnessTrend === 'down',
+                  'trend-flat': brightnessTrend === 'flat'
+                }">
+                  {{
+                    brightnessTrend === 'up' ? '▲' :
+                    brightnessTrend === 'down' ? '▼' : '●'
+                  }}
+                  {{ brightnessChange.toFixed(1) }}%
+                </span>
+              </h4>
+              <canvas baseChart
+                      [data]="brightnessChartData"
+                      [options]="chartOptions"
+                      [labels]="chartLabels"
+                      [type]="'line'">
+              </canvas>
+              </div>
+
+              <div class="chart-container">
+              <h4>
+                Power Consumption (W)
+                <span [ngClass]="{
+                  'trend-up': powerTrend === 'up',
+                  'trend-down': powerTrend === 'down',
+                  'trend-flat': powerTrend === 'flat'
+                }">
+                  {{
+                    powerTrend === 'up' ? '▲' :
+                    powerTrend === 'down' ? '▼' : '●'
+                  }}
+                  {{ powerChange.toFixed(1) }}%
+                </span>
+              </h4>
+              <canvas baseChart
+                      [data]="powerChartData"
+                      [options]="chartOptions"
+                      [labels]="chartLabels"
+                      [type]="'bar'">
+              </canvas>
+              </div>
+          </div>
+      </div>
+    </div>
+
+
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th (click)="sortByColumn('location')" class="sortable-header" [class.active]="sortDirection['location']">
+              <span class="sortable-label">Location
+                <i *ngIf="sortDirection['location'] === 'asc'" class="fas fa-sort-up"></i>
+                <i *ngIf="sortDirection['location'] === 'desc'" class="fas fa-sort-down"></i>
+              </span>
+            </th>
+            <th>
+              <span class="sortable-label">Timestamp</span>
+            </th>
+            <th (click)="sortByColumn('brightnessLevel')" class="sortable-header" [class.active]="sortDirection['brightnessLevel']">
+              <span class="sortable-label">Brightness Level
+                <i *ngIf="sortDirection['brightnessLevel'] === 'asc'" class="fas fa-sort-up"></i>
+                <i *ngIf="sortDirection['brightnessLevel'] === 'desc'" class="fas fa-sort-down"></i>
+              </span>
+            </th>
+            <th (click)="sortByColumn('powerConsumption')" class="sortable-header" [class.active]="sortDirection['powerConsumption']">
+              <span class="sortable-label">Power Consumption
+                <i *ngIf="sortDirection['powerConsumption'] === 'asc'" class="fas fa-sort-up"></i>
+                <i *ngIf="sortDirection['powerConsumption'] === 'desc'" class="fas fa-sort-down"></i>
+              </span>
+            </th>
+            <th (click)="sortByColumn('status')" class="sortable-header" [class.active]="sortDirection['status']">
+              <span class="sortable-label">Status
+                <i *ngIf="sortDirection['status'] === 'asc'" class="fas fa-sort-up"></i>
+                <i *ngIf="sortDirection['status'] === 'desc'" class="fas fa-sort-down"></i>
+              </span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of paginatedData">
+            <td>{{ row.location }}</td>
+            <td>{{ row.timestamp }}</td>
+            <td>{{ row.brightnessLevel }}</td>
+            <td>{{ row.powerConsumption }} W</td>
+            <td>
+              <span [ngClass]="{'on-status': row.status === 'ON', 'off-status': row.status === 'OFF'}">
+                {{ row.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-row">
+      <button (click)="goBack()" class="btn-back">← Back</button>
+      <div class="pagination">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">« Prev</button>
+        <ng-container *ngFor="let page of pages">
+          <button *ngIf="page > 0" [class.active]="page === currentPage" (click)="goToPage(page)">
+            {{ page }}
+          </button>
+          <button *ngIf="page === -1" (click)="handleEllipsisClick('backward')" class="ellipsis">...</button>
+          <button *ngIf="page === -2" (click)="handleEllipsisClick('forward')" class="ellipsis">...</button>
+        </ng-container>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next »</button>
+      </div>
+    </div>
+  </div>
+</div>

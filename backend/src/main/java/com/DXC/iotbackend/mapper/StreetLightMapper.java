@@ -10,8 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightData, StreetLightReadingWithAlertDTO> {
-
+public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightData, StreetLightReadingWithAlertDTO>
+        implements SensorMapper<StreetLightData, StreetLightReadingWithAlertDTO> {
     @Override
     protected String getSensorType() {
         return "Street_Light";
@@ -56,8 +56,8 @@ public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightDa
                 r.getId(),
                 r.getLocation(),
                 r.getTimestamp(),
-                r.getPowerConsumption(),
                 r.getBrightnessLevel(),
+                r.getPowerConsumption(),
                 r.getStatus(),
                 alertTime,
                 alerts

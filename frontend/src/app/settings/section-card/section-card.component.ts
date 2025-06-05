@@ -9,11 +9,11 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./section-card.component.scss']
 })
 export class SectionCardComponent implements OnInit {
-  @Input() title: string = '';
-  expanded: boolean = true;
+  @Input() title = '';
+  expanded = true;
 
-  emoji: string = '';
-  cleanTitle: string = '';
+  emoji = '';
+  cleanTitle = '';
 
   ngOnInit() {
     const match = this.title.match(/^[^\w\s]+/); // Emoji or symbol

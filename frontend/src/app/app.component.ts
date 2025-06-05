@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './settings/header/header.component'; // ✅ Make sure the path is correct
-import { FormsModule } from '@angular/forms'; // ✅ Import FormsModule
+import { CommonModule } from '@angular/common';
+import { HeaderComponent } from './settings/header/header.component'; // Confirmed standalone
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FormsModule,], // ✅ Add HeaderComponent
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    FormsModule,
+    HeaderComponent // ✅ Works because it's standalone
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

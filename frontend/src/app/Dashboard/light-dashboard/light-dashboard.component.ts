@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,7 +30,7 @@ type SortableColumn = keyof Pick<StreetLightReading, 'location' | 'timestamp' | 
   templateUrl: './light-dashboard.component.html',
   styleUrls: ['./light-dashboard.component.scss']
 })
-export class LightDashboardComponent implements OnInit {
+export class LightDashboardComponent implements OnInit, OnDestroy {
 
   //alert banner
   bannerMessage: string | null = null;
@@ -46,14 +46,14 @@ export class LightDashboardComponent implements OnInit {
   allLocations: string[] = [];
 
   // Filters
-  selectedLocation: string = '';
-  selectedStatus: string = '';
-  fromDate: string = '';
-  toDate: string = '';
+  selectedLocation = '';
+  selectedStatus = '';
+  fromDate = '';
+  toDate = '';
   sortBy: SortableColumn = 'timestamp'; 
   pendingSortDirection: 'asc' | 'desc' = 'desc'; 
 
-  sortDirection: { [key: string]: 'asc' | 'desc' } = {};
+  sortDirection: Record<string, 'asc' | 'desc'> = {};
 
   // Pagination
   currentPage = 1;
@@ -62,19 +62,19 @@ export class LightDashboardComponent implements OnInit {
   pages: number[] = [];
 
   isCollapsed = false;
-  filterSummary: string = '';
+  filterSummary = '';
 
   chartLabels: string[] = [];
 
 
-  showVisualizations: boolean = true;
+  showVisualizations = true;
 
   // Trends
   brightnessTrend: 'up' | 'down' | 'flat' = 'flat';
   powerTrend: 'up' | 'down' | 'flat' = 'flat';
 
-  brightnessChange: number = 0;
-  powerChange: number = 0;
+  brightnessChange = 0;
+  powerChange = 0;
 
 
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -9,13 +9,14 @@ import { AuthService } from './services/auth.service';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService = inject(AuthService); // ✅ modern DI
+  private router = inject(Router);           // ✅ modern DI
 
   canActivate(): Observable<boolean> {
     return this.authService.getProfile().pipe(
-      map(() => true), // ✅ Profile fetched → Authenticated
+      map(() => true), // ✅ Authenticated
       catchError(() => {
-        this.router.navigate(['/sign-in']); // ❌ Not authenticated
+        this.router.navigate(['/sign-in']); // ❌ Redirect if not authenticated
         return of(false);
       })
     );

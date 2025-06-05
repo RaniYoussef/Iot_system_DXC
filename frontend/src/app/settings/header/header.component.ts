@@ -15,7 +15,7 @@ import { AuthService } from 'src/app/services/auth.service'; // Import AuthServi
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements AfterViewInit, OnInit {
   firstName = 'User';
   dropdownOpen = false;
 

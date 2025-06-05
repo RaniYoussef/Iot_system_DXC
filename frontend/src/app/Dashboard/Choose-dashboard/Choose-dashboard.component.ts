@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router'; // ✅ Make sure this is a value import
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
 
@@ -14,9 +14,10 @@ export class ChooseDashboardComponent {
   constructor(private router: Router) {}
 
   goToTrafficDashboard(): void {
-    this.router.navigate(['/traffic-dashboard']); 
+    this.router.navigate(['/traffic-dashboard']);
   }
-    goToLightcDashboard(): void {
-    this.router.navigate(['/light-dashboard']); 
+
+  goToLightDashboard(): void {
+    this.router.navigate(['/light-dashboard']);
   }
 }

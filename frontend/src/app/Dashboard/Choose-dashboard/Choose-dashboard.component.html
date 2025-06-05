@@ -1,8 +1,4 @@
 <app-header></app-header>
-<!-- Show a 500 error alert -->
-<!-- <app-alert [statusCode]="500"></app-alert> -->
-
-<!-- Show a 404 error alert -->
 
 <div class="dashboard-content">
   <section class="dashboard-intro">
@@ -11,16 +7,22 @@
   </section>
 
   <section class="dashboard-cards">
-    <div class="card" (click)="goToTrafficDashboard()" style="cursor: pointer;">
+
+    <!-- Traffic Button -->
+    <button class="card" type="button" (click)="goToTrafficDashboard()">
       <div class="icon-circle">🚦</div>
       <h3>Traffic Monitoring</h3>
       <p>Monitor and analyze traffic conditions in real-time.</p>
-    </div>
-    <div class="card" (click)="goToLightcDashboard()" style="cursor: pointer;">
+    </button>
+
+    <!-- Light Button -->
+    <button class="card" type="button" (click)="goToLightDashboard()">
       <div class="icon-circle">💡</div>
       <h3>Street Light Management</h3>
       <p>Control and manage street lights across the city.</p>
-    </div>
+    </button>
+
+    <!-- Air Monitoring (Not interactive) -->
     <div class="card">
       <div class="icon-circle">🌫️</div>
       <h3>Air Pollution Monitoring</h3>

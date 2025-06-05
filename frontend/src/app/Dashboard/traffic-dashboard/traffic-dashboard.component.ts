@@ -49,24 +49,24 @@ export class TrafficDashboardComponent implements OnInit, OnDestroy {
 
 
   locations: string[] = [];
-  selectedLocation: string = '';
-  selectedCongestion: string = '';
-  fromDate: string = '';
-  toDate: string = '';
-  sortBy: string = '';
+  selectedLocation = '';
+  selectedCongestion = '';
+  fromDate = '';
+  toDate = '';
+  sortBy = '';
   selectedSortDirection: 'asc' | 'desc' = 'desc';
   pendingSortDirection: 'asc' | 'desc' = 'desc';
-  sortDirection: { [key: string]: 'asc' | 'desc' | undefined } = {};
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalPages: number = 1;
+  sortDirection: Record<string, 'asc' | 'desc' | undefined> = {};
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
   pages: number[] = [];
 
 
   showVisualizations = false;
 
 speedTrend: 'up' | 'down' | 'flat' = 'flat';
-speedChange: number = 0;
+speedChange = 0;
 chartLabels: string[] = [];
 
 speedChartData: ChartConfiguration<'line'>['data'] = {
@@ -386,7 +386,7 @@ get filterSummary(): string {
   const location = this.selectedLocation || 'All locations';
   const congestion = this.selectedCongestion || 'All congestion levels';
 
-  const sortMap: { [key: string]: string } = {
+  const sortMap: Record<string, string> = {
     location: 'location',
     time: 'time',
     density: 'traffic density',

@@ -9,9 +9,7 @@ import { ChooseDashboardComponent } from './Dashboard/Choose-dashboard/Choose-da
 import { TrafficDashboardComponent } from './Dashboard/traffic-dashboard/traffic-dashboard.component';
 import { LightDashboardComponent } from './Dashboard/light-dashboard/light-dashboard.component';
 
-// import { AlertComponent } from './Dashboard/Alert/alert.component';
 import { AlertComponent } from './Dashboard/alert/alert.component';
-//import { TrafficVisualisationComponent} from './Dashboard/traffic-visualisation/traffic-visualisation.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'sign-in', pathMatch: 'full' },

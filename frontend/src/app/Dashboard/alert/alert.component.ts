@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AlertComponent implements OnInit {
   @Input() statusCode: number | null = null;
-  @Input() message: string = 'New-learner offer | Courses from E£249.99.';
+  @Input() message = 'New-learner offer | Courses from E£249.99.';
 
   showAlert = true;
   alertType: 'warning' | 'info' = 'info';

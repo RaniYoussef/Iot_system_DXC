@@ -15,7 +15,7 @@ import { AuthService } from 'src/app/services/auth.service'; // Import AuthServi
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements AfterViewInit, OnInit {
   firstName = 'User';
   dropdownOpen = false;
 
@@ -58,38 +58,6 @@ export class HeaderComponent implements AfterViewInit {
     this.dropdownOpen = false;
   }
 
-  // signOut() {
-  //   this.toastr.success('You have been signed out.', 'Signed Out');
-  //   setTimeout(() => {
-  //     window.location.href = '/sign-in';
-  //   }, 1500);
-  // }
-
-
-  
-  // signOut(): void {
-  //   this.http.get('http://localhost:8080/api/logout', { withCredentials: true }).subscribe({
-  //     next: () => {
-  //       localStorage.clear();
-  //       sessionStorage.clear();
-  
-  //       // Check if the user is an OAuth user (you can store a flag after login)
-  //       const isOAuthUser = localStorage.getItem('oauthUser') === 'true';
-  
-  //       if (isOAuthUser) {
-  //         // ✅ Logout from Google and redirect
-  //         window.location.href = 'https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:4200/sign-in';
-  //       } else {
-  //         this.router.navigate(['/sign-in']);
-  //       }
-  
-  //       this.toastr.success('You have been signed out.');
-  //     },
-  //     error: () => {
-  //       this.toastr.error('Logout failed. Please try again.');
-  //     }
-  //   });
-  // }
   signOut(): void {
     this.http.get('http://localhost:8080/api/logout', { withCredentials: true }).subscribe({
       next: () => {

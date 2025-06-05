@@ -11,7 +11,7 @@ public class SensorFilterSpecificationBuilder {
 
     public static <T> Specification<T> buildCommonFilters(
             String location,
-            String statusOrCongestion,
+            String statusOrLevel,
             LocalDateTime start,
             LocalDateTime end,
             String locationField,
@@ -24,8 +24,8 @@ public class SensorFilterSpecificationBuilder {
                 predicates.add(cb.equal(cb.lower(root.get(locationField)), location.toLowerCase()));
             }
 
-            if (statusOrCongestion != null && !statusOrCongestion.isBlank()) {
-                predicates.add(cb.equal(cb.lower(root.get(statusField)), statusOrCongestion.toLowerCase()));
+            if (statusOrLevel != null && !statusOrLevel.isBlank() && statusField != null) {
+                predicates.add(cb.equal(cb.lower(root.get(statusField)), statusOrLevel.toLowerCase()));
             }
 
             if (start != null) {

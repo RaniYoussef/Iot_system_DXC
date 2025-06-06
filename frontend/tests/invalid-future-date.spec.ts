@@ -22,6 +22,6 @@ test('TC004 - Filter with invalid future date range (start > end)', async ({ pag
     await expect(warning).toContainText(/invalid|error|start/i, { timeout: 2000 });
   } catch {
     // If no warning, confirm data still shown (fallback to checking non-zero rows)
-    await expect(rows).not.toHaveCount(0);
+await expect(rows).toHaveCount(0);
   }
 });

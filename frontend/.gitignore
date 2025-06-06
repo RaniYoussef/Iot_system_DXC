@@ -1,17 +1,32 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
+# === Angular / Node / Playwright ===
 /dist
 /tmp
 /out-tsc
 /bazel-out
-
-# Node
 /node_modules
+/frontend/node_modules
+/frontend/dist
+/frontend/test-results
+/frontend/html-report
+/frontend/.last-run.json
+/frontend/summary.txt
+*.trace
+*.zip
+
+# === Logs ===
 npm-debug.log
 yarn-error.log
+*.log
 
-# IDEs and editors
+# === Java / Spring Boot ===
+/target
+*.class
+*.jar
+*.war
+
+# === IDEs and Editors ===
 .idea/
 .project
 .classpath
@@ -19,16 +34,15 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
-
-# Visual Studio Code
+*.iml
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
 
-# Miscellaneous
+# === Miscellaneous ===
 /.angular/cache
 .sass-cache/
 /connect.lock
@@ -37,6 +51,6 @@ yarn-error.log
 testem.log
 /typings
 
-# System files
+# === System Files ===
 .DS_Store
 Thumbs.db

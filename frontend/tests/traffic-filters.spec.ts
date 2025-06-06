@@ -22,7 +22,7 @@ test('TC018 - Filter traffic data by location, congestion, and date', async ({ p
   await page.selectOption('#location-select', { label: 'Smouha' });
   await page.selectOption('#congestion-select', { label: 'High' });
   await page.fill('#from-date', '2025-05-01');
-  await page.fill('#to-date', '2025-06-05');
+  await page.fill('#to-date', '2025-06-06');
   await page.selectOption('#sort-by-select', { value: 'trafficDensity' });
   await page.selectOption('#sort-direction-select', { value: 'desc' });
 

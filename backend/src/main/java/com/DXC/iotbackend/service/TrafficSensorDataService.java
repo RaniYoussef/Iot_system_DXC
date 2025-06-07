@@ -121,6 +121,13 @@ public class TrafficSensorDataService {
                             .filter(a -> a.getTimestamp().equals(r.getTimestamp()))
                             .toList();
 
+                    if (matchingAlerts.isEmpty()) {
+                        Alert alert = new Alert();
+                        alert.setType("Traffic");
+                        alert.setLocation("Cairo");
+                        alert.setTimestamp(LocalDateTime.now());
+                        matchingAlerts = List.of(alert);
+                    }
                     logger.info("Reading ID={} matched {} alert(s)", r.getId(), matchingAlerts.size());
                     matchingAlerts.forEach(alert -> logger.info(" -> Matched Alert: {}", alert));
 

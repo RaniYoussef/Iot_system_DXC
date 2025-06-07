@@ -1,8 +1,8 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.model.StreetLightData;
-import com.DXC.iotbackend.payload.StreetLightReadingWithAlertDTO;
-import com.DXC.iotbackend.service.StreetLightSensorDataService;
+import com.dxc.iotbackend.model.StreetLightData;
+import com.dxc.iotbackend.payload.StreetLightReadingWithAlertDTO;
+import com.dxc.iotbackend.service.StreetLightSensorDataService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

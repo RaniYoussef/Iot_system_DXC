@@ -1,7 +1,7 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.model.AirPollutionData;
-import com.DXC.iotbackend.service.AirPollutionDataService;
+import com.dxc.iotbackend.model.AirPollutionData;
+import com.dxc.iotbackend.service.AirPollutionDataService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

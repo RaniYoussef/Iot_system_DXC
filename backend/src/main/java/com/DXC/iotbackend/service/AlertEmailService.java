@@ -1,6 +1,6 @@
-package com.DXC.iotbackend.service;
+package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.Alert;
 import org.springframework.stereotype.Service;
 
 @Service

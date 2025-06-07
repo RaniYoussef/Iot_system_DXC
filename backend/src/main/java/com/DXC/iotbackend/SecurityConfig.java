@@ -1,12 +1,12 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
 
-import com.DXC.iotbackend.JwtFilter;
-import com.DXC.iotbackend.RateLimitingFilter;
-import com.DXC.iotbackend.UserDetailsImpl;
-import com.DXC.iotbackend.model.UserEntity;
-import com.DXC.iotbackend.repository.UserRepository;
-import com.DXC.iotbackend.util.JwtUtil;
+import com.dxc.iotbackend.JwtFilter;
+import com.dxc.iotbackend.RateLimitingFilter;
+import com.dxc.iotbackend.UserDetailsImpl;
+import com.dxc.iotbackend.model.UserEntity;
+import com.dxc.iotbackend.repository.UserRepository;
+import com.dxc.iotbackend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-//import com.DXC.iotbackend.oauth2.CustomOAuth2UserService;
-import com.DXC.iotbackend.CustomOAuth2UserService;
+//import com.dxc.iotbackend.oauth2.CustomOAuth2UserService;
+import com.dxc.iotbackend.CustomOAuth2UserService;
 
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;

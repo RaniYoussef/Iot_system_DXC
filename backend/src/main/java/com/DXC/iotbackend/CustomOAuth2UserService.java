@@ -1,9 +1,9 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
-//package com.DXC.iotbackend.oauth2;
+//package com.dxc.iotbackend.oauth2;
 
-import com.DXC.iotbackend.model.UserEntity;
-import com.DXC.iotbackend.repository.UserRepository;
+import com.dxc.iotbackend.model.UserEntity;
+import com.dxc.iotbackend.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

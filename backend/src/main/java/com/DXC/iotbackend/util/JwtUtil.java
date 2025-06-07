@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.util;
+package com.dxc.iotbackend.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

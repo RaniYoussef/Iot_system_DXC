@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.model;
+package com.dxc.iotbackend.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

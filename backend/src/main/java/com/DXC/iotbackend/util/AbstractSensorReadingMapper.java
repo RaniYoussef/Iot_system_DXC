@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.util;
+package com.dxc.iotbackend.util;
 
 import java.time.LocalDateTime;
 import java.util.*;

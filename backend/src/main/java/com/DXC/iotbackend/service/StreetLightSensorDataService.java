@@ -1,13 +1,13 @@
-package com.DXC.iotbackend.service;
+package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.mapper.StreetLightMapper;
-import com.DXC.iotbackend.mapper.SensorMapper;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.model.StreetLightData;
-import com.DXC.iotbackend.payload.StreetLightReadingWithAlertDTO;
-import com.DXC.iotbackend.repository.AlertRepository;
-import com.DXC.iotbackend.repository.StreetLightSensorDataRepository;
-import com.DXC.iotbackend.service.BaseSensorDataService;
+import com.dxc.iotbackend.mapper.StreetLightMapper;
+import com.dxc.iotbackend.mapper.SensorMapper;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.StreetLightData;
+import com.dxc.iotbackend.payload.StreetLightReadingWithAlertDTO;
+import com.dxc.iotbackend.repository.AlertRepository;
+import com.dxc.iotbackend.repository.StreetLightSensorDataRepository;
+import com.dxc.iotbackend.service.BaseSensorDataService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 

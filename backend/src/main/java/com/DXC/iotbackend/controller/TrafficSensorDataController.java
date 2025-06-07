@@ -1,8 +1,8 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.model.TrafficTypeData;
-import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
-import com.DXC.iotbackend.service.TrafficSensorDataService;
+import com.dxc.iotbackend.model.TrafficTypeData;
+import com.dxc.iotbackend.payload.TrafficReadingWithAlertDTO;
+import com.dxc.iotbackend.service.TrafficSensorDataService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

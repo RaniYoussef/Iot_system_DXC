@@ -1,6 +1,6 @@
-package com.DXC.iotbackend.payload;
+package com.dxc.iotbackend.payload;
 
-import com.DXC.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.Alert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

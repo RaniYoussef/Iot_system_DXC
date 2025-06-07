@@ -1,6 +1,6 @@
-package com.DXC.iotbackend.repository;
+package com.dxc.iotbackend.repository;
 
-import com.DXC.iotbackend.model.StreetLightData;
+import com.dxc.iotbackend.model.StreetLightData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

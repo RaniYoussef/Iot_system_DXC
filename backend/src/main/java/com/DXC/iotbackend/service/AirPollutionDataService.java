@@ -1,9 +1,9 @@
-package com.DXC.iotbackend.service;
+package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.model.AirPollutionData;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.repository.AirPollutionDataRepository;
-import com.DXC.iotbackend.repository.AlertRepository;
+import com.dxc.iotbackend.model.AirPollutionData;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.repository.AirPollutionDataRepository;
+import com.dxc.iotbackend.repository.AlertRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

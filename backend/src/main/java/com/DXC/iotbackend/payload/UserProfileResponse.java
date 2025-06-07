@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.payload;
+package com.dxc.iotbackend.payload;
 
 public class UserProfileResponse {
     private String username;

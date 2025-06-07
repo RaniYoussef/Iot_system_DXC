@@ -1,6 +1,6 @@
-package com.DXC.iotbackend.service;
-import com.DXC.iotbackend.model.SensorData;
-import com.DXC.iotbackend.repository.SensorDataRepository;
+package com.dxc.iotbackend.service;
+import com.dxc.iotbackend.model.SensorData;
+import com.dxc.iotbackend.repository.SensorDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

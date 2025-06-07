@@ -1,8 +1,8 @@
-package com.DXC.iotbackend.mapper;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.model.TrafficTypeData;
-import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
-import com.DXC.iotbackend.util.AbstractSensorReadingMapper;
+package com.dxc.iotbackend.mapper;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.TrafficTypeData;
+import com.dxc.iotbackend.payload.TrafficReadingWithAlertDTO;
+import com.dxc.iotbackend.util.AbstractSensorReadingMapper;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;

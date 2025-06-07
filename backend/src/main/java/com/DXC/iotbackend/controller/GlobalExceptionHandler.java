@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

@@ -1,14 +1,14 @@
-package com.DXC.iotbackend.service;
+package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.mapper.SensorMapper;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.repository.AlertRepository;
-import com.DXC.iotbackend.service.AlertEmailService;
+import com.dxc.iotbackend.mapper.SensorMapper;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.repository.AlertRepository;
+import com.dxc.iotbackend.service.AlertEmailService;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import com.DXC.iotbackend.util.SensorFilterSpecificationBuilder;
+import com.dxc.iotbackend.util.SensorFilterSpecificationBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;

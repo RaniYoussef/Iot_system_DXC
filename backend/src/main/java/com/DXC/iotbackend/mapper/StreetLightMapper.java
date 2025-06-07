@@ -4,6 +4,8 @@ import com.DXC.iotbackend.model.Alert;
 import com.DXC.iotbackend.model.StreetLightData;
 import com.DXC.iotbackend.payload.StreetLightReadingWithAlertDTO;
 import com.DXC.iotbackend.util.AbstractSensorReadingMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -12,6 +14,9 @@ import java.util.Optional;
 
 public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightData, StreetLightReadingWithAlertDTO>
         implements SensorMapper<StreetLightData, StreetLightReadingWithAlertDTO> {
+
+    private static final Logger logger = LoggerFactory.getLogger(StreetLightMapper.class);
+
     @Override
     protected String getSensorType() {
         return "Street_Light";
@@ -49,10 +54,15 @@ public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightDa
 
     @Override
     protected StreetLightReadingWithAlertDTO mapToDTO(StreetLightData r, List<?> matchingAlerts) {
+        logger.info("Mapping reading ID {} at {} with status={} and checking {} matching alerts",
+                r.getId(), r.getLocation(), r.getStatus(), matchingAlerts.size());
+
         List<Alert> alerts = matchingAlerts.stream().map(a -> (Alert) a).toList();
+        alerts.forEach(alert -> logger.info("  -> Matching Alert: {}", alert));
+
         LocalDateTime alertTime = alerts.isEmpty() ? null : alerts.get(0).getTimestamp();
 
-        return new StreetLightReadingWithAlertDTO(
+        StreetLightReadingWithAlertDTO dto = new StreetLightReadingWithAlertDTO(
                 r.getId(),
                 r.getLocation(),
                 r.getTimestamp(),
@@ -62,6 +72,9 @@ public class StreetLightMapper extends AbstractSensorReadingMapper<StreetLightDa
                 alertTime,
                 alerts
         );
+
+        logger.info("Mapped DTO: {}", dto);
+        return dto;
     }
 
     @Override

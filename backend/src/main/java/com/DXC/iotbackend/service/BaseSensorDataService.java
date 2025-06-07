@@ -4,6 +4,8 @@ import com.DXC.iotbackend.mapper.SensorMapper;
 import com.DXC.iotbackend.model.Alert;
 import com.DXC.iotbackend.repository.AlertRepository;
 import com.DXC.iotbackend.service.AlertEmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,6 +53,8 @@ public abstract class BaseSensorDataService<T, DTO> {
         );
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(BaseSensorDataService.class);
+
     public Page<DTO> getReadingsWithAlertInfo(
             String filter1,
             String filter2,
@@ -60,28 +64,36 @@ public abstract class BaseSensorDataService<T, DTO> {
             String sortDir,
             Pageable pageable
     ) {
+        logger.info("Starting getReadingsWithAlertInfo with filters: filter1={}, filter2={}, start={}, end={}, sortBy={}, sortDir={}",
+                filter1, filter2, start, end, sortBy, sortDir);
+
         // Step 1: Build filtering specification
+        Specification<T> spec = buildFilterSpec(filter1, filter2, start, end);
+        logger.info("Built filter specification: {}", spec);
 
-        Specification<T> spec = buildFilterSpec(filter1, filter2, start, end); // Use the local method instead
-
-
-        // Step 2: Get all filtered entities (not just one page)
+        // Step 2: Get all filtered entities
         List<T> filteredEntities = specRepo().findAll(spec);
+        logger.info("Fetched {} filtered entities", filteredEntities.size());
+        logger.info("Filtered Entities: {}", filteredEntities);
 
         // Step 3: Fetch all alerts once
         List<Alert> alerts = getAlertRepository().findAll();
+        logger.info("Fetched {} alerts from database", alerts.size());
+        logger.info("Alerts: {}", alerts);
 
-        // Step 4: Map with alerts, filter, sort entire list
+        // Step 4: Map with alerts
         List<DTO> fullDtoList = getMapper().mapReadingsWithAlerts(
                 filteredEntities, alerts, filter1, filter2, start, end, sortBy, sortDir
         );
+        logger.info("Mapped {} DTOs with alert info", fullDtoList.size());
+        logger.info("Full DTO list: {}", fullDtoList);
 
-        // Step 5: Perform manual pagination (after sort is applied)
+        // Step 5: Manual pagination
         int startIdx = Math.min((int) pageable.getOffset(), fullDtoList.size());
         int endIdx = Math.min(startIdx + pageable.getPageSize(), fullDtoList.size());
         List<DTO> paginatedList = fullDtoList.subList(startIdx, endIdx);
+        logger.info("Paginated list from index {} to {} (page size: {})", startIdx, endIdx, pageable.getPageSize());
 
-        // Step 6: Return manually paged DTO list
         return new PageImpl<>(paginatedList, pageable, fullDtoList.size());
     }
 

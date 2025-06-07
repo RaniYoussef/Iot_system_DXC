@@ -1,3 +1,12 @@
+# Ignore environment secrets
+backend/.env
+
+# Ignore only sensitive env values, not config templates
+# DO NOT ignore application.properties now since it uses safe ${...}
+# If you have a private version, keep that as application-secret.properties and ignore it separately
+# backend/src/main/resources/application-secret.properties
+
+# Build and IDE
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -12,9 +21,6 @@ target/
 .settings
 .springBeans
 .sts4-cache
-# Ignore sensitive Spring config
-backend/src/main/resources/application.properties
-
 
 ### IntelliJ IDEA ###
 .idea

@@ -78,21 +78,21 @@ public abstract class BaseSensorDataService<T, DTO> {
 
         // Step 3: Fetch all alerts once
         List<Alert> alerts = getAlertRepository().findAll();
-        logger.info("Fetched {} alerts from database", alerts.size());
-        logger.info("Alerts: {}", alerts);
+//        logger.info("Fetched {} alerts from database", alerts.size());
+//        logger.info("Alerts: {}", alerts);
 
         // Step 4: Map with alerts
         List<DTO> fullDtoList = getMapper().mapReadingsWithAlerts(
                 filteredEntities, alerts, filter1, filter2, start, end, sortBy, sortDir
         );
-        logger.info("Mapped {} DTOs with alert info", fullDtoList.size());
-        logger.info("Full DTO list: {}", fullDtoList);
+//        logger.info("Mapped {} DTOs with alert info", fullDtoList.size());
+//        logger.info("Full DTO list: {}", fullDtoList);
 
         // Step 5: Manual pagination
         int startIdx = Math.min((int) pageable.getOffset(), fullDtoList.size());
         int endIdx = Math.min(startIdx + pageable.getPageSize(), fullDtoList.size());
         List<DTO> paginatedList = fullDtoList.subList(startIdx, endIdx);
-        logger.info("Paginated list from index {} to {} (page size: {})", startIdx, endIdx, pageable.getPageSize());
+//        logger.info("Paginated list from index {} to {} (page size: {})", startIdx, endIdx, pageable.getPageSize());
 
         return new PageImpl<>(paginatedList, pageable, fullDtoList.size());
     }

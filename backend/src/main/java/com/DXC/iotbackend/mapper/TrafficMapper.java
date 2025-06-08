@@ -54,11 +54,11 @@ public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, 
 
     @Override
     protected TrafficReadingWithAlertDTO mapToDTO(TrafficTypeData r, List<?> matchingAlerts) {
-        logger.info("Mapping reading ID {} at {} with congestionLevel={} and checking {} matching alerts",
-                r.getId(), r.getLocation(), r.getCongestionLevel(), matchingAlerts.size());
+//        logger.info("Mapping reading ID {} at {} with congestionLevel={} and checking {} matching alerts",
+//                r.getId(), r.getLocation(), r.getCongestionLevel(), matchingAlerts.size());
 
         List<Alert> alerts = matchingAlerts.stream().map(a -> (Alert) a).toList();
-        alerts.forEach(alert -> logger.info("  -> Matching Alert: {}", alert));
+//        alerts.forEach(alert -> logger.info("  -> Matching Alert: {}", alert));
 
         LocalDateTime alertTime = alerts.isEmpty() ? null : alerts.get(0).getTimestamp();
 
@@ -73,7 +73,7 @@ public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, 
                 alerts
         );
 
-        logger.info("Mapped DTO: {}", dto);
+//        logger.info("Mapped DTO: {}", dto);
         return dto;
     }
 

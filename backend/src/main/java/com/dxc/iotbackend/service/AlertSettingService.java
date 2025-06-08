@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AlertSettingService {
@@ -62,11 +63,17 @@ public class AlertSettingService {
         if (value == null) {
             throw new IllegalArgumentException("Threshold value cannot be null");
         }
+
         float[] range = METRIC_RANGES.get(metric);
-        if (range == null || value < range[0] || value > range[1]) {
-            throw new IllegalArgumentException(
-                metric + " must be between " + range[0] + " and " + range[1]
-            );
+        if (range == null) {
+            throw new IllegalArgumentException("No range defined for metric: " + metric);
+        }
+
+        float min = range[0];
+        float max = range[1];
+
+        if (value < min || value > max) {
+            throw new IllegalArgumentException(String.format("%s must be between %.2f and %.2f", metric, min, max));
         }
     }
 
@@ -83,24 +90,19 @@ public class AlertSettingService {
     }
 
     private List<Alert> generateAlerts(String location, String type, float value1, float value2) {
-        List<Alert> alerts = new ArrayList<>();
-
-        for (AlertSetting setting : repository.findAll()) {
-            if (!setting.getType().equalsIgnoreCase(type)) {
-                continue;
-            }
-
-            float actualValue = resolveValue(setting.getMetric(), value1, value2);
-            if (actualValue == -1f) {
-                continue;
-            }
-
-            if (isThresholdViolated(actualValue, setting.getThresholdValue(), setting.getAlertType())) {
-                alerts.add(createAlert(location, type, setting, actualValue));
-            }
-        }
-
-        return alerts;
+        return repository.findAll().stream()
+                .filter(setting -> type.equalsIgnoreCase(setting.getType()))
+                .map(setting -> {
+                    float actualValue = resolveValue(setting.getMetric(), value1, value2);
+                    if (actualValue == -1f) {
+                        return null;
+                    }
+                    return isThresholdViolated(actualValue, setting.getThresholdValue(), setting.getAlertType())
+                            ? createAlert(location, type, setting, actualValue)
+                            : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private float resolveValue(String metric, float value1, float value2) {

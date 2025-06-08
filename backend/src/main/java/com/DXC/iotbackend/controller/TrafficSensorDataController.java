@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,52 +19,32 @@ import java.util.Map;
 @RestController
 @RequestMapping("${api.base-path}${sensor.traffic-path}")
 @CrossOrigin
-//public class TrafficSensorDataController extends BaseSensorDataController<TrafficTypeData, TrafficReadingWithAlertDTO> {
-public class TrafficSensorDataController {
+public class TrafficSensorDataController extends BaseSensorDataController<TrafficTypeData, TrafficReadingWithAlertDTO> {
+
     private final TrafficSensorDataService service;
 
     public TrafficSensorDataController(TrafficSensorDataService service) {
         this.service = service;
     }
 
-//    @Override
-//    protected TrafficSensorDataService getService() {
-//        return service;
-//    }
-
-    @PostMapping
-    public TrafficTypeData saveData(@Valid @RequestBody TrafficTypeData data) {
-        return service.saveData(data);
-    }
-
-
-    @GetMapping
-    public Page<TrafficTypeData> getFilteredData(
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String congestionLevel,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-            @PageableDefault(size = 5, sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return service.getFilteredTrafficData(location, congestionLevel, start, end, pageable);
+    @Override
+    protected TrafficSensorDataService getService() {
+        return service;
     }
 
     @GetMapping("${sensor.with.alert}")
-    public Page<TrafficReadingWithAlertDTO> getTrafficWithAlerts(
+    public Page<TrafficReadingWithAlertDTO> getTrafficReadings(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String congestionLevel,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-            @RequestParam(required = false, defaultValue = "timestamp") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir,
-            Pageable pageable // 👈 now supports page, size, sort
+            @RequestParam(defaultValue = "timestamp") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return service.getTrafficReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir, pageable);
-    }
-
-    @GetMapping("/locations")
-    public List<String> getDistinctLocations() {
-        return service.getDistinctLocations();
+        Pageable pageable = PageRequest.of(page, size);
+        return getService().getReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir, pageable);
     }
 }
 

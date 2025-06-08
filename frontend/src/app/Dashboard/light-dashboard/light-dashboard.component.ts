@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { interval, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
-import { HeaderComponent } from '../header/header.component'; 
+import { HeaderComponent } from '../header/header.component';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData, ChartOptions } from 'chart.js';
 import { ChartConfiguration } from 'chart.js';
@@ -18,7 +18,7 @@ interface StreetLightReading {
   brightnessLevel: number;
   powerConsumption: number;
   status: 'ON' | 'OFF';
-  
+
 }
 type SortableColumn = keyof Pick<StreetLightReading, 'location' | 'timestamp' | 'brightnessLevel' | 'powerConsumption' | 'status'>;
 
@@ -50,8 +50,8 @@ export class LightDashboardComponent implements OnInit {
   selectedStatus: string = '';
   fromDate: string = '';
   toDate: string = '';
-  sortBy: SortableColumn = 'timestamp'; 
-  pendingSortDirection: 'asc' | 'desc' = 'desc'; 
+  sortBy: SortableColumn = 'timestamp';
+  pendingSortDirection: 'asc' | 'desc' = 'desc';
 
   sortDirection: { [key: string]: 'asc' | 'desc' } = {};
 
@@ -156,154 +156,156 @@ export class LightDashboardComponent implements OnInit {
     // this.applyFilters();
     this.fetchLocations();
     this.fetchDataFromBackend();
-  this.refreshSubscription = interval(60000).subscribe(() => {
-    this.isAutoRefresh = true;
-    this.fetchDataFromBackend();
-  });
-}
-
-ngOnDestroy(): void {
-  if (this.refreshSubscription) {
-    this.refreshSubscription.unsubscribe();
+    this.refreshSubscription = interval(60000).subscribe(() => {
+      this.isAutoRefresh = true;
+      this.fetchDataFromBackend();
+    });
   }
-}
+
+  ngOnDestroy(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
 
   fetchLocations(): void {
-  this.lightService.getAllLocations().subscribe({
-    next: (locations) => this.allLocations = locations,
-    error: () => this.toastr.error('Failed to load locations')
-  });
-}
+    this.lightService.getAllLocations().subscribe({
+      next: (locations) => this.allLocations = locations,
+      error: () => this.toastr.error('Failed to load locations')
+    });
+  }
 
-fetchDataFromBackend(): void {
-  this.lightService.getReadingsWithAlerts({
-    location: this.selectedLocation,
-    status: this.selectedStatus,
-    start: this.fromDate ? new Date(this.fromDate).toISOString() : undefined,
-    end: this.toDate ? new Date(this.toDate).toISOString() : undefined,
-    sortBy: this.sortBy || 'timestamp',
-    sortDir: this.pendingSortDirection,
-    page: this.currentPage - 1,
-    size: this.pageSize
-  }).subscribe({
-    next: (res) => {
-      this.paginatedData = res.content; 
-      this.totalPages = Math.ceil(res.totalElements / this.pageSize);
-      this.updatePages();
-      this.filterSummary = `Showing ${res.content.length} of ${res.totalElements} result(s)`;
-      this.updateCharts(res.content);
-      // ✅ Detect new alerts (if alerts are sent in res.alerts)
-const allAlerts = res.content
-  .flatMap((r: any) => r.alerts || [])
-  .filter((a: any) => a.timestamp);
-      const latest = allAlerts
-        .filter((a: any) => a.timestamp)
-        .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+  fetchDataFromBackend(): void {
+    this.lightService.getReadingsWithAlerts({
+      location: this.selectedLocation,
+      status: this.selectedStatus,
+      start: this.fromDate ? new Date(this.fromDate).toISOString() : undefined,
+end: this.toDate
+  ? new Date(new Date(this.toDate).setHours(23, 59, 59, 999)).toISOString()
+  : undefined,
+      sortBy: this.sortBy || 'timestamp',
+      sortDir: this.pendingSortDirection,
+      page: this.currentPage - 1,
+      size: this.pageSize
+    }).subscribe({
+      next: (res) => {
+        this.paginatedData = res.content;
+        this.totalPages = Math.ceil(res.totalElements / this.pageSize);
+        this.updatePages();
+        this.filterSummary = `Showing ${res.content.length} of ${res.totalElements} result(s)`;
+        this.updateCharts(res.content);
+        // ✅ Detect new alerts (if alerts are sent in res.alerts)
+        const allAlerts = res.content
+          .flatMap((r: any) => r.alerts || [])
+          .filter((a: any) => a.timestamp);
+        const latest = allAlerts
+          .filter((a: any) => a.timestamp)
+          .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
 
-      if (this.isAutoRefresh && latest && latest.timestamp !== this.latestAlertTimestamp) {
-        this.latestAlertTimestamp = latest.timestamp;
-        this.bannerMessage = latest.message;
+        if (this.isAutoRefresh && latest && latest.timestamp !== this.latestAlertTimestamp) {
+          this.latestAlertTimestamp = latest.timestamp;
+          this.bannerMessage = latest.message;
 
-        setTimeout(() => {
-          this.bannerMessage = null;
-        }, 5000);
+          setTimeout(() => {
+            this.bannerMessage = null;
+          }, 5000);
+        }
+
+        this.isAutoRefresh = false;
+        this.isFirstLoad = false;
+      },
+      error: () => {
+        this.toastr.error('Failed to fetch data');
       }
+    });
+  }
+  updatePages(): void {
+    const maxButtons = 3;
+    const pages: number[] = [];
 
-      this.isAutoRefresh = false;
-      this.isFirstLoad = false;
-    },
-    error: () => {
-      this.toastr.error('Failed to fetch data');
+    const start = Math.max(this.currentPage - Math.floor(maxButtons / 2), 1);
+    const end = Math.min(start + maxButtons - 1, this.totalPages);
+
+    if (start > 1) {
+      pages.push(1);
+      if (start > 2) {
+        pages.push(-1); // -1 represents ellipsis (backward)
+      }
     }
-  });
-}
-updatePages(): void {
-  const maxButtons = 3;
-  const pages: number[] = [];
 
-  const start = Math.max(this.currentPage - Math.floor(maxButtons / 2), 1);
-  const end = Math.min(start + maxButtons - 1, this.totalPages);
-
-  if (start > 1) {
-    pages.push(1);
-    if (start > 2) {
-      pages.push(-1); // -1 represents ellipsis (backward)
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
     }
-  }
 
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-
-  if (end < this.totalPages) {
-    if (end < this.totalPages - 1) {
-      pages.push(-2); // -2 represents ellipsis (forward)
+    if (end < this.totalPages) {
+      if (end < this.totalPages - 1) {
+        pages.push(-2); // -2 represents ellipsis (forward)
+      }
+      pages.push(this.totalPages);
     }
-    pages.push(this.totalPages);
-  }
 
-  this.pages = pages;
-}
-
-
-
-applyFilters(): void {
-  if ((!this.fromDate && this.toDate) || (this.fromDate && !this.toDate)) {
-    this.toastr.error('Both start date and end date must be selected.');
-    return;
-  }
-
-  const now = new Date();
-  const from = new Date(this.fromDate);
-  const to = new Date(this.toDate);
-
-  if (from > now) {
-    this.toastr.error('Start date cannot be in the future.');
-    return;
-  }
-
-  if (to > now) {
-    this.toastr.error('End date cannot be in the future.');
-    return;
-  }
-
-  if (to < from) {
-    this.toastr.error('End date cannot be before start date.');
-    return;
+    this.pages = pages;
   }
 
 
-  this.currentPage = 1; // reset to first page on new filters
-  this.fetchDataFromBackend();
-}
 
-resetFilters(): void {
-  this.selectedLocation = '';
-  this.selectedStatus = '';
-  this.fromDate = '';
-  this.toDate = '';
-  this.sortBy = 'timestamp'; 
-  this.pendingSortDirection = 'desc';
-  this.sortDirection = {};
-  this.applyFilters();
-}
+  applyFilters(): void {
+    if ((!this.fromDate && this.toDate) || (this.fromDate && !this.toDate)) {
+      this.toastr.error('Both start date and end date must be selected.');
+      return;
+    }
 
-goToPage(page: number): void {
-  this.currentPage = page;
-  this.fetchDataFromBackend();
-}
-prevPage(): void {
-  if (this.currentPage > 1) {
-    this.currentPage--;
+    const now = new Date();
+    const from = new Date(this.fromDate);
+    const to = new Date(this.toDate);
+
+    if (from > now) {
+      this.toastr.error('Start date cannot be in the future.');
+      return;
+    }
+
+    if (to > now) {
+      this.toastr.error('End date cannot be in the future.');
+      return;
+    }
+
+    if (to < from) {
+      this.toastr.error('End date cannot be before start date.');
+      return;
+    }
+
+
+    this.currentPage = 1; // reset to first page on new filters
     this.fetchDataFromBackend();
   }
-}
-nextPage(): void {
-  if (this.currentPage < this.totalPages) {
-    this.currentPage++;
+
+  resetFilters(): void {
+    this.selectedLocation = '';
+    this.selectedStatus = '';
+    this.fromDate = '';
+    this.toDate = '';
+    this.sortBy = 'timestamp';
+    this.pendingSortDirection = 'desc';
+    this.sortDirection = {};
+    this.applyFilters();
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
     this.fetchDataFromBackend();
   }
-}
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.fetchDataFromBackend();
+    }
+  }
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.fetchDataFromBackend();
+    }
+  }
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
   }
@@ -316,24 +318,24 @@ nextPage(): void {
     this.paginatedData = data.slice(start, end);
   }
 
-sortByColumn(column: string): void {
-  const validColumns: SortableColumn[] = ['location', 'timestamp', 'brightnessLevel', 'powerConsumption', 'status'];
+  sortByColumn(column: string): void {
+    const validColumns: SortableColumn[] = ['location', 'timestamp', 'brightnessLevel', 'powerConsumption', 'status'];
 
-  if (!validColumns.includes(column as SortableColumn)) {
-    return; // ignore invalid column keys
+    if (!validColumns.includes(column as SortableColumn)) {
+      return; // ignore invalid column keys
+    }
+
+    const typedColumn = column as SortableColumn;
+
+    if (this.sortBy === typedColumn) {
+      this.pendingSortDirection = this.pendingSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = typedColumn;
+      this.pendingSortDirection = 'asc';
+    }
+
+    this.applyFilters();
   }
-
-  const typedColumn = column as SortableColumn;
-
-  if (this.sortBy === typedColumn) {
-    this.pendingSortDirection = this.pendingSortDirection === 'asc' ? 'desc' : 'asc';
-  } else {
-    this.sortBy = typedColumn;
-    this.pendingSortDirection = 'asc';
-  }
-
-  this.applyFilters();
-}
 
   goBack(): void {
     window.history.back();
@@ -347,40 +349,40 @@ sortByColumn(column: string): void {
     }
   }
 
-updateCharts(data: StreetLightReading[]): void {
-  // Sort from oldest to newest for visual timeline display
-  const sorted = [...data].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  updateCharts(data: StreetLightReading[]): void {
+    // Sort from oldest to newest for visual timeline display
+    const sorted = [...data].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
-  this.chartLabels = sorted.map(d => new Date(d.timestamp).toLocaleTimeString());
+    this.chartLabels = sorted.map(d => new Date(d.timestamp).toLocaleTimeString());
 
-  this.brightnessChartData.labels = this.chartLabels;
-  this.brightnessChartData.datasets[0].data = sorted.map(d => d.brightnessLevel);
+    this.brightnessChartData.labels = this.chartLabels;
+    this.brightnessChartData.datasets[0].data = sorted.map(d => d.brightnessLevel);
 
-  this.powerChartData.labels = this.chartLabels;
-  this.powerChartData.datasets[0].data = sorted.map(d => d.powerConsumption);
+    this.powerChartData.labels = this.chartLabels;
+    this.powerChartData.datasets[0].data = sorted.map(d => d.powerConsumption);
 
-  const brightnessValues = sorted.map(d => d.brightnessLevel);
-  const powerValues = sorted.map(d => d.powerConsumption);
+    const brightnessValues = sorted.map(d => d.brightnessLevel);
+    const powerValues = sorted.map(d => d.powerConsumption);
 
-  const lastIndex = brightnessValues.length - 1;
-  const lastBrightness = brightnessValues[lastIndex];
-  const prevBrightness = brightnessValues[lastIndex - 1] ?? lastBrightness;
+    const lastIndex = brightnessValues.length - 1;
+    const lastBrightness = brightnessValues[lastIndex];
+    const prevBrightness = brightnessValues[lastIndex - 1] ?? lastBrightness;
 
-  const lastPower = powerValues[lastIndex];
-  const prevPower = powerValues[lastIndex - 1] ?? lastPower;
+    const lastPower = powerValues[lastIndex];
+    const prevPower = powerValues[lastIndex - 1] ?? lastPower;
 
-  this.brightnessTrend = lastBrightness > prevBrightness ? 'up' :
-                         lastBrightness < prevBrightness ? 'down' : 'flat';
+    this.brightnessTrend = lastBrightness > prevBrightness ? 'up' :
+      lastBrightness < prevBrightness ? 'down' : 'flat';
 
-  this.powerTrend = lastPower > prevPower ? 'up' :
-                    lastPower < prevPower ? 'down' : 'flat';
+    this.powerTrend = lastPower > prevPower ? 'up' :
+      lastPower < prevPower ? 'down' : 'flat';
 
-  this.powerChange = prevPower === 0 ? 0 :
-                     ((lastPower - prevPower) / prevPower) * 100;
+    this.powerChange = prevPower === 0 ? 0 :
+      ((lastPower - prevPower) / prevPower) * 100;
 
-  this.brightnessChange = prevBrightness === 0 ? 0 :
-                          ((lastBrightness - prevBrightness) / prevBrightness) * 100;
-}
+    this.brightnessChange = prevBrightness === 0 ? 0 :
+      ((lastBrightness - prevBrightness) / prevBrightness) * 100;
+  }
 
 
 

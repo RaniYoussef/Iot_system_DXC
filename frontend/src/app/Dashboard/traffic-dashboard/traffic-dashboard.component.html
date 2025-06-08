@@ -173,7 +173,7 @@
                     </th> -->
                     <!-- Header -->
                     <th (click)="sortByColumn('alert')" class="sortable-header" [class.active]="sortDirection['alert']">
-                    <span class="sortable-label">Alert 
+                    <span class="sortable-label">Alert
                         <i *ngIf="sortDirection['alert'] === 'asc'" class="fas fa-sort-up"></i>
                         <i *ngIf="sortDirection['alert'] === 'desc'" class="fas fa-sort-down"></i>
                     </span>
@@ -194,7 +194,7 @@
                     <td>
                         <span class="badge" [ngClass]="row.congestion ? row.congestion.toLowerCase() : ''">
                         {{ row.congestion || 'N/A' }}
-                        </span>                   
+                        </span>
                     </td>
                     <td>{{ row.alert || '' }}</td>
                     </tr>
@@ -211,7 +211,7 @@
     <button (click)="prevPage()" [disabled]="currentPage === 1">« Prev</button>
 
     <ng-container *ngFor="let page of pages">
-      <button 
+      <button
         *ngIf="page > 0"
         [class.active]="page === currentPage"
         (click)="goToPage(page)">

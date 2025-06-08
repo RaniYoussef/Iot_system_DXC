@@ -21,14 +21,14 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
             String sortBy,
             String sortDir
     ) {
-        logger.info("Initial Readings: {}", readings);
-        logger.info("Initial Alerts: {}", alerts);
+//        logger.info("Initial Readings: {}", readings);
+//        logger.info("Initial Alerts: {}", alerts);
 
         List<DTO> result = readings.stream()
                 .filter(r -> {
                     boolean passed = filter1 == null || filter1.trim().isEmpty() ||
                             filter1.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse(""));
-                    if (!passed) logger.info("Filtered out by filter1: {}", r);
+//                    if (!passed) logger.info("Filtered out by filter1: {}", r);
                     return passed;
                 })
                 .filter(r -> {
@@ -40,13 +40,13 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
                 .filter(r -> {
                     boolean passed = start == null ||
                             Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isBefore(start)).orElse(false);
-                    if (!passed) logger.info("Filtered out by start date: {}", r);
+//                    if (!passed) logger.info("Filtered out by start date: {}", r);
                     return passed;
                 })
                 .filter(r -> {
                     boolean passed = end == null ||
                             Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isAfter(end)).orElse(false);
-                    if (!passed) logger.info("Filtered out by end date: {}", r);
+//                    if (!passed) logger.info("Filtered out by end date: {}", r);
                     return passed;
                 })
                 .map(r -> {
@@ -56,15 +56,15 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
                             .filter(a -> getTimestamp(r).equals(getAlertTimestamp(a)))
                             .toList();
 
-                    logger.info("Matching alerts for reading {}: {}", r, matchingAlerts);
+//                    logger.info("Matching alerts for reading {}: {}", r, matchingAlerts);
 
                     DTO dto = mapToDTO(r, matchingAlerts);
-                    logger.info("Mapped DTO: {}", dto);
+//                    logger.info("Mapped DTO: {}", dto);
                     return dto;
                 })
                 .collect(Collectors.toList());
 
-        logger.info("Total DTOs after filtering and mapping: {}", result.size());
+//        logger.info("Total DTOs after filtering and mapping: {}", result.size());
 
         if (sortBy != null && !sortBy.isBlank()) {
             Comparator<DTO> comparator = getComparator(sortBy);
@@ -73,7 +73,7 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
             }
             if (comparator != null) {
                 result = result.stream().sorted(comparator).toList();
-                logger.info("Sorted DTOs by '{}' in '{}' order", sortBy, sortDir);
+//                logger.info("Sorted DTOs by '{}' in '{}' order", sortBy, sortDir);
             }
         }
 

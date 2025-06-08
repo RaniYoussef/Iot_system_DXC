@@ -39,7 +39,7 @@ export class TrafficDashboardComponent implements OnInit, OnDestroy {
   private refreshSubscription!: Subscription;
   bannerMessage: string | null = null;
   isFirstLoad = true;
-  isAutoRefresh = false; 
+  isAutoRefresh = false;
   latestAlertTimestamp: string | null = null; // Add this as a class field
 
 
@@ -380,7 +380,7 @@ nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
     this.showVisualizations = false;
-    this.fetchTrafficData(); 
+    this.fetchTrafficData();
   }
 }
 

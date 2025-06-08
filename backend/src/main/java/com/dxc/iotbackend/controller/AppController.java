@@ -11,7 +11,6 @@ import com.dxc.iotbackend.service.EmailService;
 import com.dxc.iotbackend.util.InputSanitizer;
 import com.dxc.iotbackend.util.JwtUtil;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,7 @@ public class AppController {
     private static final String SUCCESS = "success";
     private static final String VALID = "valid";
     private static final String USER_NOT_FOUND = "User not found";
+    private static final String SAFE_EMAIL_REGEX = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,10}$";
 
     @Autowired private AuthService authService;
     @Autowired private UserRepository userRepository;
@@ -216,7 +216,7 @@ public class AppController {
         UserEntity user = userOpt.get();
 
         String newEmail = body.get("email");
-        if (newEmail != null && (!newEmail.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$") ||
+        if (newEmail != null && (!newEmail.matches(SAFE_EMAIL_REGEX) ||
                 (!newEmail.equals(user.getEmail()) && userRepository.existsByEmail(newEmail)))) {
             return ResponseEntity.badRequest().body(Map.of(MESSAGE, "Invalid or duplicate email"));
         }

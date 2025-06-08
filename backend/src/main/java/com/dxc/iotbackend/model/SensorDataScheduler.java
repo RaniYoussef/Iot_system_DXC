@@ -39,71 +39,63 @@ public class SensorDataScheduler {
     private String lightPath;
 
     @PostConstruct
-    public void init() {
+    public void logInitialization() {
         LOGGER.info("SensorDataScheduler initialized with baseUrl: {}", baseUrl);
     }
 
-    @Scheduled(fixedRate = 60000) // every 1 minute
-    public void sendRandomSensorData() {
-        sendTrafficData();
-        sendAirPollutionData();
-        sendLightData();
+    @Scheduled(fixedRate = 60000)
+    public void sendSensorData() {
+        postTrafficData();
+        postAirData();
+        postLightData();
     }
 
-    private void sendTrafficData() {
-        String location = getRandomLocation();
+    private void postTrafficData() {
         TrafficTypeData data = new TrafficTypeData(
-                location,
+                getRandomLocation(),
                 LocalDateTime.now(),
-                random.nextInt(500),                           // trafficDensity
-                10 + random.nextFloat() * 80,                  // avgSpeed
-                getRandomValue(new String[]{"Low", "Moderate", "High", "Severe"})
+                random.nextInt(500),
+                10 + random.nextFloat() * 80,
+                getRandomFrom("Low", "Moderate", "High", "Severe")
         );
-        postToEndpoint(trafficPath, data);
+        postJson(trafficPath, data);
     }
 
-    private void sendAirPollutionData() {
-        String location = getRandomLocation();
+    private void postAirData() {
         AirPollutionData data = new AirPollutionData(
-                location,
+                getRandomLocation(),
                 LocalDateTime.now(),
-                randomFloat(0, 35),
-                randomFloat(0, 45),
-                randomFloat(0, 50),
-                randomFloat(0, 40),
-                randomFloat(0, 25),
-                randomFloat(0, 300),
-                getRandomValue(new String[]{"Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous"})
+                rand(0, 35), rand(0, 45), rand(0, 50), rand(0, 40), rand(0, 25), rand(0, 300),
+                getRandomFrom("Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous")
         );
-        postToEndpoint(airPath, data);
+        postJson(airPath, data);
     }
 
-    private void sendLightData() {
-        String location = getRandomLocation();
+    private void postLightData() {
         StreetLightData data = new StreetLightData(
-                location,
+                getRandomLocation(),
                 LocalDateTime.now(),
                 random.nextInt(101),
-                randomFloat(0, 5000),
-                getRandomValue(new String[]{"ON", "OFF"})
+                rand(0, 5000),
+                getRandomFrom("ON", "OFF")
         );
-        postToEndpoint(lightPath, data);
+        postJson(lightPath, data);
     }
 
-    private void postToEndpoint(String path, Object payload) {
+    private void postJson(String path, Object payload) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> request = new HttpEntity<>(payload, headers);
+        HttpEntity<Object> entity = new HttpEntity<>(payload, headers);
 
         try {
-            restTemplate.postForObject(baseUrl + path, request, String.class);
-            LOGGER.info("Data posted to {} successfully", path);
-        } catch (Exception ex) {
-            LOGGER.error("Failed to post data to {}: {}", path, ex.getMessage());
+            restTemplate.postForObject(baseUrl + path, entity, String.class);
+            LOGGER.info("Successfully posted to {}", path);
+        } catch (Exception e) {
+            LOGGER.error("Error posting to {}: {}", path, e.getMessage());
         }
     }
 
-    private float randomFloat(float min, float max) {
+    private float rand(float min, float max) {
         return min + random.nextFloat() * (max - min);
     }
 
@@ -111,7 +103,7 @@ public class SensorDataScheduler {
         return LOCATIONS[random.nextInt(LOCATIONS.length)];
     }
 
-    private String getRandomValue(String[] values) {
-        return values[random.nextInt(values.length)];
+    private String getRandomFrom(String... options) {
+        return options[random.nextInt(options.length)];
     }
 }

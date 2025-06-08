@@ -7,7 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SensorFilterSpecificationBuilder {
+public final class SensorFilterSpecificationBuilder {
+
+    // Private constructor to prevent instantiation
+    private SensorFilterSpecificationBuilder() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
 
     public static <T> Specification<T> buildCommonFilters(
             String location,

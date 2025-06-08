@@ -1,40 +1,40 @@
 package com.dxc.iotbackend.util;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-public abstract class AbstractSensorReadingMapper<T, DTO> {
+public abstract class AbstractSensorReadingMapper<E, D> {
 
-    public List<DTO> mapReadingsWithAlerts(
-            List<T> readings,
+    public List<D> mapReadingsWithAlerts(
+            List<E> readings,
             List<?> alerts,
-            String filter1,
-            String filter2,
+            String locationFilter,
+            String statusFilter,
             LocalDateTime start,
             LocalDateTime end,
             String sortBy,
             String sortDir
     ) {
-        List<DTO> result = readings.stream()
-                .filter(r -> filter1 == null || filter1.trim().isEmpty() || filter1.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse("")))
-                .filter(r -> filter2 == null || filter2.trim().isEmpty() || filter2.equalsIgnoreCase(Optional.ofNullable(getStatus(r)).orElse("")))
-                .filter(r -> start == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isBefore(start)).orElse(false))
-                .filter(r -> end == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isAfter(end)).orElse(false))
+        List<D> result = readings.stream()
+                .filter(r -> matchesLocation(r, locationFilter))
+                .filter(r -> matchesStatus(r, statusFilter))
+                .filter(r -> withinStartTime(r, start))
+                .filter(r -> withinEndTime(r, end))
                 .map(r -> {
                     List<?> matchingAlerts = alerts.stream()
-                            .filter(a -> getSensorType().equalsIgnoreCase(getAlertType(a)))
-                            .filter(a -> getLocation(r).equalsIgnoreCase(getAlertLocation(a)))
-                            .filter(a -> getTimestamp(r).equals(getAlertTimestamp(a)))
+                            .filter(a -> sensorTypeMatches(a))
+                            .filter(a -> locationsMatch(r, a))
+                            .filter(a -> timestampsMatch(r, a))
                             .toList();
                     return mapToDTO(r, matchingAlerts);
                 })
-                .collect(Collectors.toList());
-
+                .toList();
 
         if (sortBy != null && !sortBy.isBlank()) {
-            Comparator<DTO> comparator = getComparator(sortBy);
+            Comparator<D> comparator = getComparator(sortBy);
             if (comparator != null && "desc".equalsIgnoreCase(sortDir)) {
                 comparator = comparator.reversed();
             }
@@ -46,8 +46,7 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
         return result;
     }
 
-    // === Shared reusable method: get distinct locations ===
-    public List<String> getDistinctLocations(List<T> readings) {
+    public List<String> getDistinctLocations(List<E> readings) {
         return readings.stream()
                 .map(this::getLocation)
                 .filter(Objects::nonNull)
@@ -55,16 +54,53 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
                 .toList();
     }
 
-    // Abstract methods to be implemented in each sensor's subclass
-    protected abstract String getSensorType(); // e.g., "Traffic", "Street_Light"
-    protected abstract String getLocation(T reading);
-    protected abstract String getStatus(T reading);
-    protected abstract LocalDateTime getTimestamp(T reading);
+    private boolean matchesLocation(E reading, String filter) {
+        return filter == null || filter.isBlank()
+                || filter.equalsIgnoreCase(Optional.ofNullable(getLocation(reading)).orElse(""));
+    }
+
+    private boolean matchesStatus(E reading, String filter) {
+        return filter == null || filter.isBlank()
+                || filter.equalsIgnoreCase(Optional.ofNullable(getStatus(reading)).orElse(""));
+    }
+
+    private boolean withinStartTime(E reading, LocalDateTime start) {
+        return start == null || Optional.ofNullable(getTimestamp(reading))
+                .map(ts -> !ts.isBefore(start)).orElse(false);
+    }
+
+    private boolean withinEndTime(E reading, LocalDateTime end) {
+        return end == null || Optional.ofNullable(getTimestamp(reading))
+                .map(ts -> !ts.isAfter(end)).orElse(false);
+    }
+
+    private boolean sensorTypeMatches(Object alert) {
+        return getSensorType().equalsIgnoreCase(getAlertType(alert));
+    }
+
+    private boolean locationsMatch(E reading, Object alert) {
+        return getLocation(reading).equalsIgnoreCase(getAlertLocation(alert));
+    }
+
+    private boolean timestampsMatch(E reading, Object alert) {
+        return getTimestamp(reading).equals(getAlertTimestamp(alert));
+    }
+
+    protected abstract String getSensorType();
+
+    protected abstract String getLocation(E reading);
+
+    protected abstract String getStatus(E reading);
+
+    protected abstract LocalDateTime getTimestamp(E reading);
 
     protected abstract String getAlertType(Object alert);
+
     protected abstract String getAlertLocation(Object alert);
+
     protected abstract LocalDateTime getAlertTimestamp(Object alert);
 
-    protected abstract DTO mapToDTO(T reading, List<?> matchingAlerts);
-    protected abstract Comparator<DTO> getComparator(String sortBy);
+    protected abstract D mapToDTO(E reading, List<?> matchingAlerts);
+
+    protected abstract Comparator<D> getComparator(String sortBy);
 }

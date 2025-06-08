@@ -2,29 +2,23 @@ package com.dxc.iotbackend.util;
 
 import org.springframework.web.util.HtmlUtils;
 
-public class InputSanitizer {
+public final class InputSanitizer {
+
+    // Private constructor to prevent instantiation
+    private InputSanitizer() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
 
     public static String sanitize(String input) {
-        if (input == null) return null;
+        if (input == null) {
+            return null;
+        }
 
-        // Trim whitespace
-        String sanitized = input.trim();
+        String sanitized = input.trim()
+                .replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "")          // Remove control characters
+                .replaceAll("[\"'<>\\\\]", "")                     // Remove quotes, angle brackets, backslashes
+                .replaceAll("[\\p{So}\\p{C}]", "");                // Remove emojis and symbols
 
-        // Remove hidden/control characters (Unicode 0x00–0x1F and 0x7F)
-        sanitized = sanitized.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
-
-        // Escape HTML to prevent XSS
-        sanitized = HtmlUtils.htmlEscape(sanitized);
-
-        // Disallow quotes, angle brackets, backslashes
-        sanitized = sanitized.replaceAll("[\"'<>\\\\]", "");
-
-        // Remove emojis (by excluding surrogate pairs and certain Unicode blocks)
-        sanitized = sanitized.replaceAll("[\\p{So}\\p{C}]", "");
-
-//        // Whitelist approach: allow only alphanumerics and safe punctuation
-//        sanitized = sanitized.replaceAll("[^a-zA-Z0-9@._\\-\\s]", "");
-
-        return sanitized;
+        return HtmlUtils.htmlEscape(sanitized);                   // Escape HTML entities
     }
 }

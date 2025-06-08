@@ -3,18 +3,13 @@ package com.dxc.iotbackend.controller;
 import com.dxc.iotbackend.model.TrafficTypeData;
 import com.dxc.iotbackend.payload.TrafficReadingWithAlertDTO;
 import com.dxc.iotbackend.service.TrafficSensorDataService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("${api.base-path}${sensor.traffic-path}")
@@ -44,29 +39,6 @@ public class TrafficSensorDataController extends BaseSensorDataController<Traffi
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return getService().getReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir, pageable);
+        return service.getReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir, pageable);
     }
 }
-
-//@GetMapping
-//    public Page<TrafficTypeData> getFilteredData(
-//            @RequestParam(required = false) String location,
-//            @RequestParam(required = false) String congestionLevel,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-//            @PageableDefault(size = 5, sort = "timestamp", direction = Sort.Direction.DESC) Pageable pageable
-//    ) {
-//        return service.getFilteredTrafficData(location, congestionLevel, start, end, pageable);
-//    }
-
-//    @GetMapping("${sensor.with.alert}") // /with-alerts
-//    public List<TrafficReadingWithAlertDTO> getTrafficWithAlerts(
-//            @RequestParam(required = false) String location,
-//            @RequestParam(required = false) String congestionLevel,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-//            @RequestParam(required = false, defaultValue = "timestamp") String sortBy,
-//            @RequestParam(required = false, defaultValue = "desc") String sortDir
-//    ) {
-//        return service.getTrafficReadingsWithAlertInfo(location, congestionLevel, start, end, sortBy, sortDir);
-//    }

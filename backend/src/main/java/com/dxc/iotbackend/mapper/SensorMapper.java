@@ -1,14 +1,20 @@
 package com.dxc.iotbackend.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface SensorMapper<T, DTO> {
-    List<DTO> mapReadingsWithAlerts(
-            List<T> readings, List<?> alerts,
-            String location, String status,
-            java.time.LocalDateTime start, java.time.LocalDateTime end,
-            String sortBy, String sortDir
+public interface SensorMapper<Entity, Dto> {
+
+    List<Dto> mapReadingsWithAlerts(
+        List<Entity> readings,
+        List<?> alerts,
+        String location,
+        String status,
+        LocalDateTime start,
+        LocalDateTime end,
+        String sortBy,
+        String sortDir
     );
 
-    List<String> getDistinctLocations(List<T> data);
+    List<String> getDistinctLocations(List<Entity> data);
 }

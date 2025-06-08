@@ -14,18 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AuthService {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
+    private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
-    private UserRepository userRepository;
+    public AuthService(PasswordEncoder encoder, UserRepository userRepository) {
+        this.encoder = encoder;
+        this.userRepository = userRepository;
+    }
 
     public ResponseEntity<Map<String, String>> registerUser(UserDto user) {
         String sanitizedUsername = InputSanitizer.sanitize(user.getUsername());
@@ -35,22 +39,18 @@ public class AuthService {
         String sanitizedPhoneNumber = InputSanitizer.sanitize(user.getPhoneNumber());
 
         if (userRepository.existsByEmail(sanitizedEmail)) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", "Email already registered"));
         }
 
         if (userRepository.existsByUsername(sanitizedUsername)) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", "Username already registered"));
         }
 
-        String hashedPassword = encoder.encode(user.getPassword());
-
         UserEntity entity = new UserEntity(
                 sanitizedUsername,
-                hashedPassword,
+                encoder.encode(user.getPassword()),
                 sanitizedEmail,
                 "USER",
                 sanitizedFirstName,
@@ -59,8 +59,7 @@ public class AuthService {
         );
 
         userRepository.save(entity);
-
-        LOGGER.info("User registered: username=" + sanitizedUsername + ", email=" + sanitizedEmail);
+        logger.info("User registered: username={}, email={}", sanitizedUsername, sanitizedEmail);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "User registered successfully"));
@@ -68,7 +67,6 @@ public class AuthService {
 
     public String updatePassword(UpdatePasswordRequest request, Authentication authentication) {
         String username = authentication.getName();
-
         Optional<UserEntity> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {

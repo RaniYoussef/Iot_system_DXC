@@ -42,11 +42,18 @@ public class AirPollutionData {
     @DecimalMin(value = "0.0", inclusive = true)
     private float so2;
 
-    @Pattern(regexp = "Good|Moderate|Unhealthy|Very Unhealthy|Hazardous",
-            message = "Pollution level must be one of: Good, Moderate, Unhealthy, Very Unhealthy, Hazardous")
+    @Pattern(
+        regexp = "Good|Moderate|Unhealthy|Very Unhealthy|Hazardous",
+        message = "Pollution level must be one of: Good, Moderate, Unhealthy, Very Unhealthy, Hazardous"
+    )
     private String pollutionLevel;
 
+    public AirPollutionData() {
+        // Default constructor for JPA
+    }
+
     public AirPollutionData(String location, LocalDateTime timestamp, float pm2_5, float pm10, float co, float no2, float so2, float ozone, String pollutionLevel) {
+        this.id = UUID.randomUUID();
         this.location = location;
         this.timestamp = timestamp;
         this.pm2_5 = pm2_5;
@@ -56,9 +63,5 @@ public class AirPollutionData {
         this.so2 = so2;
         this.ozone = ozone;
         this.pollutionLevel = pollutionLevel;
-    }
-
-    public AirPollutionData() {
-
     }
 }

@@ -1,11 +1,15 @@
 package com.DXC.iotbackend.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class AbstractSensorReadingMapper<T, DTO> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSensorReadingMapper.class);
 
     public List<DTO> mapReadingsWithAlerts(
             List<T> readings,
@@ -17,21 +21,50 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
             String sortBy,
             String sortDir
     ) {
+//        logger.info("Initial Readings: {}", readings);
+//        logger.info("Initial Alerts: {}", alerts);
+
         List<DTO> result = readings.stream()
-                .filter(r -> filter1 == null || filter1.trim().isEmpty() || filter1.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse("")))
-                .filter(r -> filter2 == null || filter2.trim().isEmpty() || filter2.equalsIgnoreCase(Optional.ofNullable(getStatus(r)).orElse("")))
-                .filter(r -> start == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isBefore(start)).orElse(false))
-                .filter(r -> end == null || Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isAfter(end)).orElse(false))
+                .filter(r -> {
+                    boolean passed = filter1 == null || filter1.trim().isEmpty() ||
+                            filter1.equalsIgnoreCase(Optional.ofNullable(getLocation(r)).orElse(""));
+//                    if (!passed) logger.info("Filtered out by filter1: {}", r);
+                    return passed;
+                })
+                .filter(r -> {
+                    boolean passed = filter2 == null || filter2.trim().isEmpty() ||
+                            filter2.equalsIgnoreCase(Optional.ofNullable(getStatus(r)).orElse(""));
+                    if (!passed) logger.info("Filtered out by filter2: {}", r);
+                    return passed;
+                })
+                .filter(r -> {
+                    boolean passed = start == null ||
+                            Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isBefore(start)).orElse(false);
+//                    if (!passed) logger.info("Filtered out by start date: {}", r);
+                    return passed;
+                })
+                .filter(r -> {
+                    boolean passed = end == null ||
+                            Optional.ofNullable(getTimestamp(r)).map(ts -> !ts.isAfter(end)).orElse(false);
+//                    if (!passed) logger.info("Filtered out by end date: {}", r);
+                    return passed;
+                })
                 .map(r -> {
                     List<?> matchingAlerts = alerts.stream()
                             .filter(a -> getSensorType().equalsIgnoreCase(getAlertType(a)))
                             .filter(a -> getLocation(r).equalsIgnoreCase(getAlertLocation(a)))
                             .filter(a -> getTimestamp(r).equals(getAlertTimestamp(a)))
                             .toList();
-                    return mapToDTO(r, matchingAlerts);
+
+//                    logger.info("Matching alerts for reading {}: {}", r, matchingAlerts);
+
+                    DTO dto = mapToDTO(r, matchingAlerts);
+//                    logger.info("Mapped DTO: {}", dto);
+                    return dto;
                 })
                 .collect(Collectors.toList());
 
+//        logger.info("Total DTOs after filtering and mapping: {}", result.size());
 
         if (sortBy != null && !sortBy.isBlank()) {
             Comparator<DTO> comparator = getComparator(sortBy);
@@ -40,6 +73,7 @@ public abstract class AbstractSensorReadingMapper<T, DTO> {
             }
             if (comparator != null) {
                 result = result.stream().sorted(comparator).toList();
+//                logger.info("Sorted DTOs by '{}' in '{}' order", sortBy, sortDir);
             }
         }
 

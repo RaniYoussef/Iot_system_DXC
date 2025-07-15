@@ -5,208 +5,231 @@
 </div>
 
 <div class="main-container">
-  <div class="dashboard-card">
-    <div class="filter-card">
-      <div class="filter-header">
-        <div class="filter-title">
-          <i class="fas fa-filter"></i>
-          <span>Filter & Sort Data</span>
+    <div class="dashboard-card">
+        <div class="filter-card">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <i class="fas fa-filter"></i>
+                    <span>Filter & Sort Data</span>
+                </div>
+                <a class="toggle-collapse" (click)="toggleCollapse()">
+                {{ isCollapsed ? 'Expand' : 'Collapse' }}
+                </a>
+
+            </div>
+
+            <div *ngIf="!isCollapsed">
+                <div class="filter-grid">
+                    <div class="form-group">
+                    <label>Location</label>
+                    <select [(ngModel)]="selectedLocation">
+                        <option value="">All Locations</option>
+                        <option *ngFor="let loc of allLocations" [value]="loc">{{ loc }}</option>
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label>Congestion Level</label>
+                    <select [(ngModel)]="selectedCongestion">
+                        <option value="">All Levels</option>
+                        <option>Severe</option>
+                        <option>High</option>
+                        <option>Moderate</option>
+                        <option>Low</option>
+                    </select>
+                    </div>
+
+                    <div class="form-group">
+                    <label>From Date</label>
+                    <input type="date" [(ngModel)]="fromDate" />
+                    </div>
+
+                    <div class="form-group">
+                    <label>To Date</label>
+                    <input type="date" [(ngModel)]="toDate" />
+                    </div>
+
+                    <div class="form-group">
+                    <label>Sort By</label>
+                    <select [(ngModel)]="sortBy">
+                        <option value="">No Sort</option>
+                        <option value="alert">Alert</option>
+                        <!-- <option value="congestion">Congestion</option> -->
+                    <option value="trafficDensity">Traffic Density</option>
+                    <option value="avgSpeed">Speed</option>
+
+                    </select>
+
+                    </div>
+                    <div class="form-group">
+                    <label>Sort Direction</label>
+                    <select [(ngModel)]="pendingSortDirection">
+                        <option *ngIf="sortBy !== 'alert'" value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                    </div>
+
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn-reset" (click)="resetFilters()">Reset</button>
+                    <button class="btn-apply" (click)="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
+
+            <div class="filter-summary">
+            {{ filterSummary }}
+            </div>
+
         </div>
-        <a class="toggle-collapse" (click)="toggleCollapse()">
-          {{ isCollapsed ? 'Expand' : 'Collapse' }}
-        </a>
-      </div>
+<div class="viz-header">
+  <button class="viz-toggle-btn" (click)="toggleVisualizations()">
+    <i class="fas" [ngClass]="showVisualizations ? 'fa-eye-slash' : 'fa-eye'"></i>
+    {{ showVisualizations ? 'Hide Visualizations' : 'Show Visualizations' }}
+  </button>
+</div>
 
-      <div *ngIf="!isCollapsed">
-        <div class="filter-grid">
-          <div class="form-group">
-            <label>Location</label>
-            <select id="location-select" [(ngModel)]="selectedLocation">
-              <option value="">All Locations</option>
-              <option *ngFor="let loc of allLocations" [value]="loc">{{ loc }}</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Congestion Level</label>
-            <select id="congestion-select" [(ngModel)]="selectedCongestion">
-              <option value="">All Levels</option>
-              <option>Severe</option>
-              <option>High</option>
-              <option>Moderate</option>
-              <option>Low</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>From Date</label>
-            <input id="from-date" type="date" [(ngModel)]="fromDate" />
-          </div>
-
-          <div class="form-group">
-            <label>To Date</label>
-            <input id="to-date" type="date" [(ngModel)]="toDate" />
-          </div>
-
-          <div class="form-group">
-            <label>Sort By</label>
-            <select id="sort-by-select" [(ngModel)]="sortBy">
-              <option value="">No Sort</option>
-              <option value="alert">Alert</option>
-              <!-- <option value="congestion">Congestion</option> -->
-              <option value="trafficDensity">Traffic Density</option>
-              <option value="avgSpeed">Speed</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Sort Direction</label>
-            <select id="sort-direction-select" [(ngModel)]="pendingSortDirection">
-              <option *ngIf="sortBy !== 'alert'" value="asc">Ascending</option>
-              <option value="desc">Descending</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="filter-actions">
-          <button class="btn-reset" (click)="resetFilters()">Reset</button>
-          <button id="apply-filters-button" class="btn-apply" (click)="applyFilters()">Apply Filters</button>
-        </div>
-      </div>
-
-      <div class="filter-summary">
-        {{ filterSummary }}
-      </div>
+<!-- Chart Section -->
+<div *ngIf="showVisualizations" class="chart-card">
+  <div class="chart-grid">
+    <!-- Speed Trend Line Chart -->
+    <div class="chart-container">
+      <h4>
+        Speed Trends (km/h)
+        <span [ngClass]="{
+          'trend-up': speedTrend === 'up',
+          'trend-down': speedTrend === 'down',
+          'trend-flat': speedTrend === 'flat'
+        }">
+          {{
+            speedTrend === 'up' ? '▲' :
+            speedTrend === 'down' ? '▼' : '●'
+          }}
+          {{ speedChange.toFixed(1) }}%
+        </span>
+      </h4>
+      <canvas baseChart
+              [data]="speedChartData"
+              [options]="chartOptions"
+              [labels]="chartLabels"
+              [type]="'line'">
+      </canvas>
     </div>
 
-    <div class="viz-header">
-      <button class="viz-toggle-btn" (click)="toggleVisualizations()">
-        <i class="fas" [ngClass]="showVisualizations ? 'fa-eye-slash' : 'fa-eye'"></i>
-        {{ showVisualizations ? 'Hide Visualizations' : 'Show Visualizations' }}
-      </button>
-    </div>
-
-    <!-- Chart Section -->
-    <div *ngIf="showVisualizations" class="chart-card">
-      <div class="chart-grid">
-        <!-- Speed Trend Line Chart -->
-        <div class="chart-container">
-          <h4>
-            Speed Trends (km/h)
-            <span [ngClass]="{
-              'trend-up': speedTrend === 'up',
-              'trend-down': speedTrend === 'down',
-              'trend-flat': speedTrend === 'flat'
-            }">
-              {{
-                speedTrend === 'up' ? '▲' :
-                speedTrend === 'down' ? '▼' : '●'
-              }}
-              {{ speedChange.toFixed(1) }}%
-            </span>
-          </h4>
-          <canvas baseChart
-                  [data]="speedChartData"
-                  [options]="chartOptions"
-                  [labels]="chartLabels"
-                  [type]="'line'">
-          </canvas>
-        </div>
-
-        <!-- Density Bar Chart -->
-        <div class="chart-container">
-          <h4>Traffic Density (vehicles/hour)</h4>
-          <canvas baseChart
-                  [data]="densityChartData"
-                  [options]="chartOptions"
-                  [labels]="chartLabels"
-                  [type]="'bar'">
-          </canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th (click)="sortByColumn('location')" class="sortable-header" [class.active]="sortDirection['location']">
-              <span class="sortable-label">Location
-                <i *ngIf="sortDirection['location'] === 'asc'" class="fas fa-sort-up"></i>
-                <i *ngIf="sortDirection['location'] === 'desc'" class="fas fa-sort-down"></i>
-              </span>
-            </th>
-
-            <th>
-              <span class="sortable-label">Time</span>
-            </th>
-
-            <th (click)="sortByColumn('density')" class="sortable-header" [class.active]="sortDirection['density']">
-              <span class="sortable-label">Traffic Density
-                <i *ngIf="sortDirection['density'] === 'asc'" class="fas fa-sort-up"></i>
-                <i *ngIf="sortDirection['density'] === 'desc'" class="fas fa-sort-down"></i>
-              </span>
-            </th>
-
-            <th (click)="sortByColumn('speed')" class="sortable-header" [class.active]="sortDirection['speed']">
-              <span class="sortable-label">Avg Speed
-                <i *ngIf="sortDirection['speed'] === 'asc'" class="fas fa-sort-up"></i>
-                <i *ngIf="sortDirection['speed'] === 'desc'" class="fas fa-sort-down"></i>
-              </span>
-            </th>
-
-            <th>
-              <span class="sortable-label">Congestion</span>
-            </th>
-
-            <th (click)="sortByColumn('alert')" class="sortable-header" [class.active]="sortDirection['alert']">
-              <span class="sortable-label">Alert 
-                <i *ngIf="sortDirection['alert'] === 'asc'" class="fas fa-sort-up"></i>
-                <i *ngIf="sortDirection['alert'] === 'desc'" class="fas fa-sort-down"></i>
-              </span>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let row of paginatedData" [class.has-alert]="row.alert">
-            <td>{{ row.location }}</td>
-            <td>{{ row.time }}</td>
-            <td>{{ row.density }} vehicles/hour</td>
-            <td>{{ row.speed }} km/h</td>
-            <td>
-              <span class="badge" [ngClass]="row.congestion ? row.congestion.toLowerCase() : ''">
-                {{ row.congestion || 'N/A' }}
-              </span>
-            </td>
-            <td>{{ row.alert || '' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="pagination-row">
-      <button (click)="goBack()" class="btn-back">
-        ← Back
-      </button>
-
-      <div class="pagination">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">« Prev</button>
-
-        <ng-container *ngFor="let page of pages">
-          <button 
-            *ngIf="page > 0"
-            [class.active]="page === currentPage"
-            (click)="goToPage(page)">
-            {{ page }}
-          </button>
-
-          <button *ngIf="page === -1" (click)="handleEllipsisClick('backward')" class="ellipsis">...</button>
-          <button *ngIf="page === -2" (click)="handleEllipsisClick('forward')" class="ellipsis">...</button>
-        </ng-container>
-
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next »</button>
-      </div>
+    <!-- Density Bar Chart -->
+    <div class="chart-container">
+      <h4>Traffic Density (vehicles/hour)</h4>
+      <canvas baseChart
+              [data]="densityChartData"
+              [options]="chartOptions"
+              [labels]="chartLabels"
+              [type]="'bar'">
+      </canvas>
     </div>
   </div>
+</div>
+        <div class="table-card">
+            <table>
+                <thead>
+                <tr>
+                    <th (click)="sortByColumn('location')" class="sortable-header" [class.active]="sortDirection['location']">
+                    <span class="sortable-label">Location
+                    <i *ngIf="sortDirection['location'] === 'asc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sortDirection['location'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th>
+                    <!-- <th (click)="sortByColumn('time')" class="sortable-header" [class.active]="sortDirection['time']">
+                    <span class="sortable-label">Time
+                    <i *ngIf="sortDirection['time'] === 'asc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sortDirection['time'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th> -->
+
+                    <th>
+                    <span class="sortable-label">Time</span>
+                    </th>
+
+                    <th (click)="sortByColumn('density')" class="sortable-header" [class.active]="sortDirection['density']">
+                    <span class="sortable-label">Traffic Density
+                    <i *ngIf="sortDirection['density'] === 'asc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sortDirection['density'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th>
+                    <th (click)="sortByColumn('speed')" class="sortable-header" [class.active]="sortDirection['speed']">
+                    <span class="sortable-label">Avg Speed
+                    <i *ngIf="sortDirection['speed'] === 'asc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sortDirection['speed'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th>
+
+                    <th>
+                    <span class="sortable-label">Congestion</span>
+                    </th>
+                    <!-- <th (click)="sortByColumn('congestion')" class="sortable-header" [class.active]="sortDirection['congestion']">
+                    <span class="sortable-label">Congestion
+                    <i *ngIf="sortDirection['congestion'] === 'asc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sortDirection['congestion'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th> -->
+                    <!-- Header -->
+                    <th (click)="sortByColumn('alert')" class="sortable-header" [class.active]="sortDirection['alert']">
+                    <span class="sortable-label">Alert
+                        <i *ngIf="sortDirection['alert'] === 'asc'" class="fas fa-sort-up"></i>
+                        <i *ngIf="sortDirection['alert'] === 'desc'" class="fas fa-sort-down"></i>
+                    </span>
+                    </th>
+                    <!-- Row -->
+
+
+                </tr>
+                </thead>
+
+
+                <tbody>
+                    <tr *ngFor="let row of paginatedData" [class.has-alert]="row.alert">
+                    <td>{{ row.location }}</td>
+                    <td>{{ row.time }}</td>
+                    <td>{{ row.density }} vehicles/hour</td>
+                    <td>{{ row.speed }} km/h</td>
+                    <td>
+                        <span class="badge" [ngClass]="row.congestion ? row.congestion.toLowerCase() : ''">
+                        {{ row.congestion || 'N/A' }}
+                        </span>
+                    </td>
+                    <td>{{ row.alert || '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+<div class="pagination-row">
+  <button (click)="goBack()" class="btn-back">
+    ← Back
+  </button>
+
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">« Prev</button>
+
+    <ng-container *ngFor="let page of pages">
+      <button
+        *ngIf="page > 0"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+
+      <!-- Backward ellipsis -->
+      <button *ngIf="page === -1" (click)="handleEllipsisClick('backward')" class="ellipsis">...</button>
+
+      <!-- Forward ellipsis -->
+      <button *ngIf="page === -2" (click)="handleEllipsisClick('forward')" class="ellipsis">...</button>
+    </ng-container>
+
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next »</button>
+  </div>
+</div>
+
+
+
+    </div>
 </div>

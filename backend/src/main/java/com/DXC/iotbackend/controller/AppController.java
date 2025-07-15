@@ -346,7 +346,9 @@ public class AppController {
                     UserEntity newUser = new UserEntity();
                     newUser.setEmail(email);
                     newUser.setUsername(email);
-                    newUser.setFirstName(name);
+                    String[] parts = name != null ? name.split(" ", 2) : new String[]{"User", ""};
+                    newUser.setFirstName(parts[0]);
+                    newUser.setLastName(parts.length > 1 ? parts[1] : "");
                     newUser.setRole("ROLE_USER");
                     //newUser.setOAuthUser(true);
                     return userRepository.save(newUser);

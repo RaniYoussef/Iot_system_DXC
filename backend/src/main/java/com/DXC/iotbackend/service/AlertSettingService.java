@@ -103,7 +103,7 @@ public class AlertSettingService {
                 alert.setMetric(setting.getMetric());
                 alert.setLocation(data.getLocation());
                 alert.setValue(actualValue);
-                alert.setTimestamp(LocalDateTime.now());
+                alert.setTimestamp(data.getTimestamp());
                 alert.setAlertType(setting.getAlertType()); 
                 alerts.add(alert);
                 alert.setMessage(buildAlertMessage(alert, setting.getThresholdValue()));

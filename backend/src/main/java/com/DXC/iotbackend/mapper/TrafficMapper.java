@@ -1,8 +1,12 @@
 package com.DXC.iotbackend.mapper;
+
 import com.DXC.iotbackend.model.Alert;
 import com.DXC.iotbackend.model.TrafficTypeData;
 import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
 import com.DXC.iotbackend.util.AbstractSensorReadingMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +14,8 @@ import java.util.Optional;
 
 public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, TrafficReadingWithAlertDTO>
         implements SensorMapper<TrafficTypeData, TrafficReadingWithAlertDTO> {
+
+    private static final Logger logger = LoggerFactory.getLogger(TrafficMapper.class);
 
     @Override
     protected String getSensorType() {
@@ -23,7 +29,7 @@ public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, 
 
     @Override
     protected String getStatus(TrafficTypeData r) {
-        return r.getCongestionLevel(); // status field in this context
+        return r.getCongestionLevel();
     }
 
     @Override
@@ -48,10 +54,15 @@ public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, 
 
     @Override
     protected TrafficReadingWithAlertDTO mapToDTO(TrafficTypeData r, List<?> matchingAlerts) {
+//        logger.info("Mapping reading ID {} at {} with congestionLevel={} and checking {} matching alerts",
+//                r.getId(), r.getLocation(), r.getCongestionLevel(), matchingAlerts.size());
+
         List<Alert> alerts = matchingAlerts.stream().map(a -> (Alert) a).toList();
+//        alerts.forEach(alert -> logger.info("  -> Matching Alert: {}", alert));
+
         LocalDateTime alertTime = alerts.isEmpty() ? null : alerts.get(0).getTimestamp();
 
-        return new TrafficReadingWithAlertDTO(
+        TrafficReadingWithAlertDTO dto = new TrafficReadingWithAlertDTO(
                 r.getId(),
                 r.getLocation(),
                 r.getTimestamp(),
@@ -61,6 +72,9 @@ public class TrafficMapper extends AbstractSensorReadingMapper<TrafficTypeData, 
                 alertTime,
                 alerts
         );
+
+//        logger.info("Mapped DTO: {}", dto);
+        return dto;
     }
 
     @Override

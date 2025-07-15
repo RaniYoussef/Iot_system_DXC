@@ -17,7 +17,7 @@ interface TrafficData {
   density: number;
   speed: number;
   congestion: string;
-  alert?: string; // ✅ Optional alert timestamp
+  alert?: string; //  Optional alert timestamp
 }
 
 @Component({
@@ -39,7 +39,7 @@ export class TrafficDashboardComponent implements OnInit, OnDestroy {
   private refreshSubscription!: Subscription;
   bannerMessage: string | null = null;
   isFirstLoad = true;
-  isAutoRefresh = false; 
+  isAutoRefresh = false;
   latestAlertTimestamp: string | null = null; // Add this as a class field
 
 
@@ -169,6 +169,8 @@ fetchAllLocations(): void {
 
 
 fetchTrafficData(): void {
+  console.log('Fetching traffic data...');
+
   this.trafficService.getTrafficData({
     location: this.selectedLocation,
     congestionLevel: this.selectedCongestion,
@@ -179,6 +181,8 @@ fetchTrafficData(): void {
     page: this.currentPage - 1,
     size: this.pageSize
   }).subscribe(res => {
+    console.log('Response received from backend:', res);
+
     const data = res.content.map(d => ({
       location: d.location,
       time: d.timestamp,
@@ -186,8 +190,10 @@ fetchTrafficData(): void {
       speed: d.avgSpeed,
       congestion: d.congestionLevel,
       alert: d.alertTimestamp,
-      alerts: d.alerts // ✅ Only if your backend includes alert objects
+      alerts: d.alerts
     }));
+
+    console.log('[✅] Parsed traffic data:', data);
 
     this.data = data;
     this.filteredData = [...data];
@@ -198,29 +204,44 @@ fetchTrafficData(): void {
 
     this.updateCharts(data);
 
-    // ✅ ALERT BANNER LOGIC STARTS HERE
+    // ALERT BANNER LOGIC STARTS HERE
+    console.log('Extracting all alerts from data');
     const allAlerts = data
       .flatMap(d => d.alerts || [])
       .filter(a => a.timestamp);
 
+    console.log('All valid alerts with timestamp:', allAlerts);
+
     const latest = allAlerts
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
 
+    if (latest) {
+      console.log('Latest alert timestamp:', latest.timestamp);
+    } else {
+      console.log('No valid alerts found!');
+    }
+
     if (this.isAutoRefresh && latest && latest.timestamp !== this.latestAlertTimestamp) {
+      console.log('New alert detected — showing banner!');
       this.latestAlertTimestamp = latest.timestamp;
       this.bannerMessage = latest.message || 'New traffic alert received';
 
       setTimeout(() => {
+        console.log('Hiding alert banner after 5s.');
         this.bannerMessage = null;
       }, 5000);
+    } else {
+      if (this.isAutoRefresh) {
+        console.log('No new alert — skipping banner update.');
+      }
     }
-    // ✅ ALERT BANNER LOGIC ENDS HERE
 
     this.isAutoRefresh = false;
     this.isFirstLoad = false;
+  }, err => {
+    console.error('Failed to fetch traffic data:', err);
   });
 }
-
 
 
 
@@ -241,7 +262,7 @@ applyFilters(): void {
     return;
   }
 
-  // ✅ Reset page + apply sort + fetch with filters
+  // Reset page + apply sort + fetch with filters
   this.selectedSortDirection = this.pendingSortDirection;
   this.currentPage = 1;
   this.fetchTrafficData();
@@ -359,7 +380,7 @@ nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
     this.showVisualizations = false;
-    this.fetchTrafficData(); 
+    this.fetchTrafficData();
   }
 }
 
@@ -408,7 +429,7 @@ sortByColumn(column: keyof TrafficData) {
   const direction = this.sortDirection[column] === 'asc' ? 'desc' : 'asc';
   this.sortDirection[column] = direction;
 
-  this.sortBy = column; // ✅ Set the current sort column for summary
+  this.sortBy = column; // Set the current sort column for summary
 
   this.filteredData.sort((a, b) => {
     let valA = a[column] ?? '';
@@ -451,7 +472,7 @@ updateCharts(data: TrafficData[]): void {
   const avgSpeeds = sorted.map(d => d.speed);
   const trafficDensities = sorted.map(d => d.density);
 
-  // ✅ Reassign the entire chart objects (new references)
+  // Reassign the entire chart objects (new references)
   this.speedChartData = {
     labels: chartLabels,
     datasets: [{
@@ -468,7 +489,7 @@ updateCharts(data: TrafficData[]): void {
     }]
   };
 
-  // ✅ Update trends
+  // Update trends
   const last = avgSpeeds[avgSpeeds.length - 1] ?? 0;
   const prev = avgSpeeds[avgSpeeds.length - 2] ?? last;
 

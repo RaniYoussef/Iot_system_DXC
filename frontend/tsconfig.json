@@ -15,8 +15,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-
-    // ✅ These are the two important lines:
     "baseUrl": "./",
     "paths": {
       "src/*": ["src/*"]
@@ -27,5 +25,8 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "exclude": [
+    "tests/**/*.spec.ts"  // ✅ This line tells Angular/TS to ignore Playwright test files
+  ]
 }

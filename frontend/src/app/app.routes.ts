@@ -8,7 +8,7 @@ import { SettingsPageComponent } from './settings/settings-page/settings-page.co
 import { ChooseDashboardComponent } from './Dashboard/Choose-dashboard/Choose-dashboard.component';
 import { TrafficDashboardComponent } from './Dashboard/traffic-dashboard/traffic-dashboard.component';
 import { LightDashboardComponent } from './Dashboard/light-dashboard/light-dashboard.component';
-
+import { AirDashboardComponent } from './Dashboard/air-dashboard/air-dashboard.component';
 // import { AlertComponent } from './Dashboard/Alert/alert.component';
 import { AlertComponent } from './Dashboard/alert/alert.component';
 //import { TrafficVisualisationComponent} from './Dashboard/traffic-visualisation/traffic-visualisation.component';
@@ -24,7 +24,8 @@ export const routes: Routes = [
   { path: 'traffic-dashboard', component: TrafficDashboardComponent },
   { path: 'Settings', component: SettingsPageComponent},
   { path: 'light-dashboard', component: LightDashboardComponent },
+  { path: 'air-dashboard', component: AirDashboardComponent },
   { path: 'alert', component: AlertComponent }
 
-  
+
 ];

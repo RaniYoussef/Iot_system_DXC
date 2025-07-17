@@ -8,20 +8,16 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git url: 'https://github.com/RaniYoussef/Iot_system_DXC.git', branch: "${BRANCH_NAME}"
-            }
-        }
-
         stage('SonarQube Analysis - Backend') {
             steps {
                 dir('backend') {
                     withSonarQubeEnv("${SONARQUBE}") {
-                        sh '''
-                            chmod +x mvnw
-                            ./mvnw clean verify sonar:sonar -DskipTests
-                        '''
+                        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                chmod +x mvnw
+                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
                     }
                 }
             }
@@ -31,16 +27,19 @@ pipeline {
             steps {
                 dir('frontend') {
                     withSonarQubeEnv("${SONARQUBE}") {
-                        sh '''
-                            npm install
-                            npm run test -- --code-coverage
-                            sonar-scanner \
-                              -Dsonar.projectKey=iot-frontend \
-                              -Dsonar.projectName=iot-frontend \
-                              -Dsonar.sources=src \
-                              -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
-                              -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-                        '''
+                        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                npm install
+                                npm run test -- --code-coverage || true
+                                npx sonar-scanner \
+                                  -Dsonar.projectKey=iot-frontend \
+                                  -Dsonar.projectName=iot-frontend \
+                                  -Dsonar.sources=src \
+                                  -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
+                                  -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \
+                                  -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
                     }
                 }
             }

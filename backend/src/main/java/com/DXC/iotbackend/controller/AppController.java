@@ -17,6 +17,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ import java.time.Duration;
 
 @RestController
 @RequestMapping("${api.base-path}")
-public class AppController {    
+public class AppController {
 
     @Autowired
     private AuthService authService;
@@ -201,7 +202,7 @@ public class AppController {
 
     @PutMapping("${auth.profile}${auth.updatePassword}")
     public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
-                                                 Authentication authentication) {
+                                                              Authentication authentication) {
 
         System.out.println("Old: " + request.getOldPassword());
         System.out.println("New: " + request.getNewPassword());
@@ -275,9 +276,9 @@ public class AppController {
 //        // send email with link: http://localhost:4200/reset-password?token=XYZ
 //
 //
-////        // Save token to DB or cache with expiry (optional step)
-////        userOpt.get().setResetToken(token);
-////        userRepository.save(userOpt.get());
+    ////        // Save token to DB or cache with expiry (optional step)
+    ////        userOpt.get().setResetToken(token);
+    ////        userRepository.save(userOpt.get());
 //
 //        // Send email (simulate with console print or real service)
 //        String resetLink = "http://localhost:4200/reset-password?token=" + token;
@@ -345,7 +346,9 @@ public class AppController {
                     UserEntity newUser = new UserEntity();
                     newUser.setEmail(email);
                     newUser.setUsername(email);
-                    newUser.setFirstName(name);
+                    String[] parts = name != null ? name.split(" ", 2) : new String[]{"User", ""};
+                    newUser.setFirstName(parts[0]);
+                    newUser.setLastName(parts.length > 1 ? parts[1] : "");
                     newUser.setRole("ROLE_USER");
                     //newUser.setOAuthUser(true);
                     return userRepository.save(newUser);
@@ -396,10 +399,10 @@ public class AppController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found"));
         }
 
-        // ===== EMAIL VALIDATION =====
+        // ===== EMAIL VALIDATION ====
         if (newEmail != null) {
-            String emailRegex = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
-            if (!newEmail.matches(emailRegex)) {
+            EmailValidator validator = EmailValidator.getInstance();
+            if (!validator.isValid(newEmail)) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid email format"));
             }
 

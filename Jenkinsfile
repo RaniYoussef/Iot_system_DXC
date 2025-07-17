@@ -8,16 +8,20 @@ pipeline {
     }
 
     stages {
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/RaniYoussef/Iot_system_DXC.git', branch: "${BRANCH_NAME}"
+            }
+        }
+
         stage('SonarQube Analysis - Backend') {
             steps {
                 dir('backend') {
                     withSonarQubeEnv("${SONARQUBE}") {
-                        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                            sh '''
-                                chmod +x mvnw
-                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
-                            '''
-                        }
+                        sh '''
+                            chmod +x mvnw
+                            ./mvnw clean verify sonar:sonar -DskipTests
+                        '''
                     }
                 }
             }
@@ -26,7 +30,7 @@ pipeline {
         stage('SonarQube Analysis - Frontend') {
             agent {
                 docker {
-                    image 'node:20-alpine'
+                    image 'node:20'  // Debian-based to avoid permission issues
                 }
             }
             steps {
@@ -35,8 +39,8 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 npm install --legacy-peer-deps
-                                # Skipping tests and coverage
-                                npx sonar-scanner \
+                                npm install -g sonar-scanner
+                                sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \

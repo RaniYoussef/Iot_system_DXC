@@ -18,10 +18,12 @@ pipeline {
             steps {
                 dir('backend') {
                     withSonarQubeEnv("${SONARQUBE}") {
-                        sh '''
-                            chmod +x mvnw
-                            ./mvnw clean verify sonar:sonar -DskipTests
-                        '''
+                        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                chmod +x mvnw
+                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
                     }
                 }
             }
@@ -30,7 +32,8 @@ pipeline {
         stage('SonarQube Analysis - Frontend') {
             agent {
                 docker {
-                    image 'node:20'  // Debian-based to avoid permission issues
+                    image 'node:20' // Debian-based to avoid Alpine issues
+                    args '-u 0:0'   // Run as root to avoid permission errors
                 }
             }
             steps {
@@ -39,8 +42,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 npm install --legacy-peer-deps
-                                npm install -g sonar-scanner
-                                sonar-scanner \
+                                npx sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \

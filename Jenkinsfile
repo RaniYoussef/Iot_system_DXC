@@ -5,6 +5,7 @@ pipeline {
         BACKEND_IMAGE = "raniyoussef/iot-backend"
         FRONTEND_IMAGE = "raniyoussef/iot-frontend"
         SONARQUBE = 'SonarQube'
+        SONAR_HOST_URL = 'http://172.27.96.1:9000' // WSL Host IP for SonarQube
     }
 
     stages {
@@ -21,7 +22,10 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 chmod +x mvnw
-                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
+                                ./mvnw clean verify sonar:sonar \
+                                  -DskipTests \
+                                  -Dsonar.login=$SONAR_TOKEN \
+                                  -Dsonar.host.url=$SONAR_HOST_URL
                             '''
                         }
                     }
@@ -33,7 +37,7 @@ pipeline {
             agent {
                 docker {
                     image 'sonarsource/sonar-scanner-cli:latest'
-                    args '-u 0:0' // ensure root access inside container
+                    args '-u 0:0'
                 }
             }
             steps {
@@ -46,7 +50,8 @@ pipeline {
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \
                                   -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
-                                  -Dsonar.login=$SONAR_TOKEN
+                                  -Dsonar.login=$SONAR_TOKEN \
+                                  -Dsonar.host.url=$SONAR_HOST_URL
                             '''
                         }
                     }

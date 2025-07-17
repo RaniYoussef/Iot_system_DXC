@@ -14,6 +14,7 @@ target/
 .sts4-cache
 # Ignore sensitive Spring config
 backend/src/main/resources/application.properties
+.env
 
 
 ### IntelliJ IDEA ###

@@ -5,7 +5,7 @@ pipeline {
         BACKEND_IMAGE = "raniyoussef/iot-backend"
         FRONTEND_IMAGE = "raniyoussef/iot-frontend"
         SONARQUBE = 'SonarQube'
-        SONAR_HOST_URL = 'http://172.27.96.1:9000' // WSL Host IP for SonarQube
+        SONAR_HOST_URL = 'http://172.27.96.1:9000' // WSL Host IP
     }
 
     stages {
@@ -39,6 +39,9 @@ pipeline {
                     image 'sonarsource/sonar-scanner-cli:latest'
                     args '-u 0:0'
                 }
+            }
+            environment {
+                SONAR_HOST_URL = "${SONAR_HOST_URL}" // Pass explicitly
             }
             steps {
                 dir('frontend') {

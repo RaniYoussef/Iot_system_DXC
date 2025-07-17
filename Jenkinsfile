@@ -32,8 +32,8 @@ pipeline {
         stage('SonarQube Analysis - Frontend') {
             agent {
                 docker {
-                    image 'node:20'
-                    args '-u 0:0'  // Run as root for permission safety
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                    args '-u 0:0' // ensure root access inside container
                 }
             }
             steps {
@@ -41,8 +41,7 @@ pipeline {
                     withSonarQubeEnv("${SONARQUBE}") {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
-                                npm install --legacy-peer-deps
-                                npx sonar-scanner \
+                                sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \

@@ -30,6 +30,12 @@ pipeline {
         }
 
         stage('SonarQube Analysis - Frontend') {
+            agent {
+                docker {
+                    image 'node:20'
+                    args '-u 0:0'  // Run as root for permission safety
+                }
+            }
             steps {
                 dir('frontend') {
                     withSonarQubeEnv("${SONARQUBE}") {

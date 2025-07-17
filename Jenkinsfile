@@ -24,12 +24,17 @@ pipeline {
         }
 
         stage('SonarQube Analysis - Frontend') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                }
+            }
             steps {
                 dir('frontend') {
                     withSonarQubeEnv("${SONARQUBE}") {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
-                                npm install
+                                npm install --legacy-peer-deps
                                 npm run test -- --code-coverage || true
                                 npx sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \

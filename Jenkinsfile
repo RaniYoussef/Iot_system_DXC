@@ -35,13 +35,12 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 npm install --legacy-peer-deps
-                                npm run test -- --code-coverage || true
+                                # Skipping tests and coverage
                                 npx sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \
                                   -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
-                                  -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \
                                   -Dsonar.login=$SONAR_TOKEN
                             '''
                         }

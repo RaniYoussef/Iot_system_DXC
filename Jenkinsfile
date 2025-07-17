@@ -5,7 +5,7 @@ pipeline {
         BACKEND_IMAGE = "raniyoussef/iot-backend"
         FRONTEND_IMAGE = "raniyoussef/iot-frontend"
         SONARQUBE = 'SonarQube'
-        SONAR_HOST_URL = 'http://172.27.96.1:9000' // WSL Host IP
+        SONAR_HOST_URL = 'http://172.27.96.1:9000' // This is your WSL host IP (SonarQube)
     }
 
     stages {
@@ -22,10 +22,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 chmod +x mvnw
-                                ./mvnw clean verify sonar:sonar \
-                                  -DskipTests \
-                                  -Dsonar.login=$SONAR_TOKEN \
-                                  -Dsonar.host.url=$SONAR_HOST_URL
+                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
                             '''
                         }
                     }
@@ -34,21 +31,12 @@ pipeline {
         }
 
         stage('SonarQube Analysis - Frontend') {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli:latest'
-                    args '-u 0:0'
-                }
-            }
-            environment {
-                SONAR_HOST_URL = "${SONAR_HOST_URL}" // Pass explicitly
-            }
             steps {
                 dir('frontend') {
                     withSonarQubeEnv("${SONARQUBE}") {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
-                                sonar-scanner \
+                                npx sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \
@@ -62,19 +50,19 @@ pipeline {
             }
         }
 
-        stage('Build Backend Image (Tagged)') {
+        stage('Build Backend Image') {
             steps {
                 sh 'docker build -t $BACKEND_IMAGE:${BUILD_NUMBER} ./backend'
             }
         }
 
-        stage('Build Frontend Image (Tagged)') {
+        stage('Build Frontend Image') {
             steps {
                 sh 'docker build -t $FRONTEND_IMAGE:${BUILD_NUMBER} ./frontend'
             }
         }
 
-        stage('Push Images to Docker Hub') {
+        stage('Push Docker Images') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''

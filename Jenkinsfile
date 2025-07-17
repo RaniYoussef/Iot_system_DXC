@@ -18,10 +18,12 @@ pipeline {
             steps {
                 dir('backend') {
                     withSonarQubeEnv("${SONARQUBE}") {
-                        sh '''
-                            chmod +x mvnw
-                            ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
-                        '''
+                        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                chmod +x mvnw
+                                ./mvnw clean verify sonar:sonar -DskipTests -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
                     }
                 }
             }
@@ -34,8 +36,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                             sh '''
                                 npm install --legacy-peer-deps
-                                npm install -g sonar-scanner
-                                sonar-scanner \
+                                npx sonar-scanner \
                                   -Dsonar.projectKey=iot-frontend \
                                   -Dsonar.projectName=iot-frontend \
                                   -Dsonar.sources=src \

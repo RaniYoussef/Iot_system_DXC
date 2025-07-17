@@ -155,3 +155,9 @@ docker run -d \
 /////////////////////////////////////////////////////////////////
 user:admin
 password:SonarQube1234
+
+jenkis pass : rani2025@DESKTOP-H21R56F:/mnt/c/Users/Rani/Desktop/Iot_system_DXC$ docker exec -it jenkins-cicd cat /var/jenkins_home/secrets/initialAdminPassword
+3ba6523eb4c34e6a9225d0b40b64bb28
+
+jenkis user name: RaniYoussef
+pass :Rani@1234

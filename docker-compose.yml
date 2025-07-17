@@ -39,13 +39,8 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/iotdb
-      SPRING_DATASOURCE_USERNAME: iotuser
-      SPRING_DATASOURCE_PASSWORD: iotpass
-      SPRING_REDIS_HOST: iot_redis
-      SPRING_REDIS_PORT: 6379
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    env_file:
+      - ./backend/.env
     depends_on:
       mysql:
         condition: service_healthy
@@ -80,6 +75,9 @@ services:
     volumes:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     networks:
       - iot-net
 
@@ -94,6 +92,7 @@ services:
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
     networks:
       - iot-net
 
@@ -102,6 +101,7 @@ volumes:
   jenkins-data:
   sonarqube_data:
   sonarqube_extensions:
+  sonarqube_logs:
 
 networks:
   iot-net:

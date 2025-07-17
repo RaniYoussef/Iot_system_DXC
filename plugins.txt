@@ -1,0 +1,15 @@
+git
+workflow-aggregator
+docker-plugin
+sonar
+ssh-slaves
+ldap
+mailer
+pipeline-stage-view
+workflow-basic-steps
+pipeline-github-lib
+workflow-cps
+credentials
+blueocean
+bouncycastle-api
+instance-identity

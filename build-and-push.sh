@@ -4,7 +4,7 @@
 DOCKER_USERNAME="raniyoussef"
 BACKEND_IMAGE_NAME="iot-backend"
 FRONTEND_IMAGE_NAME="iot-frontend"
-TAG="sprint3-$(date +%Y%m%d%H%M%S)"
+TAG="sprint5-$(date +%Y%m%d%H%M%S)"
 
 
 # === BUILD BACKEND ===

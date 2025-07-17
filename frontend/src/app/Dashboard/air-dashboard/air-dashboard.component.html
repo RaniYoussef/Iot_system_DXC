@@ -1,5 +1,4 @@
 <app-header></app-header>
-<!-- <app-alert [statusCode]="500"></app-alert> -->
 <div *ngIf="bannerMessage" class="alert-banner">
   {{ bannerMessage }}
 </div>
@@ -129,8 +128,9 @@
     </div>
     <div class="table-card">
       <table>
+        <caption class="visually-hidden">Air quality measurements by location, time, and alert level</caption>
         <thead>
-        <tr>
+          <tr>
           <th (click)="sortByColumn('location')" class="sortable-header" [class.active]="sortDirection['location']">
                     <span class="sortable-label">Location
                     <i *ngIf="sortDirection['location'] === 'asc'" class="fas fa-sort-up"></i>

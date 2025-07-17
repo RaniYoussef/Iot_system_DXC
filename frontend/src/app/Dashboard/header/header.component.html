@@ -1,13 +1,24 @@
-<header class="app-header">
+<header class="app-header" aria-label="Application Header with animated background">
   <!-- ✅ Background video must come first -->
-  <video #headerVideo autoplay muted loop class="header-video">
+  <video #headerVideo autoplay muted loop class="header-video" aria-describedby="videoDesc">
     <source src="assets/videos/HeaderBackgroundVideo.mp4" type="video/mp4" />
+    <!-- Optional: Subtitle track file -->
+    <track
+      kind="captions"
+      src="assets/videos/HeaderBackgroundCaptions.vtt"
+      srclang="en"
+      label="English"
+      default
+    />
     Your browser does not support the video tag.
   </video>
+  <span id="videoDesc" class="visually-hidden">
+    This video is a decorative animated background showing technology visuals related to IoT.
+  </span>
 
   <div class="container header-container">
     <div class="logo animated-logo">
-      <img src="assets/images/IoTelligenceLogo.png" alt="Logo" class="logo-img" />
+      <img src="assets/images/IoTelligenceLogo.png" alt="IoTelligence Company Logo" class="logo-img" />
       <span class="iot-text">
         <span class="iot-letter i">I</span>
         <span class="iot-letter o">o</span>
@@ -15,12 +26,12 @@
       </span>
     </div>
 
-    <nav class="nav">
+    <nav class="nav" aria-label="Main Navigation">
       <ul>
         <li><a routerLink="/Settings" class="active">Settings</a></li>
         <li><a routerLink="/dashboard" class="active">Dashboard</a></li>
-        <li><span class="nav-disabled">Alerts</span></li>
-        <li><span class="nav-disabled">Reports</span></li>
+        <li><span class="nav-disabled" aria-disabled="true">Alerts</span></li>
+        <li><span class="nav-disabled" aria-disabled="true">Reports</span></li>
       </ul>
     </nav>
 

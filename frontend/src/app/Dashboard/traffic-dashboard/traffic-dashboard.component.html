@@ -1,5 +1,4 @@
 <app-header></app-header>
-<!-- <app-alert [statusCode]="500"></app-alert> -->
 <div *ngIf="bannerMessage" class="alert-banner">
   {{ bannerMessage }}
 </div>
@@ -54,7 +53,6 @@
                     <select [(ngModel)]="sortBy">
                         <option value="">No Sort</option>
                         <option value="alert">Alert</option>
-                        <!-- <option value="congestion">Congestion</option> -->
                     <option value="trafficDensity">Traffic Density</option>
                     <option value="avgSpeed">Speed</option>
 
@@ -130,6 +128,9 @@
 </div>
         <div class="table-card">
             <table>
+                <caption class="visually-hidden">
+                       Air quality data table sorted by location, CO, ozone, and alert levels.
+                </caption>
                 <thead>
                 <tr>
                     <th (click)="sortByColumn('location')" class="sortable-header" [class.active]="sortDirection['location']">
@@ -138,12 +139,6 @@
                     <i *ngIf="sortDirection['location'] === 'desc'" class="fas fa-sort-down"></i>
                     </span>
                     </th>
-                    <!-- <th (click)="sortByColumn('time')" class="sortable-header" [class.active]="sortDirection['time']">
-                    <span class="sortable-label">Time
-                    <i *ngIf="sortDirection['time'] === 'asc'" class="fas fa-sort-up"></i>
-                    <i *ngIf="sortDirection['time'] === 'desc'" class="fas fa-sort-down"></i>
-                    </span>
-                    </th> -->
 
                     <th>
                     <span class="sortable-label">Time</span>
@@ -165,13 +160,6 @@
                     <th>
                     <span class="sortable-label">Congestion</span>
                     </th>
-                    <!-- <th (click)="sortByColumn('congestion')" class="sortable-header" [class.active]="sortDirection['congestion']">
-                    <span class="sortable-label">Congestion
-                    <i *ngIf="sortDirection['congestion'] === 'asc'" class="fas fa-sort-up"></i>
-                    <i *ngIf="sortDirection['congestion'] === 'desc'" class="fas fa-sort-down"></i>
-                    </span>
-                    </th> -->
-                    <!-- Header -->
                     <th (click)="sortByColumn('alert')" class="sortable-header" [class.active]="sortDirection['alert']">
                     <span class="sortable-label">Alert
                         <i *ngIf="sortDirection['alert'] === 'asc'" class="fas fa-sort-up"></i>

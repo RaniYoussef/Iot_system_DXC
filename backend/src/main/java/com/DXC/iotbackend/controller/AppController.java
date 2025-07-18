@@ -1,16 +1,16 @@
 package com.dxc.iotbackend.controller;
 
 
-import com.DXC.iotbackend.UserDto;
-import com.DXC.iotbackend.model.UserEntity;
-import com.DXC.iotbackend.payload.LoginRequest;
-import com.DXC.iotbackend.payload.UpdatePasswordRequest;
-import com.DXC.iotbackend.payload.UserProfileResponse;
-import com.DXC.iotbackend.repository.UserRepository;
-import com.DXC.iotbackend.service.AuthService;
-import com.DXC.iotbackend.service.EmailService;
-import com.DXC.iotbackend.util.InputSanitizer;
-import com.DXC.iotbackend.util.JwtUtil;
+import com.dxc.iotbackend.UserDto;
+import com.dxc.iotbackend.model.UserEntity;
+import com.dxc.iotbackend.payload.LoginRequest;
+import com.dxc.iotbackend.payload.UpdatePasswordRequest;
+import com.dxc.iotbackend.payload.UserProfileResponse;
+import com.dxc.iotbackend.repository.UserRepository;
+import com.dxc.iotbackend.service.AuthService;
+import com.dxc.iotbackend.service.EmailService;
+import com.dxc.iotbackend.util.InputSanitizer;
+import com.dxc.iotbackend.util.JwtUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;

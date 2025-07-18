@@ -1,8 +1,8 @@
 package com.dxc.iotbackend;
 
-import com.DXC.iotbackend.model.UserEntity;
-import com.DXC.iotbackend.repository.UserRepository;
-import com.DXC.iotbackend.util.JwtUtil;
+import com.dxc.iotbackend.model.UserEntity;
+import com.dxc.iotbackend.repository.UserRepository;
+import com.dxc.iotbackend.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

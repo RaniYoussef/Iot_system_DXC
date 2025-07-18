@@ -1,12 +1,12 @@
 package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.mapper.AirPollutionMapper;
-import com.DXC.iotbackend.mapper.SensorMapper;
-import com.DXC.iotbackend.model.AirPollutionData;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.payload.AirPollutionReadingWithAlertDTO;
-import com.DXC.iotbackend.repository.AirPollutionDataRepository;
-import com.DXC.iotbackend.repository.AlertRepository;
+import com.dxc.iotbackend.mapper.AirPollutionMapper;
+import com.dxc.iotbackend.mapper.SensorMapper;
+import com.dxc.iotbackend.model.AirPollutionData;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.payload.AirPollutionReadingWithAlertDTO;
+import com.dxc.iotbackend.repository.AirPollutionDataRepository;
+import com.dxc.iotbackend.repository.AlertRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 

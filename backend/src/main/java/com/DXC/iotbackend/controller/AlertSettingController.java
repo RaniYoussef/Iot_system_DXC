@@ -1,7 +1,7 @@
 package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.model.AlertSetting;
-import com.DXC.iotbackend.service.AlertSettingService;
+import com.dxc.iotbackend.model.AlertSetting;
+import com.dxc.iotbackend.service.AlertSettingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

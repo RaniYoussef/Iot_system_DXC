@@ -2,13 +2,13 @@ package com.dxc.iotbackend.service;
 
 
 
-import com.DXC.iotbackend.mapper.SensorMapper;
-import com.DXC.iotbackend.mapper.TrafficMapper;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.model.TrafficTypeData;
-import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
-import com.DXC.iotbackend.repository.AlertRepository;
-import com.DXC.iotbackend.repository.TrafficSensorDataRepository;
+import com.dxc.iotbackend.mapper.SensorMapper;
+import com.dxc.iotbackend.mapper.TrafficMapper;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.TrafficTypeData;
+import com.dxc.iotbackend.payload.TrafficReadingWithAlertDTO;
+import com.dxc.iotbackend.repository.AlertRepository;
+import com.dxc.iotbackend.repository.TrafficSensorDataRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 

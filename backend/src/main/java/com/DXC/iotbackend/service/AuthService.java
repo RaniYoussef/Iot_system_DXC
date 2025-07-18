@@ -1,16 +1,16 @@
 package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.UserDto;
-import com.DXC.iotbackend.model.UserEntity;
-import com.DXC.iotbackend.payload.UpdatePasswordRequest;
-import com.DXC.iotbackend.util.InputSanitizer;
+import com.dxc.iotbackend.UserDto;
+import com.dxc.iotbackend.model.UserEntity;
+import com.dxc.iotbackend.payload.UpdatePasswordRequest;
+import com.dxc.iotbackend.util.InputSanitizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.DXC.iotbackend.repository.UserRepository;
+import com.dxc.iotbackend.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 
 import java.util.Map;

@@ -1,9 +1,9 @@
 package com.dxc.iotbackend.mapper;
 
-import com.DXC.iotbackend.model.AirPollutionData;
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.payload.AirPollutionReadingWithAlertDTO;
-import com.DXC.iotbackend.util.AbstractSensorReadingMapper;
+import com.dxc.iotbackend.model.AirPollutionData;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.payload.AirPollutionReadingWithAlertDTO;
+import com.dxc.iotbackend.util.AbstractSensorReadingMapper;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;

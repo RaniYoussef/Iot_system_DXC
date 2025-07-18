@@ -1,6 +1,6 @@
 package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.service.BaseSensorDataService;
+import com.dxc.iotbackend.service.BaseSensorDataService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

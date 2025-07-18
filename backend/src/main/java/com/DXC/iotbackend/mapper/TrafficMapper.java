@@ -1,9 +1,9 @@
 package com.dxc.iotbackend.mapper;
 
-import com.DXC.iotbackend.model.Alert;
-import com.DXC.iotbackend.model.TrafficTypeData;
-import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;
-import com.DXC.iotbackend.util.AbstractSensorReadingMapper;
+import com.dxc.iotbackend.model.Alert;
+import com.dxc.iotbackend.model.TrafficTypeData;
+import com.dxc.iotbackend.payload.TrafficReadingWithAlertDTO;
+import com.dxc.iotbackend.util.AbstractSensorReadingMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

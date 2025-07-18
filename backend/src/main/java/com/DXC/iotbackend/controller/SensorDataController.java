@@ -1,7 +1,7 @@
 package com.dxc.iotbackend.controller;
 
-import com.DXC.iotbackend.model.SensorData;
-import com.DXC.iotbackend.service.SensorDataService;
+import com.dxc.iotbackend.model.SensorData;
+import com.dxc.iotbackend.service.SensorDataService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

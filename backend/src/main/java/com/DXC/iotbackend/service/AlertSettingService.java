@@ -1,7 +1,7 @@
 package com.dxc.iotbackend.service;
 
-import com.DXC.iotbackend.model.*;
-import com.DXC.iotbackend.repository.AlertSettingRepository;
+import com.dxc.iotbackend.model.*;
+import com.dxc.iotbackend.repository.AlertSettingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

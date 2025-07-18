@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("${api.base-path}${sensor.air-path}") // /api/air-pollution-sensor
-@CrossOrigin
+@RequestMapping("${api.base-path}${sensor.air-path}") // e.g. /api/air-pollution-sensor
+@CrossOrigin(origins = {"http://localhost:4200", "https://your-trusted-domain.com"}) // ✅ whitelist trusted domains
 public class AirPollutionSensorDataController
         extends BaseSensorDataController<AirPollutionData, AirPollutionReadingWithAlertDTO> {
 

@@ -1,14 +1,12 @@
 package com.DXC.iotbackend.controller;
 
-
-
 import com.DXC.iotbackend.model.SensorData;
 import com.DXC.iotbackend.service.SensorDataService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.base-path}${sensor.general-path}") // /api/sensor
-@CrossOrigin
+@RequestMapping("${api.base-path}${sensor.general-path}") // e.g. /api/sensor
+@CrossOrigin(origins = {"http://localhost:4200", "https://your-trusted-domain.com"}) // ✅ restrict to trusted origins
 public class SensorDataController {
 
     private final SensorDataService service;

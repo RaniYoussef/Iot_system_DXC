@@ -3,18 +3,14 @@ package com.DXC.iotbackend.controller;
 import com.DXC.iotbackend.model.AlertSetting;
 import com.DXC.iotbackend.service.AlertSettingService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping("${api.base-path}${alert-settings-path}") // /api/alert-settings
-@CrossOrigin
-
+@RequestMapping("${api.base-path}${alert-settings-path}") // e.g. /api/alert-settings
+@CrossOrigin(origins = {"http://localhost:4200", "https://your-trusted-domain.com"}) // ✅ whitelist trusted origins
 public class AlertSettingController {
 
     private final AlertSettingService service;
@@ -33,12 +29,11 @@ public class AlertSettingController {
         return service.getAll();
     }
 
-    @GetMapping("${alert.filtering}") // /filter
+    @GetMapping("${alert.filtering}") // e.g. /filter
     public List<AlertSetting> getFilteredSettings(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String metric
     ) {
         return service.getFiltered(type, metric);
     }
-
 }

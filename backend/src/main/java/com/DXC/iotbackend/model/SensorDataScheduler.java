@@ -1,8 +1,5 @@
 package com.DXC.iotbackend.model;
 
-
-
-import com.DXC.iotbackend.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -18,9 +16,13 @@ import java.util.Random;
 public class SensorDataScheduler {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final Random random = new Random();
+
+    // ✅ Use SecureRandom for better randomness quality and security
+    private final Random random = new SecureRandom();
+
     @Value("${scheduler.BASE_URL}")
     private String BASE_URL;
+
     @Value("${sensor.traffic-path}")
     private String trafficPath;
 
@@ -30,6 +32,7 @@ public class SensorDataScheduler {
     @Value("${sensor.light-path}")
     private String lightPath;
 
+    private static final String[] LOCATIONS = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
 
     @Scheduled(fixedRate = 60000) // every 1 min
     public void sendRandomSensorData() {
@@ -39,51 +42,42 @@ public class SensorDataScheduler {
     }
 
     private void sendTrafficData() {
-        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
-        String randomLocation = locations[random.nextInt(locations.length)];
-
+        String randomLocation = randomLocation();
         TrafficTypeData data = new TrafficTypeData(
                 randomLocation,
                 LocalDateTime.now(),
-                random.nextInt(500),                           // trafficDensity
-                10 + random.nextFloat() * 80,                  // avgSpeed
+                random.nextInt(500),                         // trafficDensity
+                10 + random.nextFloat() * 80,                // avgSpeed
                 randomLevel(new String[]{"Low", "Moderate", "High", "Severe"})
         );
-
         post(trafficPath, data);
     }
 
     private void sendAirPollutionData() {
-        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
-        String randomLocation = locations[random.nextInt(locations.length)];
-
+        String randomLocation = randomLocation();
         AirPollutionData data = new AirPollutionData(
                 randomLocation,
                 LocalDateTime.now(),
-                randomFloat(0, 35),    // pm2_5
-                randomFloat(0, 45),    // pm10
-                randomFloat(0, 50),    // co
-                randomFloat(0, 40),    // no2
-                randomFloat(0, 25),    // so2
-                randomFloat(0, 300),   // ozone
+                randomFloat(0, 35),      // pm2_5
+                randomFloat(0, 45),      // pm10
+                randomFloat(0, 50),      // co
+                randomFloat(0, 40),      // no2
+                randomFloat(0, 25),      // so2
+                randomFloat(0, 300),     // ozone
                 randomLevel(new String[]{"Good", "Moderate", "Unhealthy", "Very Unhealthy", "Hazardous"})
         );
-
         post(airPath, data);
     }
 
     private void sendLightData() {
-        String[] locations = {"Sidi Gaber", "Smouha", "Stanley", "Miami", "Sporting", "Mandara"};
-        String randomLocation = locations[random.nextInt(locations.length)];
-
+        String randomLocation = randomLocation();
         StreetLightData data = new StreetLightData(
                 randomLocation,
                 LocalDateTime.now(),
-                random.nextInt(101),            // brightnessLevel
-                randomFloat(0, 5000),           // powerConsumption
+                random.nextInt(101),              // brightnessLevel
+                randomFloat(0, 5000),             // powerConsumption
                 randomLevel(new String[]{"ON", "OFF"})
         );
-
         post(lightPath, data);
     }
 
@@ -94,7 +88,7 @@ public class SensorDataScheduler {
         try {
             restTemplate.postForObject(BASE_URL + path, request, String.class);
         } catch (Exception e) {
-            System.out.println("Error calling " + path + ": " + e.getMessage());
+            System.err.println("Error calling " + path + ": " + e.getMessage());
         }
     }
 
@@ -104,5 +98,9 @@ public class SensorDataScheduler {
 
     private String randomLevel(String[] levels) {
         return levels[random.nextInt(levels.length)];
+    }
+
+    private String randomLocation() {
+        return LOCATIONS[random.nextInt(LOCATIONS.length)];
     }
 }

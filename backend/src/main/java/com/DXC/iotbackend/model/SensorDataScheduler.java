@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.model;
+package com.dxc.iotbackend.model;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

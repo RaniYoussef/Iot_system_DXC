@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.repository;
+package com.dxc.iotbackend.repository;
 
 
 

@@ -1,5 +1,4 @@
-package com.DXC.iotbackend;
-
+package com.dxc.iotbackend;
 import jakarta.validation.constraints.*;
 
 public class UserDto {

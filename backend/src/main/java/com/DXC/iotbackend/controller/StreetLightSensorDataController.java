@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
 import com.DXC.iotbackend.model.StreetLightData;
 import com.DXC.iotbackend.payload.StreetLightReadingWithAlertDTO;

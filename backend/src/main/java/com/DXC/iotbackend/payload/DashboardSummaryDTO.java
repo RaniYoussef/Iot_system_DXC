@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.payload;
+package com.dxc.iotbackend.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

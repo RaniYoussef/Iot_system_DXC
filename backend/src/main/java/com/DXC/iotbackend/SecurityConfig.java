@@ -1,4 +1,4 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
 import com.DXC.iotbackend.JwtFilter;
 import com.DXC.iotbackend.RateLimitingFilter;

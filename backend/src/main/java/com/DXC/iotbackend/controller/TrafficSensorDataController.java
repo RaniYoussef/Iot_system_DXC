@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
 import com.DXC.iotbackend.model.TrafficTypeData;
 import com.DXC.iotbackend.payload.TrafficReadingWithAlertDTO;

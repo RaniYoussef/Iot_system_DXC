@@ -1,5 +1,4 @@
-package com.DXC.iotbackend;
-
+package com.dxc.iotbackend;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

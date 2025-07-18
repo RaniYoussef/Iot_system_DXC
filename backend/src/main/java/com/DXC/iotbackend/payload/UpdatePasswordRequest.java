@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.payload;
+package com.dxc.iotbackend.payload;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
 import com.DXC.iotbackend.model.UserEntity;
 import com.DXC.iotbackend.repository.UserRepository;

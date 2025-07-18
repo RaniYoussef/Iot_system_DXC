@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.config;
+package com.dxc.iotbackend.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

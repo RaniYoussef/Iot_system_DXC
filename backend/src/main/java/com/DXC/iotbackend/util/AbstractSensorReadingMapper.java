@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.util;
+package com.dxc.iotbackend.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

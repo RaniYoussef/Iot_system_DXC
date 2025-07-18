@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.service;
+package com.dxc.iotbackend.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -1,8 +1,4 @@
-package com.DXC.iotbackend.repository;
-
-
-
-
+package com.dxc.iotbackend.repository;
 import com.DXC.iotbackend.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

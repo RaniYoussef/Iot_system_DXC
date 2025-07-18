@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.mapper;
+package com.dxc.iotbackend.mapper;
 
 import com.DXC.iotbackend.model.Alert;
 import com.DXC.iotbackend.model.StreetLightData;

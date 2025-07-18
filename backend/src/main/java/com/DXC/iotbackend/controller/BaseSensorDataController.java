@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
 import com.DXC.iotbackend.service.BaseSensorDataService;
 import jakarta.validation.Valid;
@@ -20,20 +20,6 @@ public abstract class BaseSensorDataController<T, DTO> {
         return getService().saveData(data);
     }
 
-//    @GetMapping("${sensor.with.alert}")
-//    public Page<DTO> getReadingsWithAlerts(
-//            @RequestParam(required = false) String filter1,
-//            @RequestParam(required = false) String filter2,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-//            @RequestParam(defaultValue = "timestamp") String sortBy,
-//            @RequestParam(defaultValue = "desc") String sortDir,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size
-//    ) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return getService().getReadingsWithAlertInfo(filter1, filter2, start, end, sortBy, sortDir, pageable);
-//    }
 
     @GetMapping("${senor.location}")
     public List<String> getDistinctLocations() {

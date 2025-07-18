@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.util;
+package com.dxc.iotbackend.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.DXC.iotbackend.controller;
+package com.dxc.iotbackend.controller;
 
 
 import com.DXC.iotbackend.UserDto;
@@ -67,14 +67,6 @@ public class AppController {
         return true;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
-//        authService.registerUser(userDto);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(Map.of("message", "User registered successfully"));
-//    }
-
 
     @PostMapping("${auth.register}")
     public ResponseEntity<?> register(@RequestBody @Valid UserDto userDto) {
@@ -98,16 +90,6 @@ public class AppController {
 
         UserEntity user = userOpt.get();
 
-
-
-//        UserEntity user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        if (!passwordEncoder.matches(password, user.getPassword())) {
-//            return ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body(Map.of("error", "Invalid credentials"));
-//        }
 
         // 1. Generate JWT Token
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
@@ -149,15 +131,6 @@ public class AppController {
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
-
-//    @PutMapping("/user/password")
-//    public ResponseEntity<?> updatePassword(@RequestBody @Valid UpdatePasswordRequest updateRequest) {
-//        updateRequest.setUsername(InputSanitizer.sanitize(updateRequest.getUsername()));
-//        updateRequest.setNewPassword(InputSanitizer.sanitize(updateRequest.getNewPassword()));
-//
-//        String response = authService.updatePassword(updateRequest);
-//        return ResponseEntity.ok(response);
-//    }
 
 
     @PostMapping("${auth.profile}${auth.verifyPassword}")
@@ -249,63 +222,6 @@ public class AppController {
 
         return ResponseEntity.ok(Map.of("message", "Reset link sent to your email"));
     }
-
-
-
-
-
-
-//    @PostMapping("/forgot-password")
-//    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
-//        String email = body.get("email");
-//        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
-//
-//        if (userOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(Map.of("message", "User not found"));
-//        }
-//
-//        // Generate a token (can reuse JWT or random UUID)
-//        String token = UUID.randomUUID().toString();
-//        LocalDateTime expiry = LocalDateTime.now().plusMinutes(30);
-//
-//        userOpt.get().setResetToken(token);
-//        userOpt.get().setResetTokenExpiry(expiry);
-//        userRepository.save(userOpt.get());
-//
-//        // send email with link: http://localhost:4200/reset-password?token=XYZ
-//
-//
-    ////        // Save token to DB or cache with expiry (optional step)
-    ////        userOpt.get().setResetToken(token);
-    ////        userRepository.save(userOpt.get());
-//
-//        // Send email (simulate with console print or real service)
-//        String resetLink = "http://localhost:4200/reset-password?token=" + token;
-//        System.out.println("🔐 Reset link: " + resetLink);
-//
-//        return ResponseEntity.ok(Map.of("message", "Reset link sent to your email"));
-//    }
-
-//    @PostMapping("/reset-password")
-//    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
-//        String token = body.get("token");
-//        String newPassword = body.get("newPassword");
-//
-//        Optional<UserEntity> userOpt = userRepository.findByResetToken(token);
-//        if (userOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(Map.of("message", "Invalid or expired token"));
-//        }
-//
-//        UserEntity user = userOpt.get();
-//        user.setPassword(passwordEncoder.encode(newPassword));
-//        user.setResetToken(null); // Invalidate token
-//        userRepository.save(user);
-//
-//        return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
-//    }
-
 
     @PostMapping("${auth.resetPassword}")
     public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestBody Map<String, String> body) {

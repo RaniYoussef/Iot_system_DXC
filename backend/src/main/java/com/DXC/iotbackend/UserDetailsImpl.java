@@ -1,4 +1,4 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

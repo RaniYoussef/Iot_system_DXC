@@ -1,4 +1,4 @@
-package com.DXC.iotbackend;
+package com.dxc.iotbackend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

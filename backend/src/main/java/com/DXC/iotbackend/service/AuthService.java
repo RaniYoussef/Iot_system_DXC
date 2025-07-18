@@ -47,14 +47,6 @@ public class AuthService {
                     .body(Map.of("error", "Username already registered"));
         }
 
-
-//        if (userRepository.existsByEmail(sanitizedEmail)) {
-//            throw new RuntimeException("Email already registered");
-//        }
-//        if (userRepository.existsByUsername(sanitizedUsername)) {
-//            throw new RuntimeException("Username already registered");
-//        }
-
         String hashedPassword = encoder.encode(user.getPassword());
 
         UserEntity entity = new UserEntity(
@@ -81,10 +73,6 @@ public class AuthService {
                 .body(Map.of("message", "User registered successfully"));
 
     }
-
-//    public User getUserProfile(String email) {
-//        return userRepository.findByEmail(email).orElse(null);
-//    }
 
 
     public String updatePassword(UpdatePasswordRequest request, Authentication authentication) {

@@ -62,21 +62,6 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 String username = jwtUtil.extractUsername(token);
 
-//                // fetch user
-//                UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-//
-//                // extract JWT issue time
-//                Date tokenIssuedAt = jwtUtil.extractIssuedAt(token);
-//
-//                // Compare
-//                if (user.getTokenIssuedAt() != null && tokenIssuedAt.getTime() < user.getTokenIssuedAt()) {
-//                    System.out.println("Token is too old. User changed password after token was issued.");
-//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                    response.getWriter().write("Session expired. Please login again.");
-//                    return;
-//                }
-
-
                 String role = jwtUtil.extractRole(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

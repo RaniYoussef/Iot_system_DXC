@@ -8,10 +8,3 @@ public interface SensorDataRepository extends JpaRepository<SensorData, Long>
 {
 }
 
-//By extending JpaRepository, I automatically get:
-//save()
-//findAll()
-//findById()
-//delete()
-//count() with no need to write sql queries
-

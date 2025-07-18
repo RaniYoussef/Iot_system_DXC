@@ -65,25 +65,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
-
-//    @Override
-//    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-//        OAuth2User oAuth2User = super.loadUser(userRequest);
-//
-//        String email = oAuth2User.getAttribute("email");
-//
-//        UserEntity user = userRepository.findByEmail(email).orElseGet(() -> {
-//            UserEntity newUser = new UserEntity();
-//            newUser.setEmail(email);
-//            newUser.setUsername(email.split("@")[0]);
-//            newUser.setRole("ROLE_USER");
-//            return userRepository.save(newUser);
-//        });
-//
-//        return new DefaultOAuth2User(
-//                Collections.singleton(new SimpleGrantedAuthority(user.getRole())),
-//                oAuth2User.getAttributes(),
-//                "email"
-//        );
-//    }
 }
